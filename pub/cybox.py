@@ -84,7 +84,7 @@ class NetworkSubnetObjectType(Record):
 class PortObjectType(Record):
     ns = "PortObj"
     vals = [
-        ("Port_Value", Integer, "?[1:]"),
+        ("Port_Value", Integer, "?,[1:]"),
         ("Layer4_Protocol", Layer4ProtocolType, "?")]
 
 class ProcessObjectType(Record):

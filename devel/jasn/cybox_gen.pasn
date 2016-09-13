@@ -1,4 +1,4 @@
--- Generated from cybox.jasn, Mon Sep 12 10:20:28 2016
+-- Generated from cybox.jasn, Tue Sep 13 16:54:05 2016
 
 /*
 module:        cybox
@@ -9,11 +9,11 @@ description:   Selected CybOX 2.1 objects used by OpenC2.  Abstract syntx
 namespace:     http://cybox.mitre.org/objects
 sources:       Layer3ProtocolType: Network_Connection_Object.xsd
                Layer4ProtocolType: Cybox_common.xsd
-               HostnameObject: Hostname_Object.xsd
                NetworkConnectionObject: Network_Connection_Object.xsd
+               HostnameObject: Hostname_Object.xsd
 */
 
-cybox ::=
+cybox DEFINITIONS ::=
 BEGIN
 
 Layer3ProtocolType ::= ENUMERATED {
@@ -45,19 +45,19 @@ Layer4ProtocolType ::= ENUMERATED {
 }
 
 AddressObject ::= RECORD {
-    Address_Value [1] UTF8STRING?,
-    VLAN_Name     [2] UTF8STRING?,
-    VLAN_Num      [3] INTEGER?
+    Address_Value [1] UTF8String OPTIONAL,
+    VLAN_Name     [2] UTF8String OPTIONAL,
+    VLAN_Num      [3] INTEGER OPTIONAL
 }
 
 DeviceObject ::= MAP {
-    Description      [1] UTF8STRING?,
-    Device_Type      [2] UTF8STRING?,
-    Manufacturer     [3] UTF8STRING?,
-    Model            [4] UTF8STRING?,
-    Serial_Number    [5] UTF8STRING?,
-    Firmware_Version [6] UTF8STRING?,
-    System_Details   [7] UTF8STRING?
+    Description      [1] UTF8String OPTIONAL,
+    Device_Type      [2] UTF8String OPTIONAL,
+    Manufacturer     [3] UTF8String OPTIONAL,
+    Model            [4] UTF8String OPTIONAL,
+    Serial_Number    [5] UTF8String OPTIONAL,
+    Firmware_Version [6] UTF8String OPTIONAL,
+    System_Details   [7] UTF8String OPTIONAL
 }
 
 DiskObject ::= RECORD {
@@ -73,7 +73,7 @@ DomainNameTypeEnum ::= ENUMERATED {
 
 DomainNameObject ::= RECORD {
     type         [1] DomainNameTypeEnum,
-    Value        [2] UTF8STRING
+    Value        [2] UTF8String
 }
 
 EmailMessageObject ::= RECORD {
@@ -83,8 +83,8 @@ FileObject ::= RECORD {
 }
 
 HostnameObject ::= RECORD {
-    Hostname_Value [1] UTF8STRING,
-    Naming_System  [2] UTF8STRING?
+    Hostname_Value [1] UTF8String,
+    Naming_System  [2] UTF8String OPTIONAL
 }
 
 MemoryObject ::= RECORD {
@@ -99,9 +99,9 @@ NetworkPacketObject ::= RECORD {
 NetworkSubnetObject ::= RECORD {
 }
 
-PortObject ::= STRING {
-    Port_Value      [1] INTEGER?[1:],
-    Layer4_Protocol [2] Layer4ProtocolType?
+PortObject ::= RECORD {
+    Port_Value      [1] INTEGER OPTIONAL,
+    Layer4_Protocol [2] Layer4ProtocolType OPTIONAL
 }
 
 ProcessObject ::= RECORD {
@@ -116,15 +116,15 @@ SocketAddressChoice ::= CHOICE {
 }
 
 SocketAddressObject ::= RECORD {
-    *            [1] SocketAddressChoice#,
-    Port         [2] PortObject?
+    *            [1] SocketAddressChoice,
+    Port         [2] PortObject OPTIONAL
 }
 
 NetworkConnectionObject ::= RECORD {
-    Layer3Protocol           [1] Layer3ProtocolType?,
-    Layer4Protocol           [2] Layer4ProtocolType?,
-    SourceSocketAddress      [3] SocketAddressObject?,
-    DestinationSocketAddress [4] SocketAddressObject?
+    Layer3Protocol           [1] Layer3ProtocolType OPTIONAL,
+    Layer4Protocol           [2] Layer4ProtocolType OPTIONAL,
+    SourceSocketAddress      [3] SocketAddressObject OPTIONAL,
+    DestinationSocketAddress [4] SocketAddressObject OPTIONAL
 }
 
 URITypeEnum ::= ENUMERATED {
@@ -138,19 +138,19 @@ SystemObject ::= RECORD {
 
 URIObject ::= RECORD {
     type         [1] URITypeEnum,
-    Value        [2] UTF8STRING
+    Value        [2] UTF8String
 }
 
 UserAccountObject ::= RECORD {
 }
 
 UserSessionObject ::= RECORD {
-    Effective_Group    [1] UTF8STRING?,
-    Effective_Group_ID [2] UTF8STRING?,
-    Effective_User     [3] UTF8STRING?,
-    Effective_User_ID  [4] UTF8STRING?,
-    Login_Time         [5] UTF8STRING?,
-    Logout_Time        [6] UTF8STRING?
+    Effective_Group    [1] UTF8String OPTIONAL,
+    Effective_Group_ID [2] UTF8String OPTIONAL,
+    Effective_User     [3] UTF8String OPTIONAL,
+    Effective_User_ID  [4] UTF8String OPTIONAL,
+    Login_Time         [5] UTF8String OPTIONAL,
+    Logout_Time        [6] UTF8String OPTIONAL
 }
 
 VolumeObject ::= RECORD {
@@ -195,4 +195,5 @@ CyboxObject ::= ATTRIBUTE {
     Windows_Service      [24] WindowsServiceObject,
     X509_Certificate     [25] X509CertificateObject
 }
+
 END

@@ -1,4 +1,4 @@
-"Generated from cybox.jasn, Mon Sep 12 10:20:28 2016"
+"Generated from cybox.jasn, Tue Sep 13 16:54:05 2016"
 
 {
   "types": [
@@ -112,13 +112,13 @@
         [
           1,
           "Address_Value",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ],
         [
           2,
           "VLAN_Name",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ],
         [
@@ -137,43 +137,43 @@
         [
           1,
           "Description",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ],
         [
           2,
           "Device_Type",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ],
         [
           3,
           "Manufacturer",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ],
         [
           4,
           "Model",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ],
         [
           5,
           "Serial_Number",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ],
         [
           6,
           "Firmware_Version",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ],
         [
           7,
           "System_Details",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ]
       ]
@@ -219,7 +219,7 @@
         [
           2,
           "Value",
-          "UTF8STRING",
+          "UTF8String",
           ""
         ]
       ]
@@ -244,13 +244,13 @@
         [
           1,
           "Hostname_Value",
-          "UTF8STRING",
+          "UTF8String",
           ""
         ],
         [
           2,
           "Naming_System",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ]
       ]
@@ -281,14 +281,14 @@
     ],
     [
       "PortObject",
-      "String",
+      "Record",
       "",
       [
         [
           1,
           "Port_Value",
           "INTEGER",
-          "?[1:]"
+          "?,[1:]"
         ],
         [
           2,
@@ -418,7 +418,7 @@
         [
           2,
           "Value",
-          "UTF8STRING",
+          "UTF8String",
           ""
         ]
       ]
@@ -437,37 +437,37 @@
         [
           1,
           "Effective_Group",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ],
         [
           2,
           "Effective_Group_ID",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ],
         [
           3,
           "Effective_User",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ],
         [
           4,
           "Effective_User_ID",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ],
         [
           5,
           "Login_Time",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ],
         [
           6,
           "Logout_Time",
-          "UTF8STRING",
+          "UTF8String",
           "?"
         ]
       ]
@@ -669,15 +669,15 @@
   ],
   "meta": {
     "namespace": "http://cybox.mitre.org/objects",
-    "version": "2.1",
-    "title": "Cyber Observable Expression (cybox) 2.1 definitions",
-    "description": "Selected CybOX 2.1 objects used by OpenC2.  Abstract syntx information extracted from XSD source documents.",
-    "module": "cybox",
     "sources": {
       "Layer3ProtocolType": "Network_Connection_Object.xsd",
       "Layer4ProtocolType": "Cybox_common.xsd",
-      "HostnameObject": "Hostname_Object.xsd",
-      "NetworkConnectionObject": "Network_Connection_Object.xsd"
-    }
+      "NetworkConnectionObject": "Network_Connection_Object.xsd",
+      "HostnameObject": "Hostname_Object.xsd"
+    },
+    "description": "Selected CybOX 2.1 objects used by OpenC2.  Abstract syntx information extracted from XSD source documents.",
+    "version": "2.1",
+    "title": "Cyber Observable Expression (cybox) 2.1 definitions",
+    "module": "cybox"
   }
 }

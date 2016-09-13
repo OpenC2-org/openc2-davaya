@@ -98,8 +98,8 @@
   ["NetworkSubnetObject", "Record", "", [
   ]],
 
-  ["PortObject", "String", "", [
-    [1, "Port_Value", "Integer", "?[1:]"],
+  ["PortObject", "Record", "", [
+    [1, "Port_Value", "Integer", "?,[1:]"],
     [2, "Layer4_Protocol", "Layer4ProtocolType", "?"]
   ]],
 
