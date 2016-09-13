@@ -155,7 +155,10 @@ def pasn_dumps(jasn):
                     opts = parse_field_opts(i[3])
                     if opts["optional"]:
                         ostr += " OPTIONAL"
-                    items += [fmt.format(i[0], i[1], i[2], ostr)]
+                    del opts["optional"]
+                    if not opts["choice"]:
+                        del opts["choice"]
+                    items += [fmt.format(i[0], i[1], i[2], ostr) + (" ***" + str(opts) if opts else "")]
                 pasn += ",\n".join(items)
             pasn += "\n}\n" if titems else "}\n"
         else:

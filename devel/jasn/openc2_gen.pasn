@@ -1,4 +1,4 @@
--- Generated from openc2.jasn, Tue Sep 13 16:55:04 2016
+-- Generated from openc2.jasn, Tue Sep 13 17:22:19 2016
 
 /*
 module:        openc2
@@ -137,7 +137,7 @@ ActuatorType ::= ENUMERATED {
 
 Target ::= RECORD {
     type         [1] TargetType,
-    specifiers   [2] cybox:CyboxObject OPTIONAL
+    specifiers   [2] cybox:CyboxObject OPTIONAL ***{'atfield': 'type'}
 }
 
 ActuatorSpecifiers ::= RECORD {
@@ -195,7 +195,7 @@ ActuatorObject ::= ATTRIBUTE {
 
 Actuator ::= RECORD {
     type         [1] UTF8String,
-    specifiers   [2] ActuatorObject OPTIONAL
+    specifiers   [2] ActuatorObject OPTIONAL ***{'atfield': 'type'}
 }
 
 ResponseValue ::= ENUMERATED {

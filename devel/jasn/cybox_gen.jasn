@@ -1,6 +1,19 @@
-"Generated from cybox.jasn, Tue Sep 13 16:54:05 2016"
+"Generated from cybox.jasn, Tue Sep 13 17:22:08 2016"
 
 {
+  "meta": {
+    "version": "2.1",
+    "module": "cybox",
+    "sources": {
+      "HostnameObject": "Hostname_Object.xsd",
+      "Layer3ProtocolType": "Network_Connection_Object.xsd",
+      "Layer4ProtocolType": "Cybox_common.xsd",
+      "NetworkConnectionObject": "Network_Connection_Object.xsd"
+    },
+    "description": "Selected CybOX 2.1 objects used by OpenC2.  Abstract syntx information extracted from XSD source documents.",
+    "title": "Cyber Observable Expression (cybox) 2.1 definitions",
+    "namespace": "http://cybox.mitre.org/objects"
+  },
   "types": [
     [
       "Layer3ProtocolType",
@@ -666,18 +679,5 @@
         ]
       ]
     ]
-  ],
-  "meta": {
-    "namespace": "http://cybox.mitre.org/objects",
-    "sources": {
-      "Layer3ProtocolType": "Network_Connection_Object.xsd",
-      "Layer4ProtocolType": "Cybox_common.xsd",
-      "NetworkConnectionObject": "Network_Connection_Object.xsd",
-      "HostnameObject": "Hostname_Object.xsd"
-    },
-    "description": "Selected CybOX 2.1 objects used by OpenC2.  Abstract syntx information extracted from XSD source documents.",
-    "version": "2.1",
-    "title": "Cyber Observable Expression (cybox) 2.1 definitions",
-    "module": "cybox"
-  }
+  ]
 }
