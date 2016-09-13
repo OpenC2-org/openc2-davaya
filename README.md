@@ -1,1 +1,0 @@
-# openc2-davaya
