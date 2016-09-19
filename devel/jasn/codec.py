@@ -62,7 +62,7 @@ def flatten(cmd, path="", fc={}, sep="."):
         fcmd[path] = ('"' + cmd + '"' if isinstance(cmd, str) else str(cmd))
     return (fcmd)
 
-def parse_type_opts(ostring):
+def parse_type_opts(ostr):
     """
     Parse options included in type definitions
 
@@ -73,11 +73,10 @@ def parse_type_opts(ostring):
     ">*"     "pattern"  string   regular expression to match against String value
     """
     opts = {}
-    for o in ostring.split(","):
-        if o[:1] == ">":
-            opts["pattern"] = o[1:]
-        elif o:
-            print("Unknown type option", o)
+    if ostr[:1] == ">":
+        opts["pattern"] = ostr[1:]
+    elif ostr:
+        print("Unknown type option", ostr)
     return opts
 
 def parse_field_opts(ostring):
@@ -93,7 +92,7 @@ def parse_field_opts(ostring):
     "[n:m]"  "range"    Tuple    Min and max lengths for arrays and strings
     """
     opts = {"optional": False}
-    for o in ostring.split(","):  # TODO: better validation of parse options
+    for o in ostring.split(","):  # TODO: better validation ("," in string, etc)
         if o == "?":
             opts["optional"] = True
         elif o:

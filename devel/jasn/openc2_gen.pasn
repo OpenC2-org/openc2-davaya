@@ -1,4 +1,4 @@
--- Generated from openc2.jasn, Mon Sep 19 12:47:27 2016
+-- Generated from openc2.jasn, Mon Sep 19 15:26:19 2016
 
 /*
 module:        openc2
@@ -137,7 +137,7 @@ ActuatorType ::= ENUMERATED {
 
 Target ::= RECORD {
     type         TargetType,
-    specifiers   cybox:CyboxObject OPTIONAL ***{'atfield': 'type'}
+    specifiers   cybox:CyboxObject.&type OPTIONAL
 }
 
 ActuatorSpecifiers ::= RECORD {
@@ -195,7 +195,7 @@ ActuatorObject ::= ATTRIBUTE {
 
 Actuator ::= RECORD {
     type         UTF8String,
-    specifiers   ActuatorObject OPTIONAL ***{'atfield': 'type'}
+    specifiers   ActuatorObject.&type OPTIONAL
 }
 
 ResponseValue ::= ENUMERATED {
@@ -216,9 +216,9 @@ WhereValue ::= ENUMERATED {
     perimeter    (2)
 }
 
-Duration ::= STRING(^\d+$)
+Duration ::= UTF8String(PATTERN "^\d+$")
 
-DateTime ::= STRING(>^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?Z|[-+]\d\d:\d\d$)
+DateTime ::= UTF8String(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?Z|[-+]\d\d:\d\d$")
 
 Modifiers ::= MAP {
     delay        [1] Duration OPTIONAL,
