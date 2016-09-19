@@ -143,7 +143,7 @@ def pasn_dumps(jasn):
                     if i[2].lower() in asn1type:        # Translate primitive types to ASN.1
                         i[2] = asn1type[i[2].lower()]
             pasn += " {\n"
-            flen = min(32, max(12, max([len(i[1]) for i in titems]) if titems else 0))
+            flen = min(32, max(12, max([len(i[1]) for i in titems]) + 1 if titems else 0))
             if ttype.lower() == "enumerated":
                 fmt = "    {1:" + str(flen) + "} ({0:d})"
                 pasn += ",\n".join([fmt.format(*i) for i in titems])

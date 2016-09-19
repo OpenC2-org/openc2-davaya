@@ -114,7 +114,7 @@
     [2, "Hostname", "HostnameObject", ""] ]],
 
   ["SocketAddressObject", "Record", "", [
-    [1, "*", "SocketAddressChoice", "#"],
+    [1, "*", "SocketAddressChoice", ""],
     [2, "Port", "PortObject", "?"] ]],
 
   ["NetworkConnectionObject", "Record", "", [

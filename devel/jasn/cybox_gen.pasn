@@ -1,4 +1,4 @@
--- Generated from cybox.jasn, Tue Sep 13 17:22:08 2016
+-- Generated from cybox.jasn, Mon Sep 19 12:46:32 2016
 
 /*
 module:        cybox
@@ -7,10 +7,10 @@ version:       2.1
 description:   Selected CybOX 2.1 objects used by OpenC2.  Abstract syntx
                information extracted from XSD source documents.
 namespace:     http://cybox.mitre.org/objects
-sources:       HostnameObject: Hostname_Object.xsd
+sources:       NetworkConnectionObject: Network_Connection_Object.xsd
                Layer3ProtocolType: Network_Connection_Object.xsd
+               HostnameObject: Hostname_Object.xsd
                Layer4ProtocolType: Cybox_common.xsd
-               NetworkConnectionObject: Network_Connection_Object.xsd
 */
 
 cybox DEFINITIONS ::=
@@ -45,19 +45,19 @@ Layer4ProtocolType ::= ENUMERATED {
 }
 
 AddressObject ::= RECORD {
-    Address_Value [1] UTF8String OPTIONAL,
-    VLAN_Name     [2] UTF8String OPTIONAL,
-    VLAN_Num      [3] INTEGER OPTIONAL
+    Address_Value  UTF8String OPTIONAL,
+    VLAN_Name      UTF8String OPTIONAL,
+    VLAN_Num       INTEGER OPTIONAL
 }
 
 DeviceObject ::= MAP {
-    Description      [1] UTF8String OPTIONAL,
-    Device_Type      [2] UTF8String OPTIONAL,
-    Manufacturer     [3] UTF8String OPTIONAL,
-    Model            [4] UTF8String OPTIONAL,
-    Serial_Number    [5] UTF8String OPTIONAL,
-    Firmware_Version [6] UTF8String OPTIONAL,
-    System_Details   [7] UTF8String OPTIONAL
+    Description       [1] UTF8String OPTIONAL,
+    Device_Type       [2] UTF8String OPTIONAL,
+    Manufacturer      [3] UTF8String OPTIONAL,
+    Model             [4] UTF8String OPTIONAL,
+    Serial_Number     [5] UTF8String OPTIONAL,
+    Firmware_Version  [6] UTF8String OPTIONAL,
+    System_Details    [7] UTF8String OPTIONAL
 }
 
 DiskObject ::= RECORD {
@@ -72,8 +72,8 @@ DomainNameTypeEnum ::= ENUMERATED {
 }
 
 DomainNameObject ::= RECORD {
-    type         [1] DomainNameTypeEnum,
-    Value        [2] UTF8String
+    type         DomainNameTypeEnum,
+    Value        UTF8String
 }
 
 EmailMessageObject ::= RECORD {
@@ -83,8 +83,8 @@ FileObject ::= RECORD {
 }
 
 HostnameObject ::= RECORD {
-    Hostname_Value [1] UTF8String,
-    Naming_System  [2] UTF8String OPTIONAL
+    Hostname_Value  UTF8String,
+    Naming_System   UTF8String OPTIONAL
 }
 
 MemoryObject ::= RECORD {
@@ -100,8 +100,8 @@ NetworkSubnetObject ::= RECORD {
 }
 
 PortObject ::= RECORD {
-    Port_Value      [1] INTEGER OPTIONAL,
-    Layer4_Protocol [2] Layer4ProtocolType OPTIONAL
+    Port_Value       INTEGER OPTIONAL,
+    Layer4_Protocol  Layer4ProtocolType OPTIONAL
 }
 
 ProcessObject ::= RECORD {
@@ -116,15 +116,15 @@ SocketAddressChoice ::= CHOICE {
 }
 
 SocketAddressObject ::= RECORD {
-    *            [1] SocketAddressChoice ***{'choice': True},
-    Port         [2] PortObject OPTIONAL
+    *            SocketAddressChoice,
+    Port         PortObject OPTIONAL
 }
 
 NetworkConnectionObject ::= RECORD {
-    Layer3Protocol           [1] Layer3ProtocolType OPTIONAL,
-    Layer4Protocol           [2] Layer4ProtocolType OPTIONAL,
-    SourceSocketAddress      [3] SocketAddressObject OPTIONAL,
-    DestinationSocketAddress [4] SocketAddressObject OPTIONAL
+    Layer3Protocol            Layer3ProtocolType OPTIONAL,
+    Layer4Protocol            Layer4ProtocolType OPTIONAL,
+    SourceSocketAddress       SocketAddressObject OPTIONAL,
+    DestinationSocketAddress  SocketAddressObject OPTIONAL
 }
 
 URITypeEnum ::= ENUMERATED {
@@ -137,20 +137,20 @@ SystemObject ::= RECORD {
 }
 
 URIObject ::= RECORD {
-    type         [1] URITypeEnum,
-    Value        [2] UTF8String
+    type         URITypeEnum,
+    Value        UTF8String
 }
 
 UserAccountObject ::= RECORD {
 }
 
 UserSessionObject ::= RECORD {
-    Effective_Group    [1] UTF8String OPTIONAL,
-    Effective_Group_ID [2] UTF8String OPTIONAL,
-    Effective_User     [3] UTF8String OPTIONAL,
-    Effective_User_ID  [4] UTF8String OPTIONAL,
-    Login_Time         [5] UTF8String OPTIONAL,
-    Logout_Time        [6] UTF8String OPTIONAL
+    Effective_Group     UTF8String OPTIONAL,
+    Effective_Group_ID  UTF8String OPTIONAL,
+    Effective_User      UTF8String OPTIONAL,
+    Effective_User_ID   UTF8String OPTIONAL,
+    Login_Time          UTF8String OPTIONAL,
+    Logout_Time         UTF8String OPTIONAL
 }
 
 VolumeObject ::= RECORD {
@@ -163,37 +163,37 @@ WindowsServiceObject ::= RECORD {
 }
 
 X509CertificateObject ::= ENUMERATED {
-    Certificate          (1),
-    RawCertificate       (2),
-    CertificateSignature (3)
+    Certificate           (1),
+    RawCertificate        (2),
+    CertificateSignature  (3)
 }
 
 CyboxObject ::= ATTRIBUTE {
-    Address              [1] AddressObject,
-    Device               [2] DeviceObject,
-    Disk                 [3] DiskObject,
-    Disk_Partition       [4] DiskPartitionObject,
-    Domain_Name          [5] DomainNameObject,
-    Email_Message        [6] EmailMessageObject,
-    File                 [7] FileObject,
-    Hostname             [8] HostnameObject,
-    Memory               [9] MemoryObject,
-    Network_Connection   [10] NetworkConnectionObject,
-    Network_Flow         [11] NetworkFlowObject,
-    Network_Packet       [12] NetworkPacketObject,
-    Network_Subnet       [13] NetworkSubnetObject,
-    Port                 [14] PortObject,
-    Process              [15] ProcessObject,
-    Product              [16] ProductObject,
-    Socket_Address       [17] SocketAddressObject,
-    System               [18] SystemObject,
-    URI                  [19] URIObject,
-    User_Account         [20] UserAccountObject,
-    User_Session         [21] UserSessionObject,
-    Volume               [22] VolumeObject,
-    Windows_Registry_Key [23] WindowsRegistryKeyObject,
-    Windows_Service      [24] WindowsServiceObject,
-    X509_Certificate     [25] X509CertificateObject
+    Address               [1] AddressObject,
+    Device                [2] DeviceObject,
+    Disk                  [3] DiskObject,
+    Disk_Partition        [4] DiskPartitionObject,
+    Domain_Name           [5] DomainNameObject,
+    Email_Message         [6] EmailMessageObject,
+    File                  [7] FileObject,
+    Hostname              [8] HostnameObject,
+    Memory                [9] MemoryObject,
+    Network_Connection    [10] NetworkConnectionObject,
+    Network_Flow          [11] NetworkFlowObject,
+    Network_Packet        [12] NetworkPacketObject,
+    Network_Subnet        [13] NetworkSubnetObject,
+    Port                  [14] PortObject,
+    Process               [15] ProcessObject,
+    Product               [16] ProductObject,
+    Socket_Address        [17] SocketAddressObject,
+    System                [18] SystemObject,
+    URI                   [19] URIObject,
+    User_Account          [20] UserAccountObject,
+    User_Session          [21] UserSessionObject,
+    Volume                [22] VolumeObject,
+    Windows_Registry_Key  [23] WindowsRegistryKeyObject,
+    Windows_Service       [24] WindowsServiceObject,
+    X509_Certificate      [25] X509CertificateObject
 }
 
 END

@@ -1,4 +1,4 @@
--- Generated from openc2.jasn, Mon Sep 19 12:39:56 2016
+-- Generated from openc2.jasn, Mon Sep 19 12:47:27 2016
 
 /*
 module:        openc2
@@ -10,8 +10,8 @@ description:   Classes that define the content of OpenC2 commands.  These
                XML, or CBOR, or to generate format-specific message schemas.
 namespace:     http://openc2.org/objects
 root:          OpenC2Command
-import:        http://docs.oasis-open.org/CTI/cybox-3: cybox3
-               http://cybox.mitre.org/common-2: cybox
+import:        http://cybox.mitre.org/common-2: cybox
+               http://docs.oasis-open.org/CTI/cybox-3: cybox3
 */
 
 openc2 DEFINITIONS ::=
@@ -58,33 +58,33 @@ Action ::= ENUMERATED {
 }
 
 TargetType ::= ENUMERATED {
-    cybox:Address              (1),
-    cybox:Device               (2),
-    cybox:Disk                 (3),
-    cybox:Disk_Partition       (4),
-    cybox:Domain_Name          (5),
-    cybox:Email_Message        (6),
-    cybox:File                 (7),
-    cybox:Hostname             (8),
-    cybox:Memory               (9),
-    cybox:Network_Connection   (10),
-    cybox:Network_Flow         (11),
-    cybox:Network_Packet       (12),
-    cybox:Network_Subnet       (13),
-    cybox:Port                 (14),
-    cybox:Process              (15),
-    cybox:Product              (16),
-    cybox:Socket_Address       (17),
-    cybox:System               (18),
-    cybox:URI                  (19),
-    cybox:User_Account         (20),
-    cybox:User_Session         (21),
-    cybox:Volume               (22),
-    cybox:Windows_Registry_Key (23),
-    cybox:Windows_Service      (24),
-    cybox:X509_Certificate     (25),
-    Data                       (1),
-    cybox3                     (2)
+    cybox:Address               (1),
+    cybox:Device                (2),
+    cybox:Disk                  (3),
+    cybox:Disk_Partition        (4),
+    cybox:Domain_Name           (5),
+    cybox:Email_Message         (6),
+    cybox:File                  (7),
+    cybox:Hostname              (8),
+    cybox:Memory                (9),
+    cybox:Network_Connection    (10),
+    cybox:Network_Flow          (11),
+    cybox:Network_Packet        (12),
+    cybox:Network_Subnet        (13),
+    cybox:Port                  (14),
+    cybox:Process               (15),
+    cybox:Product               (16),
+    cybox:Socket_Address        (17),
+    cybox:System                (18),
+    cybox:URI                   (19),
+    cybox:User_Account          (20),
+    cybox:User_Session          (21),
+    cybox:Volume                (22),
+    cybox:Windows_Registry_Key  (23),
+    cybox:Windows_Service       (24),
+    cybox:X509_Certificate      (25),
+    Data                        (1),
+    cybox3                      (2)
 }
 
 ActuatorType ::= ENUMERATED {
