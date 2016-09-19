@@ -1,4 +1,4 @@
--- Generated from openc2.jasn, Tue Sep 13 17:22:19 2016
+-- Generated from openc2.jasn, Mon Sep 19 12:39:56 2016
 
 /*
 module:        openc2
@@ -10,8 +10,8 @@ description:   Classes that define the content of OpenC2 commands.  These
                XML, or CBOR, or to generate format-specific message schemas.
 namespace:     http://openc2.org/objects
 root:          OpenC2Command
-import:        http://cybox.mitre.org/common-2: cybox
-               http://docs.oasis-open.org/CTI/cybox-3: cybox3
+import:        http://docs.oasis-open.org/CTI/cybox-3: cybox3
+               http://cybox.mitre.org/common-2: cybox
 */
 
 openc2 DEFINITIONS ::=
@@ -136,13 +136,13 @@ ActuatorType ::= ENUMERATED {
 }
 
 Target ::= RECORD {
-    type         [1] TargetType,
-    specifiers   [2] cybox:CyboxObject OPTIONAL ***{'atfield': 'type'}
+    type         TargetType,
+    specifiers   cybox:CyboxObject OPTIONAL ***{'atfield': 'type'}
 }
 
 ActuatorSpecifiers ::= RECORD {
-    port         [1] UTF8String OPTIONAL,
-    asset_id     [2] UTF8String OPTIONAL
+    port         UTF8String OPTIONAL,
+    asset_id     UTF8String OPTIONAL
 }
 
 ActuatorObject ::= ATTRIBUTE {
@@ -194,8 +194,8 @@ ActuatorObject ::= ATTRIBUTE {
 }
 
 Actuator ::= RECORD {
-    type         [1] UTF8String,
-    specifiers   [2] ActuatorObject OPTIONAL ***{'atfield': 'type'}
+    type         UTF8String,
+    specifiers   ActuatorObject OPTIONAL ***{'atfield': 'type'}
 }
 
 ResponseValue ::= ENUMERATED {
@@ -231,10 +231,10 @@ Modifiers ::= MAP {
 }
 
 OpenC2Command ::= RECORD {
-    action       [1] Action,
-    target       [2] Target,
-    actuator     [3] Actuator OPTIONAL,
-    modifiers    [4] Modifiers OPTIONAL
+    action       Action,
+    target       Target,
+    actuator     Actuator OPTIONAL,
+    modifiers    Modifiers OPTIONAL
 }
 
 END

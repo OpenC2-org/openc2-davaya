@@ -67,7 +67,7 @@ jasn_schema = {
 def jasn_check(jasn):
     jsonschema.Draft4Validator(jasn_schema).validate(jasn)
     for t in jasn["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-item list
-        if t[1].lower() in ("string", "integer", "boolean") and len(t) != 3:    # TODO: trace back to base type
+        if t[1].lower() in ("string", "integer", "number", "boolean") and len(t) != 3:    # TODO: trace back to base type
             print("Type format error:", t[0], "- primitive type", t[1], "cannot have items")
         if len(t) > 3:
             n = 2 if t[1].lower() == "enumerated" else 4
@@ -149,6 +149,8 @@ def pasn_dumps(jasn):
                 pasn += ",\n".join([fmt.format(*i) for i in titems])
             else:
                 fmt = "    {1:" + str(flen) + "} [{0:d}] {2}{3}"
+                if ttype.lower() == 'record':
+                    fmt = "    {1:" + str(flen) + "} {2}{3}"
                 items = []
                 for i in titems:
                     ostr = ""
@@ -156,8 +158,6 @@ def pasn_dumps(jasn):
                     if opts["optional"]:
                         ostr += " OPTIONAL"
                     del opts["optional"]
-                    if not opts["choice"]:
-                        del opts["choice"]
                     items += [fmt.format(i[0], i[1], i[2], ostr) + (" ***" + str(opts) if opts else "")]
                 pasn += ",\n".join(items)
             pasn += "\n}\n" if titems else "}\n"
