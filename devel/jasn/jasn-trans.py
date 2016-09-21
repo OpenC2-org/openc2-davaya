@@ -1,6 +1,7 @@
 import json, jsonschema, os
 from textwrap import fill
 from datetime import datetime
+from copy import deepcopy
 from codec import parse_type_opts, parse_field_opts
 
 # TODO: Establish CTI/JSON namespace conventions, merge "module" (name) and "namespace" (module unique id) properties
@@ -64,6 +65,9 @@ jasn_schema = {
     }
 }
 
+hdr_list = ["module", "title", "version", "description", "namespace", "root", "import", "sources"]
+
+
 def jasn_check(jasn):
     jsonschema.Draft4Validator(jasn_schema).validate(jasn)
     for t in jasn["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-item list
@@ -89,8 +93,32 @@ def jasn_load(fname):
     jasn_check(jasn)
     return jasn
 
-def jasn_dumps(jasn):
-    return json.dumps(jasn, indent=2)
+def jasn_dumps(jasn, level=0, indent=1):
+    sp = level * indent * " "
+    sp2 = (level + 1) * indent * " "
+    if isinstance(jasn, dict):
+        sep = ",\n" if level > 0 else ",\n\n"
+        lines = []
+        for k in jasn:
+            lines.append(sp2 + "\"" + k + "\": " + jasn_dumps(jasn[k], level + 1, indent))
+        return "{\n" + sep.join(lines) + "\n" + sp + "}"
+    elif isinstance(jasn, list):
+        sep = ",\n" if level > 1 else ",\n\n"
+        vals = []
+        nest = jasn and isinstance(jasn[0], list)
+        sp4 = ""
+        for v in jasn:
+            sp3 = sp2 if nest else ""
+            sp4 = sp if v and isinstance(v, list) else ""
+            vals.append(sp3 + jasn_dumps(v, level + 1, indent))
+        if nest:
+            return "[\n" + sep.join(vals) + "\n" + sp + "]\n"
+        return "[" + ", ".join(vals) + sp4 + "]"
+    elif isinstance(jasn, str):
+        return "\"" + jasn + "\""
+    elif isinstance(jasn, (int, bool)):
+        return str(jasn)
+    return "???"
 
 def jasn_dump(jasn, fname, source=""):
     with open(fname, "w") as f:
@@ -127,8 +155,7 @@ def pasn_dumps(jasn):
     """
     pasn = "/*\n"
     hdrs = jasn["meta"]
-    hlist = ["module", "title", "version", "description", "namespace", "root", "import", "sources"]
-    for h in hlist + list(set(hdrs) - set(hlist)):
+    for h in hdr_list + list(set(hdrs) - set(hdr_list)):
         if h in hdrs:
             if h == "description":
                 pasn += fill(hdrs[h], width=80, initial_indent="{0:14} ".format(h + ":"), subsequent_indent=15*" ") + "\n"
@@ -149,7 +176,7 @@ def pasn_dumps(jasn):
         tos = '(PATTERN "' + topts["pattern"] + '")' if "pattern" in topts else ""
         pasn += "\n" + typeref(tname) + " ::= " + _asn1type(ttype) + tos
         if len(t) == 4:
-            titems = t[3]
+            titems = deepcopy(t[3])
             for i in titems:
                 i[1] = identifier(i[1])
                 if len(i) > 2:
@@ -194,7 +221,7 @@ def tables_dumps(jasn, fname):
     pass
 
 if __name__ == "__main__":
-    fname = "cybox"
+    fname = "openc2"
     source = fname + ".jasn"
     jasn = jasn_load(source)
     pasn_dump(jasn, fname + "_gen.pasn", source)
