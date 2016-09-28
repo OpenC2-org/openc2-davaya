@@ -3,6 +3,7 @@ from textwrap import fill
 from datetime import datetime
 from copy import deepcopy
 from codec import parse_type_opts, parse_field_opts
+from pyclass import pyclass_load
 
 # TODO: Establish CTI/JSON namespace conventions, merge "module" (name) and "namespace" (module unique id) properties
 
@@ -145,7 +146,7 @@ def _asn1type(t):
 
 def pasn_dumps(jasn):
     """
-    Produce Pseudo-ASN.1 module from JASN source
+    Produce Pseudo-ASN.1 module from Abstract Syntax structure
 
     Pseudo-ASN.1 represents features available in both JASN and ASN.1 using ASN.1 syntax, but creates
     extended datatypes (Record, Map, Attribute) for JASN types not directly representable in ASN.1.
@@ -221,8 +222,17 @@ def tables_dumps(jasn, fname):
     pass
 
 if __name__ == "__main__":
-    fname = "openc2"
-    source = fname + ".jasn"
-    jasn = jasn_load(source)
-    pasn_dump(jasn, fname + "_gen.pasn", source)
-    jasn_dump(jasn, fname + "_gen.jasn", source)
+    for fname in ("cybox", "openc2"):
+
+        source = fname + ".py"
+        dest = fname + "_genp"
+        jasn = pyclass_load(fname)
+        jasn_check(jasn)
+        pasn_dump(jasn, dest + ".pasn", source)
+        jasn_dump(jasn, dest + ".jasn", source)
+
+        source = fname + ".jasn"
+        dest = fname + "_genj"
+        jasn = jasn_load(source)
+        pasn_dump(jasn, dest + ".pasn", source)
+        jasn_dump(jasn, dest + ".jasn", source)

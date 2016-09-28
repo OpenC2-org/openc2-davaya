@@ -1,10 +1,12 @@
-from codec import Attribute, Choice, Enumerated, Map, Record, Boolean, Integer, String
-
 """
 Cyber Observable Expression v2.1 (cybox) 2.1 definitions
 
 Selected CybOX 2.1 objects used by OpenC2.  Translated from XML to JSON.
 """
+
+__version__ = "0.1"
+
+from codec import Attribute, Choice, Enumerated, Map, Record, Boolean, Integer, String
 
 class Layer3ProtocolType(Enumerated):      # Network_Connection_Object.xsd
     ns = "cybox"

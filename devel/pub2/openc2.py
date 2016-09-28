@@ -1,7 +1,3 @@
-from codec import Enumerated, Map, Record, Attribute, Choice
-from codec import String, Integer
-import cybox
-
 """
 OpenC2 Command Definitions
 
@@ -9,6 +5,12 @@ Classes that define the content of OpenC2 commands.  These classes are used with
 an Encoder/Decoder (codec) to serialize and deserialize commands for transmission
 in a format such as JSON, XML, or CBOR, or to generate format-specific message schemas.
 """
+
+__version__ = "0.1"
+
+from codec import Enumerated, Map, Record, Attribute, Choice
+from codec import String, Integer
+import cybox
 
 class Action(Enumerated):
     ns = "openc2"
