@@ -1,10 +1,18 @@
 """
-Cyber Observable Expression v2.1 (cybox) 2.1 definitions
+Cyber Observable Expression 2.1 definitions
 
-Selected CybOX 2.1 objects used by OpenC2.  Translated from XML to JSON.
+Selected CybOX 2.1 objects used by OpenC2.  Abstract syntax information extracted from XSD source documents.
 """
 
 __version__ = "0.1"
+__meta__ = {
+    "namespace": "http://cybox.mitre.org/objects",
+    "sources": {"HostnameObject": "Hostname_Object.xsd",
+                "NetworkConnectionObject": "Network_Connection_Object.xsd",
+                "Layer3ProtocolType": "Network_Connection_Object.xsd",
+                "Layer4ProtocolType": "Cybox_common.xsd"
+                }
+}
 
 from codec import Attribute, Choice, Enumerated, Map, Record, Boolean, Integer, String
 

@@ -7,6 +7,10 @@ in a format such as JSON, XML, or CBOR, or to generate format-specific message s
 """
 
 __version__ = "0.1"
+__meta__ = {
+    "namespace":"http://openc2.org/objects",
+    "root": "OpenC2Command"
+}
 
 from codec import Enumerated, Map, Record, Attribute, Choice
 from codec import String, Integer
@@ -55,34 +59,35 @@ class Action(Enumerated):
     ]
 
 class TargetType(Enumerated):
-    ns = "cybox"        # Default ns - most types are from CybOX 2
+    ns = "openc2"
     vals = [
-        "Address",          #  1
-        "Device",           #  2
-        "Disk",             #  3
-        "Disk_Partition"    #  4
-        "Domain_Name",      #  5
-        "Email_Message",    #  6
-        "File",             #  7
-        "Hostname",         #  8
-        "Memory",           #  9
-        "Network_Connection",   # 10
-        "Network_Flow",     # 11
-        "Network_Packet",   # 12
-        "Network_Subnet",   # 13
-        "Port",             # 14
-        "Process",          # 15
-        "Product",          # 16
-        "Socket_Address",   # 17
-        "System",           # 18
-        "URI",              # 19
-        "User_Account",     # 20
-        "User_Session",     # 21
-        "Volume",           # 22
-        "Windows_Registry_Key", # 23
-        "Windows_Service",  # 24
-        "X509_Certificate", # 25
-        "OpenC2:Data"       #  1
+        "cybox:Address",          #  1
+        "cybox:Device",           #  2
+        "cybox:Disk",             #  3
+        "cybox:Disk_Partition",   #  4
+        "cybox:Domain_Name",      #  5
+        "cybox:Email_Message",    #  6
+        "cybox:File",             #  7
+        "cybox:Hostname",         #  8
+        "cybox:Memory",           #  9
+        "cybox:Network_Connection",   # 10
+        "cybox:Network_Flow",     # 11
+        "cybox:Network_Packet",   # 12
+        "cybox:Network_Subnet",   # 13
+        "cybox:Port",             # 14
+        "cybox:Process",          # 15
+        "cybox:Product",          # 16
+        "cybox:Socket_Address",   # 17
+        "cybox:System",           # 18
+        "cybox:URI",              # 19
+        "cybox:User_Account",     # 20
+        "cybox:User_Session",     # 21
+        "cybox:Volume",           # 22
+        "cybox:Windows_Registry_Key", # 23
+        "cybox:Windows_Service",  # 24
+        "cybox:X509_Certificate", # 25
+        "Data",                   #  1
+        "cybox3"                  #  2
     ]
 
 class ActuatorType(Enumerated):
