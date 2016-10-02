@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     # Deserialize a message and print its content
 
-    oc2 = codec.load("openc2.jasn", "OpenC2Command")
+    oc2 = codec.load("openc2.jaen", "OpenC2Command")
     msg = msg_jc1
     print("   Raw Command:", msg)
     cmd = oc2.from_json(msg)

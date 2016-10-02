@@ -74,7 +74,7 @@ class JCodec:
 
 if __name__ == '__main__':
     oc2 = JCodec(case_produce='lower')
-    oc2_types = oc2.read_jasn('openc2.jasn')
+    oc2_types = oc2.read_jasn('openc2.jaen')
     for t in oc2_types:
         print(t + ':')
         tdata = oc2_types[t]

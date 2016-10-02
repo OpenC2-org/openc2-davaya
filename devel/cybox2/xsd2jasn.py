@@ -89,4 +89,4 @@ for ifile in files:
     jasn = {"meta": jmeta, "types": jtypes}
     jasnprint(jasn)
 
-#    print(json.dumps(jasn, indent=2))
+#    print(json.dumps(jaen, indent=2))

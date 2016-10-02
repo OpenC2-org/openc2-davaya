@@ -1,4 +1,4 @@
--- Generated from openc2.py, Wed Sep 28 17:04:24 2016
+-- Generated from openc2.jasn, Sat Oct  1 12:50:28 2016
 
 /*
 module:        openc2
@@ -10,7 +10,8 @@ description:   Classes that define the content of OpenC2 commands.  These
                XML, or CBOR, or to generate format-specific message schemas.
 namespace:     http://openc2.org/objects
 root:          OpenC2Command
-import:        http://cybox.mitre.org/objects: cybox
+import:        http://docs.oasis-open.org/CTI/cybox-3: cybox3
+               http://cybox.mitre.org/common-2: cybox
 */
 
 openc2 DEFINITIONS ::=
@@ -56,9 +57,34 @@ Action ::= ENUMERATED {
     alert        (37)
 }
 
-ActuatorSpecifiers ::= RECORD {
-    port         UTF8String OPTIONAL,
-    asset_id     UTF8String OPTIONAL
+TargetType ::= ENUMERATED {
+    cybox:Address               (1),
+    cybox:Device                (2),
+    cybox:Disk                  (3),
+    cybox:Disk_Partition        (4),
+    cybox:Domain_Name           (5),
+    cybox:Email_Message         (6),
+    cybox:File                  (7),
+    cybox:Hostname              (8),
+    cybox:Memory                (9),
+    cybox:Network_Connection    (10),
+    cybox:Network_Flow          (11),
+    cybox:Network_Packet        (12),
+    cybox:Network_Subnet        (13),
+    cybox:Port                  (14),
+    cybox:Process               (15),
+    cybox:Product               (16),
+    cybox:Socket_Address        (17),
+    cybox:System                (18),
+    cybox:URI                   (19),
+    cybox:User_Account          (20),
+    cybox:User_Session          (21),
+    cybox:Volume                (22),
+    cybox:Windows_Registry_Key  (23),
+    cybox:Windows_Service       (24),
+    cybox:X509_Certificate      (25),
+    Data                        (1),
+    cybox3                      (2)
 }
 
 ActuatorType ::= ENUMERATED {
@@ -109,56 +135,14 @@ ActuatorType ::= ENUMERATED {
     process-vulnerability-scanner    (45)
 }
 
-DateTime ::= UTF8String(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?Z|[-+]\d\d:\d\d$")
-
-Duration ::= UTF8String(PATTERN "^\d+$")
-
-MethodValue ::= ENUMERATED {
-    acl          (1),
-    blackhole    (2),
-    sinkhole     (3),
-    blacklist    (4),
-    whitelist    (5)
+Target ::= RECORD {
+    type         TargetType,
+    specifiers   cybox:CyboxObject.&type OPTIONAL
 }
 
-ResponseValue ::= ENUMERATED {
-    ack          (1),
-    status       (2)
-}
-
-TargetType ::= ENUMERATED {
-    cybox:Address               (1),
-    cybox:Device                (2),
-    cybox:Disk                  (3),
-    cybox:Disk_Partition        (4),
-    cybox:Domain_Name           (5),
-    cybox:Email_Message         (6),
-    cybox:File                  (7),
-    cybox:Hostname              (8),
-    cybox:Memory                (9),
-    cybox:Network_Connection    (10),
-    cybox:Network_Flow          (11),
-    cybox:Network_Packet        (12),
-    cybox:Network_Subnet        (13),
-    cybox:Port                  (14),
-    cybox:Process               (15),
-    cybox:Product               (16),
-    cybox:Socket_Address        (17),
-    cybox:System                (18),
-    cybox:URI                   (19),
-    cybox:User_Account          (20),
-    cybox:User_Session          (21),
-    cybox:Volume                (22),
-    cybox:Windows_Registry_Key  (23),
-    cybox:Windows_Service       (24),
-    cybox:X509_Certificate      (25),
-    Data                        (26),
-    cybox3                      (27)
-}
-
-WhereValue ::= ENUMERATED {
-    internal     (1),
-    perimeter    (2)
+ActuatorSpecifiers ::= RECORD {
+    port         UTF8String OPTIONAL,
+    asset_id     UTF8String OPTIONAL
 }
 
 ActuatorObject ::= ATTRIBUTE {
@@ -209,6 +193,33 @@ ActuatorObject ::= ATTRIBUTE {
     process-vulnerability-scanner    [45] ActuatorSpecifiers
 }
 
+Actuator ::= RECORD {
+    type         UTF8String,
+    specifiers   ActuatorObject.&type OPTIONAL
+}
+
+ResponseValue ::= ENUMERATED {
+    ack          (1),
+    status       (2)
+}
+
+MethodValue ::= ENUMERATED {
+    acl          (1),
+    blackhole    (2),
+    sinkhole     (3),
+    blacklist    (4),
+    whitelist    (5)
+}
+
+WhereValue ::= ENUMERATED {
+    internal     (1),
+    perimeter    (2)
+}
+
+Duration ::= UTF8String(PATTERN "^\d+$")
+
+DateTime ::= UTF8String(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?Z|[-+]\d\d:\d\d$")
+
 Modifiers ::= MAP {
     delay        [1] Duration OPTIONAL,
     duration     [2] Duration OPTIONAL,
@@ -216,18 +227,7 @@ Modifiers ::= MAP {
     response     [4] ResponseValue OPTIONAL,
     time         [5] DateTime OPTIONAL,
     method       [6] MethodValue OPTIONAL,
-    where        [7] WhereValue OPTIONAL,
-    context_ref  [8] INTEGER OPTIONAL
-}
-
-Target ::= RECORD {
-    type         TargetType,
-    specifiers   cybox:CyboxObject.&type OPTIONAL
-}
-
-Actuator ::= RECORD {
-    type         ActuatorType,
-    specifiers   ActuatorObject.&type OPTIONAL
+    where        [7] WhereValue OPTIONAL
 }
 
 OpenC2Command ::= RECORD {

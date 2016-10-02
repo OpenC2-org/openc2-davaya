@@ -1,4 +1,4 @@
--- Generated from cybox.jasn, Wed Sep 28 17:04:24 2016
+-- Generated from cybox.jasn, Sat Oct  1 12:50:28 2016
 
 /*
 module:        cybox
@@ -9,8 +9,8 @@ description:   Selected CybOX 2.1 objects used by OpenC2.  Abstract syntax
 namespace:     http://cybox.mitre.org/objects
 sources:       NetworkConnectionObject: Network_Connection_Object.xsd
                HostnameObject: Hostname_Object.xsd
-               Layer3ProtocolType: Network_Connection_Object.xsd
                Layer4ProtocolType: Cybox_common.xsd
+               Layer3ProtocolType: Network_Connection_Object.xsd
 */
 
 cybox DEFINITIONS ::=

@@ -2,6 +2,7 @@
 Load JASN definitions from Python module
 """
 import importlib, inspect
+from datetime import datetime
 
 def topological_sort(items):
     """
@@ -81,6 +82,9 @@ def get_types(this_mod):
 def pyclass_load(modname):
     mod = importlib.import_module(modname)
     return {"meta": get_meta(mod), "types": get_types(mod)}
+
+def pyclass_dump(jaen):
+    pass
 
 if __name__ == "__main__":
     jasn = pyclass_load("openc2")
