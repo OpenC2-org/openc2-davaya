@@ -143,70 +143,70 @@ class ActuatorType(Enumerated):
 class Target(Record):
     ns = "openc2"
     vals = [
-        ("type", TargetType, ""),
-        ("specifiers", cybox.CyboxObject, "?,{type}")]
+        ("type", TargetType, [""], ""),
+        ("specifiers", cybox.CyboxObject, ["?","{type}"], "")]
 
 class ActuatorSpecifiers(Record):
     ns = "openc2"
     vals = [
-        ("port", String, "?"),
-        ("asset_id", String, "?")]
+        ("port", String, ["?"], ""),
+        ("asset_id", String, ["?"], "")]
 
 class ActuatorObject(Attribute):            # TODO: define datatypes for each actuator
     ns = "openc2"
     vals = [
-        ("endpoint", ActuatorSpecifiers, ""),
-        ("endpoint-digital-telephone-handset", ActuatorSpecifiers, ""),
-        ("endpoint-laptop", ActuatorSpecifiers, ""),
-        ("endpoint-pos-terminal", ActuatorSpecifiers, ""),
-        ("endpoint-printer", ActuatorSpecifiers, ""),
-        ("endpoint-sensor", ActuatorSpecifiers, ""),
-        ("endpoint-server", ActuatorSpecifiers, ""),
-        ("endpoint-smart-meter", ActuatorSpecifiers, ""),
-        ("endpoint-smart-phone", ActuatorSpecifiers, ""),
-        ("endpoint-tablet", ActuatorSpecifiers, ""),
-        ("endpoint-workstation", ActuatorSpecifiers, ""),
-        ("network", ActuatorSpecifiers, ""),
-        ("network-bridge", ActuatorSpecifiers, ""),
-        ("network-firewall", ActuatorSpecifiers, ""),
-        ("network-gateway", ActuatorSpecifiers, ""),
-        ("network-guard", ActuatorSpecifiers, ""),
-        ("network-hips", ActuatorSpecifiers, ""),
-        ("network-hub", ActuatorSpecifiers, ""),
-        ("network-ids", ActuatorSpecifiers, ""),
-        ("network-ips", ActuatorSpecifiers, ""),
-        ("network-modem", ActuatorSpecifiers, ""),
-        ("network-nic", ActuatorSpecifiers, ""),
-        ("network-proxy", ActuatorSpecifiers, ""),
-        ("network-router", ActuatorSpecifiers, ""),
-        ("network-security-manager", ActuatorSpecifiers, ""),
-        ("network-sense-making", ActuatorSpecifiers, ""),
-        ("network-sensor", ActuatorSpecifiers, ""),
-        ("network-switch", ActuatorSpecifiers, ""),
-        ("network-vpn", ActuatorSpecifiers, ""),
-        ("network-wap", ActuatorSpecifiers, ""),
-        ("process", ActuatorSpecifiers, ""),
-        ("process-aaa-server", ActuatorSpecifiers, ""),
-        ("process-anti-virus-scanner", ActuatorSpecifiers, ""),
-        ("process-connection-scanner", ActuatorSpecifiers, ""),
-        ("process-directory-server", ActuatorSpecifiers, ""),
-        ("process-dns-server", ActuatorSpecifiers, ""),
-        ("process-email-service", ActuatorSpecifiers, ""),
-        ("process-file-scanner", ActuatorSpecifiers, ""),
-        ("process-location-service", ActuatorSpecifiers, ""),
-        ("process-network-scanner", ActuatorSpecifiers, ""),
-        ("process-remediation-service", ActuatorSpecifiers, ""),
-        ("process-reputation-service", ActuatorSpecifiers, ""),
-        ("process-sandbox", ActuatorSpecifiers, ""),
-        ("process-virtualization-service", ActuatorSpecifiers, ""),
-        ("process-vulnerability-scanner", ActuatorSpecifiers, "")
+        ("endpoint", ActuatorSpecifiers, [""], ""),
+        ("endpoint-digital-telephone-handset", ActuatorSpecifiers, [""], ""),
+        ("endpoint-laptop", ActuatorSpecifiers, [""], ""),
+        ("endpoint-pos-terminal", ActuatorSpecifiers, [""], ""),
+        ("endpoint-printer", ActuatorSpecifiers, [""], ""),
+        ("endpoint-sensor", ActuatorSpecifiers, [""], ""),
+        ("endpoint-server", ActuatorSpecifiers, [""], ""),
+        ("endpoint-smart-meter", ActuatorSpecifiers, [""], ""),
+        ("endpoint-smart-phone", ActuatorSpecifiers, [""], ""),
+        ("endpoint-tablet", ActuatorSpecifiers, [""], ""),
+        ("endpoint-workstation", ActuatorSpecifiers, [""], ""),
+        ("network", ActuatorSpecifiers, [""], ""),
+        ("network-bridge", ActuatorSpecifiers, [""], ""),
+        ("network-firewall", ActuatorSpecifiers, [""], ""),
+        ("network-gateway", ActuatorSpecifiers, [""], ""),
+        ("network-guard", ActuatorSpecifiers, [""], ""),
+        ("network-hips", ActuatorSpecifiers, [""], ""),
+        ("network-hub", ActuatorSpecifiers, [""], ""),
+        ("network-ids", ActuatorSpecifiers, [""], ""),
+        ("network-ips", ActuatorSpecifiers, [""], ""),
+        ("network-modem", ActuatorSpecifiers, [""], ""),
+        ("network-nic", ActuatorSpecifiers, [""], ""),
+        ("network-proxy", ActuatorSpecifiers, [""], ""),
+        ("network-router", ActuatorSpecifiers, [""], ""),
+        ("network-security-manager", ActuatorSpecifiers, [""], ""),
+        ("network-sense-making", ActuatorSpecifiers, [""], ""),
+        ("network-sensor", ActuatorSpecifiers, [""], ""),
+        ("network-switch", ActuatorSpecifiers, [""], ""),
+        ("network-vpn", ActuatorSpecifiers, [""], ""),
+        ("network-wap", ActuatorSpecifiers, [""], ""),
+        ("process", ActuatorSpecifiers, [""], ""),
+        ("process-aaa-server", ActuatorSpecifiers, [""], ""),
+        ("process-anti-virus-scanner", ActuatorSpecifiers, [""], ""),
+        ("process-connection-scanner", ActuatorSpecifiers, [""], ""),
+        ("process-directory-server", ActuatorSpecifiers, [""], ""),
+        ("process-dns-server", ActuatorSpecifiers, [""], ""),
+        ("process-email-service", ActuatorSpecifiers, [""], ""),
+        ("process-file-scanner", ActuatorSpecifiers, [""], ""),
+        ("process-location-service", ActuatorSpecifiers, [""], ""),
+        ("process-network-scanner", ActuatorSpecifiers, [""], ""),
+        ("process-remediation-service", ActuatorSpecifiers, [""], ""),
+        ("process-reputation-service", ActuatorSpecifiers, [""], ""),
+        ("process-sandbox", ActuatorSpecifiers, [""], ""),
+        ("process-virtualization-service", ActuatorSpecifiers, [""], ""),
+        ("process-vulnerability-scanner", ActuatorSpecifiers, [""], "")
     ]
 
 class Actuator(Record):
     ns = "openc2"
     vals = [
-        ("type", ActuatorType, ""),
-        ("specifiers", ActuatorObject, "?,{type}")]
+        ("type", ActuatorType, [""], ""),
+        ("specifiers", ActuatorObject, ["?","{type}"], "")]
 
 class ResponseValue(Enumerated):
     ns = "openc2"
@@ -221,27 +221,27 @@ class WhereValue(Enumerated):
     vals = ["internal", "perimeter"]
 
 class Duration(String):
-    pattern = "^\d+$"
+    pattern = "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$"
 
 class DateTime(String):
-    pattern = "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?Z|[-+]\d\d:\d\d$"
+    pattern = "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$"
 
 class Modifiers(Map):
     ns = "openc2"
     vals = [
-        ("delay", Duration, "?"),
-        ("duration", Duration, "?"),
-        ("frequency", Duration, "?"),
-        ("response", ResponseValue, "?"),
-        ("time", DateTime, "?"),
-        ("method", MethodValue, "?"),
-        ("where", WhereValue, "?"),
-        ("context_ref", Integer, "?")]
+        ("delay", Duration, ["?"], ""),
+        ("duration", Duration, ["?"], ""),
+        ("frequency", Duration, ["?"], ""),
+        ("response", ResponseValue, ["?"], ""),
+        ("time", DateTime, ["?"], ""),
+        ("method", MethodValue, ["?"], ""),
+        ("where", WhereValue, ["?"], ""),
+        ("context_ref", Integer, ["?"], "")]
 
 class OpenC2Command(Record):
     ns = "openc2"
     vals = [
-        ("action", Action, ""),
-        ("target", Target, ""),
-        ("actuator", Actuator, "?"),
-        ("modifiers", Modifiers, "?")]
+        ("action", Action, [""], ""),
+        ("target", Target, [""], ""),
+        ("actuator", Actuator, ["?"], ""),
+        ("modifiers", Modifiers, ["?"], "")]

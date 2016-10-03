@@ -28,20 +28,20 @@ class Layer4ProtocolType(Enumerated):       # Cybox_common.xsd
 class AddressObjectType(Record):
     ns = "AddressObj"
     vals = [
-        ("Address_Value", String, "?"),
-        ("VLAN_Name", String, "?"),
-        ("VLAN_Num", Integer, "?")]
+        ("Address_Value", String, ["?"], ""),
+        ("VLAN_Name", String, ["?"], ""),
+        ("VLAN_Num", Integer, ["?"], "")]
 
 class DeviceObjectType(Map):
     ns = "DeviceObj"
     vals = [
-        ("Description", String, "?"),
-        ("Device_Type", String, "?"),
-        ("Manufacturer", String, "?"),
-        ("Model", String, "?"),
-        ("Serial_Number", String, "?"),
-        ("Firmware_Version", String, "?"),
-        ("System_Details", String, "?")]
+        ("Description", String, ["?"], ""),
+        ("Device_Type", String, ["?"], ""),
+        ("Manufacturer", String, ["?"], ""),
+        ("Model", String, ["?"], ""),
+        ("Serial_Number", String, ["?"], ""),
+        ("Firmware_Version", String, ["?"], ""),
+        ("System_Details", String, ["?"], "")]
 
 class DiskObjectType(Record):
     ns = "DiskObj"
@@ -58,8 +58,8 @@ class DomainNameTypeEnum(Enumerated):
 class DomainNameObjectType(Record):
     ns = "DomainNameObj"
     vals = [
-        ("type", DomainNameTypeEnum, ""),
-        ("Value", String, "")]
+        ("type", DomainNameTypeEnum, [""], ""),
+        ("Value", String, [""], "")]
 
 class EmailMessageObjectType(Record):
     ns = "EmailMessageObj"
@@ -72,8 +72,8 @@ class FileObjectType(Record):
 class HostnameObjectType(Record):      # Hostname_Object.xsd - unspecified string object - FQDN?
     ns = "HostnameObj"
     vals = [
-        ("Hostname_Value", String, ""),    # Optional in cybox, required in OpenC2
-        ("Naming_System", String, "?")]
+        ("Hostname_Value", String, [""], ""),    # Optional in cybox, required in OpenC2
+        ("Naming_System", String, ["?"], "")]
 
 class MemoryObjectType(Record):
     ns = "MemoryObj"
@@ -94,8 +94,8 @@ class NetworkSubnetObjectType(Record):
 class PortObjectType(Record):
     ns = "PortObj"
     vals = [
-        ("Port_Value", Integer, "?,[1:]"),
-        ("Layer4_Protocol", Layer4ProtocolType, "?")]
+        ("Port_Value", Integer, ["?","[1:]"], ""),
+        ("Layer4_Protocol", Layer4ProtocolType, ["?"], "")]
 
 class ProcessObjectType(Record):
     ns = "ProcessObj"
@@ -108,22 +108,22 @@ class ProductObjectType(Record):
 class SocketAddressChoice1(Choice):
     ns = "SocketAddressObj"
     vals = [
-        ("IP_Address", AddressObjectType, ""),
-        ("Hostname", HostnameObjectType, "")]
+        ("IP_Address", AddressObjectType, [""], ""),
+        ("Hostname", HostnameObjectType, [""], "")]
 
 class SocketAddressObjectType(Record):
     ns = "SocketAddressObj"
     vals = [
-        ("*", SocketAddressChoice1, ""),
-        ("Port", PortObjectType, "?")]
+        ("*", SocketAddressChoice1, [""], ""),
+        ("Port", PortObjectType, ["?"], "")]
 
 class NetworkConnectionObjectType(Record):      # Network_Connection_Object.xsd
     ns = "NetworkConnectionObj"
     vals = [                                 # TODO: fill in all fields of xsd.
-        ("Layer3Protocol", Layer3ProtocolType, "?"),
-        ("Layer4Protocol", Layer4ProtocolType, "?"),
-        ("SourceSocketAddress", SocketAddressObjectType, "?"),
-        ("DestinationSocketAddress", SocketAddressObjectType, "?")]
+        ("Layer3Protocol", Layer3ProtocolType, ["?"], ""),
+        ("Layer4Protocol", Layer4ProtocolType, ["?"], ""),
+        ("SourceSocketAddress", SocketAddressObjectType, ["?"], ""),
+        ("DestinationSocketAddress", SocketAddressObjectType, ["?"], "")]
 
 class SystemObjectType(Record):
     ns = "SystemObj"
@@ -136,8 +136,8 @@ class URITypeEnum(Enumerated):
 class URIObjectType(Record):
     ns = "URIObj"
     vals = [
-        ("type", URITypeEnum, ""),
-        ("Value", String, "")]        # cyboxCommon:AnyURIObjectPropertyType
+        ("type", URITypeEnum, [""], ""),
+        ("Value", String, [""], "")]        # cyboxCommon:AnyURIObjectPropertyType
 
 class UserAccountObjectType(Record):
     ns = "UserAccountObj"
@@ -146,12 +146,12 @@ class UserAccountObjectType(Record):
 class UserSessionObjectType(Record):
     ns = "UserSessionObj"
     vals = [
-        ("Effective_Group", String, "?"),
-        ("Effective_Group_ID", String, "?"),
-        ("Effective_User", String, "?"),
-        ("Effective_User_ID", String, "?"),
-        ("Login_Time", String, "?"),       # cyboxCommon:DateTimeObjectPropertyType
-        ("Logout_Time", String, "?")]      # cyboxCommon:DateTimeObjectPropertyType
+        ("Effective_Group", String, ["?"], ""),
+        ("Effective_Group_ID", String, ["?"], ""),
+        ("Effective_User", String, ["?"], ""),
+        ("Effective_User_ID", String, ["?"], ""),
+        ("Login_Time", String, ["?"], ""),       # cyboxCommon:DateTimeObjectPropertyType
+        ("Logout_Time", String, ["?"], "")]      # cyboxCommon:DateTimeObjectPropertyType
 
 class VolumeObjectType(Record):
     ns = "VolumeObj"
@@ -172,28 +172,28 @@ class X509CertificateObjectType(Enumerated):
 class CyboxObject(Attribute):
     ns = "cybox"
     vals = [
-        ("Address", AddressObjectType, ""),                         #  1
-        ("Device", DeviceObjectType, ""),                           #  2
-        ("Disk", DiskObjectType, ""),                               #  3
-        ("Disk_Partition", DiskPartitionObjectType, ""),            #  4
-        ("Domain_Name", DomainNameObjectType, ""),                  #  5
-        ("Email_Message", EmailMessageObjectType, ""),              #  6
-        ("File", FileObjectType, ""),                               #  7
-        ("Hostname", HostnameObjectType, ""),                       #  8
-        ("Memory", MemoryObjectType, ""),                           #  9
-        ("Network_Connection", NetworkConnectionObjectType, ""),    # 10
-        ("Network_Flow", NetworkFlowObjectType, ""),                # 11
-        ("Network_Packet", NetworkPacketObjectType, ""),            # 12
-        ("Network_Subnet", NetworkSubnetObjectType, ""),            # 13
-        ("Port", PortObjectType, ""),                               # 14
-        ("Process", ProcessObjectType, ""),                         # 15
-        ("Product", ProductObjectType, ""),                         # 16
-        ("Socket_Address", SocketAddressObjectType, ""),            # 17
-        ("System", SystemObjectType, ""),                           # 18
-        ("URI", URIObjectType, ""),                                 # 19
-        ("User_Account", UserAccountObjectType, ""),                # 20
-        ("User_Session", UserSessionObjectType, ""),                # 21
-        ("Volume", VolumeObjectType, ""),                           # 22
-        ("Windows_Registry_Key", WindowsRegistryKeyObjectType, ""), # 23
-        ("Windows_Service", WindowsServiceObjectType, ""),          # 24
-        ("X509_Certificate", X509CertificateObjectType, "")]        # 25
+        ("Address", AddressObjectType, [""], ""),                         #  1
+        ("Device", DeviceObjectType, [""], ""),                           #  2
+        ("Disk", DiskObjectType, [""], ""),                               #  3
+        ("Disk_Partition", DiskPartitionObjectType, [""], ""),            #  4
+        ("Domain_Name", DomainNameObjectType, [""], ""),                  #  5
+        ("Email_Message", EmailMessageObjectType, [""], ""),              #  6
+        ("File", FileObjectType, [""], ""),                               #  7
+        ("Hostname", HostnameObjectType, [""], ""),                       #  8
+        ("Memory", MemoryObjectType, [""], ""),                           #  9
+        ("Network_Connection", NetworkConnectionObjectType, [""], ""),    # 10
+        ("Network_Flow", NetworkFlowObjectType, [""], ""),                # 11
+        ("Network_Packet", NetworkPacketObjectType, [""], ""),            # 12
+        ("Network_Subnet", NetworkSubnetObjectType, [""], ""),            # 13
+        ("Port", PortObjectType, [""], ""),                               # 14
+        ("Process", ProcessObjectType, [""], ""),                         # 15
+        ("Product", ProductObjectType, [""], ""),                         # 16
+        ("Socket_Address", SocketAddressObjectType, [""], ""),            # 17
+        ("System", SystemObjectType, [""], ""),                           # 18
+        ("URI", URIObjectType, [""], ""),                                 # 19
+        ("User_Account", UserAccountObjectType, [""], ""),                # 20
+        ("User_Session", UserSessionObjectType, [""], ""),                # 21
+        ("Volume", VolumeObjectType, [""], ""),                           # 22
+        ("Windows_Registry_Key", WindowsRegistryKeyObjectType, [""], ""), # 23
+        ("Windows_Service", WindowsServiceObjectType, [""], ""),          # 24
+        ("X509_Certificate", X509CertificateObjectType, [""], "")]        # 25

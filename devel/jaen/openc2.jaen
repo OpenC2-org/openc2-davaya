@@ -213,9 +213,9 @@
     [2, "perimeter"]
   ]],
 
-  ["Duration", "String", [">^\\d+$"], ""],
+  ["Duration", "String", [">^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$"], ""],
 
-  ["DateTime", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?Z|[-+]\\d\\d:\\d\\d$"], ""],
+  ["DateTime", "String", [">^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$"], ""],
 
   ["Modifiers", "Map", [], "", [
     [1, "delay", "Duration", ["?"], ""],

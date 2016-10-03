@@ -221,10 +221,10 @@ class WhereValue(Enumerated):
     vals = ["internal", "perimeter"]
 
 class Duration(String):
-    pattern = "^\d+$"
+    pattern = "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$"
 
 class DateTime(String):
-    pattern = "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?Z|[-+]\d\d:\d\d$"
+    pattern = "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$"
 
 class Modifiers(Map):
     ns = "openc2"

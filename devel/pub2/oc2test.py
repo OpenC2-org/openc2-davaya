@@ -51,26 +51,30 @@ msg_jc3 = """
 ["DENY",
 ["cybox:Network_Connection",["IPv4","TCP",[["ip_address",["any"]]],[["ip_address",["10.10.10.2"]]]]],
 ["network-firewall",[null,"30"]],
-{"context_ref": 91}]
+{"context_ref": 91,"time": "2016-11-25T08:10:31-04:00","duration": "PT2M30S"}]
 """
 
 msg_jv3 = """
-{"ACTION": "DENY",
- "TARGET": {"type": "cybox:Network_Connection",
-     "specifiers": {
-         "Layer3Protocol": "IPv4",
-         "Layer4Protocol": "TCP",
-         "SourceSocketAddress": {
-             "IP_Address": {
-                 "Address_Value": "any"}},
-         "DestinationSocketAddress": {
-             "IP_Address": {
-                 "Address_Value": "10.10.10.2"}}}},
-  "ACTUATOR": {"type": "network-firewall",
-      "specifiers": {
-          "asset_id": "30"}},
+{ "ACTION": "DENY",
+  "TARGET": {
+    "type": "cybox:Network_Connection",
+    "specifiers": {
+      "Layer3Protocol": "IPv4",
+      "Layer4Protocol": "TCP",
+      "SourceSocketAddress": {
+        "IP_Address": {
+          "Address_Value": "any"}},
+      "DestinationSocketAddress": {
+        "IP_Address": {
+          "Address_Value": "10.10.10.2"}}}},
+  "ACTUATOR": {
+    "type": "network-firewall",
+    "specifiers": {
+      "asset_id": "30"}},
   "MODIFIERS": {
-      "context_ref": 91}}
+    "context_ref": 91,
+    "time": "2016-11-25T08:10:31-04:00",
+    "duration": "PT2M30S"}}
 """
 
 # Bad messages - should generate meaningful validation errors

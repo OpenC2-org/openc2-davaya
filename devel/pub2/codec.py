@@ -62,7 +62,7 @@ def flatten(cmd, path="", fc={}, sep="."):
         fcmd[path] = ('"' + cmd + '"' if isinstance(cmd, str) else str(cmd))
     return (fcmd)
 
-def parse_type_opts(ostr):
+def parse_type_opts(olist):
     """
     Parse options included in type definitions
 
@@ -72,14 +72,16 @@ def parse_type_opts(ostr):
     ------   --------   -------  ------------
     ">*"     "pattern"  string   regular expression to match against String value
     """
+    assert isinstance(olist, (list, tuple)), "%r is not a list" % olist
     opts = {}
-    if ostr[:1] == ">":
-        opts["pattern"] = ostr[1:]
-    elif ostr:
-        print("Unknown type option", ostr)
+    for ostr in olist:
+        if ostr[:1] == ">":
+            opts["pattern"] = ostr[1:]
+        elif ostr:
+            print("Unknown type option", ostr)
     return opts
 
-def parse_field_opts(ostring):
+def parse_field_opts(olist):
     """
     Parse options included in field definitions
 
@@ -91,8 +93,9 @@ def parse_field_opts(ostring):
     "{key}"  "atfield"  String   Field name of type of an Attribute field
     "[n:m]"  "range"    Tuple    Min and max lengths for arrays and strings
     """
+    assert isinstance(olist, (list, tuple)), "%r is not a list" % olist
     opts = {"optional": False}
-    for o in ostring.split(","):  # TODO: better validation ("," in string, etc)
+    for o in olist:
         if o == "?":
             opts["optional"] = True
         elif o:
@@ -318,10 +321,10 @@ class Attribute(Codec):
         self.dlog("Attribute#", type(self).__name__, vtree, opts)
         atype = next(iter(self.normalize_fields(opts["atype"])))
         if atype in self._fields:
-            field, cls, copts = self.vals[self._fx[atype]]
+            field, cls, fopts, fdesc  = self.vals[self._fx[atype]]
             self.field = cls()
-            self.dlog("Attribute:", self, cls, vtree, copts, opts["atype"])
-            return self.field.decode(vtree, copts)
+            self.dlog("Attribute:", self, cls, vtree, fopts, opts["atype"])
+            return self.field.decode(vtree, fopts)
         else:
             print("ValidationError: %s: attribute '%s' not in %s" % (type(self).__name__, atype, self._fields))
 
