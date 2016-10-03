@@ -58,7 +58,8 @@ def get_types(this_mod):
         if module == modname:
             c = getattr(this_mod, name)                 # class that represents this type
             base = inspect.getmro(c)[1].__name__        # parent type name
-            typeopts = ">" + c.pattern if hasattr(c, "pattern") else ""
+            typeopts = [">" + c.pattern] if hasattr(c, "pattern") else [""]
+            typedesc = ""
             dep = set()
             if hasattr(c, "vals"):
                 vals = []
@@ -73,9 +74,9 @@ def get_types(this_mod):
                             if vm == modname:
                                 dep.update((v[1],))
                     vals.append([n+1] + ([v] if isinstance(v, str) else v))
-                typdefs.update({name: [base, typeopts, vals]})
+                typdefs.update({name: [base, typeopts, typedesc, vals]})
             else:
-                typdefs.update({name: [base, typeopts]})
+                typdefs.update({name: [base, typeopts, typedesc]})
             deps.append((name, dep))
     return [[t] + typdefs[t] for t in topological_sort(deps)]
 

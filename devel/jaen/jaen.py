@@ -34,34 +34,38 @@ jaen_schema = {
                 "sources": {
                     "type": "object",
                     "additionalProperties": False,
-                    "patternProperties": {
-                        "^\\w+$": {"type": "string"}
-                    }
+                    "patternProperties": {"^\\w+$": {"type": "string"}}
                 },
                 "namespace": {"type": "string"},
                 "title": {"type": "string"},
-                "version": {"type": "string"},
+                "version": {"type": "string"}
             }
         },
         "types": {
             "type": "array",
             "items": {
                 "type": "array",
-                "minItems": 3,
-                "maxItems": 4,
+                "minItems": 4,
+                "maxItems": 5,
                 "items": [
                     {   "type": "string"},
                     {   "type": "string"},
+                    {   "type": "array",
+                        "items": {"type": "string"}
+                    },
                     {   "type": "string"},
                     {   "type": "array",
                         "items": {
                             "type": "array",
                             "minItems": 2,
-                            "maxItems": 4,
+                            "maxItems": 5,
                             "items": [
                                 {"type": "integer"},
                                 {"type": "string"},
                                 {"type": "string"},
+                                {"type": "array",
+                                 "items": {"type": "string"}
+                                },
                                 {"type": "string"}
                             ]
                         }
@@ -74,20 +78,20 @@ jaen_schema = {
 
 def jaen_check(jaen):
     jsonschema.Draft4Validator(jaen_schema).validate(jaen)
-    for t in jaen["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-item list
-        if t[1].lower() in ("string", "integer", "number", "boolean") and len(t) != 3:    # TODO: trace back to base type
+    for t in jaen["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-description, 4-item list
+        if t[1].lower() in ("string", "integer", "number", "boolean") and len(t) != 4:    # TODO: trace back to base type
             print("Type format error:", t[0], "- primitive type", t[1], "cannot have items")
-        if len(t) > 3:
-            n = 2 if t[1].lower() == "enumerated" else 4
+        if len(t) > 4:
+            n = 2 if t[1].lower() == "enumerated" else 5
             tags = set()
             record = t[1].lower() == "record"
-            for k, i in enumerate(t[3]):          # item definition: 0-tag, 1-name, 2-type, 3-options
+            for k, i in enumerate(t[4]):          # item definition: 0-tag, 1-name, 2-type, 3-options, 4-description
                 tags.update(set([i[0]]))
                 if record and i[0] != k + 1 and i[0] != 0:
                     print("Item tag error:", t[1], i[0], i[1], "should be", k)
                 if len(i) != n:
                     print("Item format error:", t[0], t[1], i[1], "-", len(i), "!=", n)
-            if len(t[3]) != len(tags):
+            if len(t[4]) != len(tags):
                 print("Tag collision", t[0], len(t[3]), "items,", len(tags), "unique tags")
     return jaen
 
@@ -103,7 +107,7 @@ def jaen_dumps(jaen, level=0, indent=1):
     if isinstance(jaen, dict):
         sep = ",\n" if level > 0 else ",\n\n"
         lines = []
-        for k in jaen:
+        for k in sorted(jaen):
             lines.append(sp2 + "\"" + k + "\": " + jaen_dumps(jaen[k], level + 1, indent))
         return "{\n" + sep.join(lines) + "\n" + sp + "}"
     elif isinstance(jaen, list):

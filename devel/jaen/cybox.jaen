@@ -71,8 +71,8 @@
   ]],
 
   ["DomainNameObject", "Record", [], "", [
-    [1, "type", "DomainNameTypeEnum", ""],
-    [2, "Value", "String", ""]
+    [1, "type", "DomainNameTypeEnum", [""], ""],
+    [2, "Value", "String", [""], ""]
   ]],
 
   ["EmailMessageObject", "Record", [], "", [
@@ -82,7 +82,7 @@
   ]],
 
   ["HostnameObject", "Record", [], "", [
-    [1, "Hostname_Value", "String", ""],
+    [1, "Hostname_Value", "String", [""], ""],
     [2, "Naming_System", "String", ["?"], ""]
   ]],
 
@@ -99,7 +99,7 @@
   ]],
 
   ["PortObject", "Record", [], "", [
-    [1, "Port_Value", "Integer", "?,[1:]"],
+    [1, "Port_Value", "Integer", ["?","[1:]"], ""],
     [2, "Layer4_Protocol", "Layer4ProtocolType", ["?"], ""]
   ]],
 

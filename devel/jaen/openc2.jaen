@@ -192,7 +192,7 @@
 
   ["Actuator", "Record", [], "", [
     [1, "type", "String", [], ""],
-    [2, "specifiers", "ActuatorObject", "?,{type}"]
+    [2, "specifiers", "ActuatorObject", ["?","{type}"], ""]
   ]],
 
   ["ResponseValue", "Enumerated", [], "", [
@@ -213,9 +213,9 @@
     [2, "perimeter"]
   ]],
 
-  ["Duration", "String", ">^\\d+$"],
+  ["Duration", "String", [">^\\d+$"], ""],
 
-  ["DateTime", "String", ">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?Z|[-+]\\d\\d:\\d\\d$"],
+  ["DateTime", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?Z|[-+]\\d\\d:\\d\\d$"], ""],
 
   ["Modifiers", "Map", [], "", [
     [1, "delay", "Duration", ["?"], ""],

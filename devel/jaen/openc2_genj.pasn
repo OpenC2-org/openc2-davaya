@@ -1,4 +1,4 @@
--- Generated from openc2.jasn, Sat Oct  1 12:50:28 2016
+-- Generated from openc2.jaen, Mon Oct  3 12:17:56 2016
 
 /*
 module:        openc2
@@ -13,9 +13,6 @@ root:          OpenC2Command
 import:        http://docs.oasis-open.org/CTI/cybox-3: cybox3
                http://cybox.mitre.org/common-2: cybox
 */
-
-openc2 DEFINITIONS ::=
-BEGIN
 
 Action ::= ENUMERATED {
     scan         (1),
@@ -236,5 +233,3 @@ OpenC2Command ::= RECORD {
     actuator     Actuator OPTIONAL,
     modifiers    Modifiers OPTIONAL
 }
-
-END

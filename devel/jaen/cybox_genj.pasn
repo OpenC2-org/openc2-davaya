@@ -1,4 +1,4 @@
--- Generated from cybox.jasn, Sat Oct  1 12:50:28 2016
+-- Generated from cybox.jaen, Mon Oct  3 12:17:56 2016
 
 /*
 module:        cybox
@@ -8,13 +8,10 @@ description:   Selected CybOX 2.1 objects used by OpenC2.  Abstract syntax
                information extracted from XSD source documents.
 namespace:     http://cybox.mitre.org/objects
 sources:       NetworkConnectionObject: Network_Connection_Object.xsd
+               Layer3ProtocolType: Network_Connection_Object.xsd
                HostnameObject: Hostname_Object.xsd
                Layer4ProtocolType: Cybox_common.xsd
-               Layer3ProtocolType: Network_Connection_Object.xsd
 */
-
-cybox DEFINITIONS ::=
-BEGIN
 
 Layer3ProtocolType ::= ENUMERATED {
     IPv4         (1),
@@ -195,5 +192,3 @@ CyboxObject ::= ATTRIBUTE {
     Windows_Service       [24] WindowsServiceObject,
     X509_Certificate      [25] X509CertificateObject
 }
-
-END

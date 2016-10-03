@@ -79,15 +79,13 @@ def pasn_dumps(jaen):
                 pasn += "{0:14} {1:}\n".format(h + ":", hdrs[h])
     pasn += "*/\n"
 
-    pasn += "\n" + typeref(jaen["meta"]["module"]) + " DEFINITIONS ::=\nBEGIN\n"
-
     for t in jaen["types"]:
         tname, ttype = t[0:2]
         topts = parse_type_opts(t[2])
         tos = '(PATTERN "' + topts["pattern"] + '")' if "pattern" in topts else ""
         pasn += "\n" + typeref(tname) + " ::= " + _asn1type(ttype) + tos
-        if len(t) == 4:
-            titems = deepcopy(t[3])
+        if len(t) == 5:
+            titems = deepcopy(t[4])
             for i in titems:
                 i[1] = identifier(i[1])
                 if len(i) > 2:
@@ -116,7 +114,6 @@ def pasn_dumps(jaen):
             pasn += "\n}\n" if titems else "}\n"
         else:
             pasn += "\n"
-    pasn += "\nEND\n"
     return pasn
 
 def pasn_dump(jaen, fname, source=""):

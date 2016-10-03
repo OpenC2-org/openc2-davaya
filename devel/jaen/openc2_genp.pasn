@@ -1,4 +1,4 @@
--- Generated from openc2.py, Sat Oct  1 12:50:28 2016
+-- Generated from openc2.py, Mon Oct  3 12:17:56 2016
 
 /*
 module:        openc2
@@ -12,9 +12,6 @@ namespace:     http://openc2.org/objects
 root:          OpenC2Command
 import:        http://cybox.mitre.org/objects: cybox
 */
-
-openc2 DEFINITIONS ::=
-BEGIN
 
 Action ::= ENUMERATED {
     scan         (1),
@@ -236,5 +233,3 @@ OpenC2Command ::= RECORD {
     actuator     Actuator OPTIONAL,
     modifiers    Modifiers OPTIONAL
 }
-
-END
