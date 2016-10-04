@@ -1,4 +1,4 @@
-"Generated from cybox.jaen, Mon Oct  3 12:17:56 2016"
+"Generated from cybox.jaen, Tue Oct  4 17:24:13 2016"
 
 {
  "meta": {
@@ -28,8 +28,7 @@
     [9, "IPSec"],
     [10, "IPX"],
     [11, "Routed-SMLT"],
-    [12, "SCCP"]
-   ]
+    [12, "SCCP"]]
   ],
 
   ["Layer4ProtocolType", "Enumerated", [], "", [
@@ -42,15 +41,13 @@
     [7, "SCTP"],
     [8, "Sinec H1"],
     [9, "SPX"],
-    [10, "DCCP"]
-   ]
+    [10, "DCCP"]]
   ],
 
   ["AddressObject", "Record", [], "", [
     [1, "Address_Value", "String", ["?"], ""],
     [2, "VLAN_Name", "String", ["?"], ""],
-    [3, "VLAN_Num", "Integer", ["?"], ""]
-   ]
+    [3, "VLAN_Num", "Integer", ["?"], ""]]
   ],
 
   ["DeviceObject", "Map", [], "", [
@@ -60,8 +57,7 @@
     [4, "Model", "String", ["?"], ""],
     [5, "Serial_Number", "String", ["?"], ""],
     [6, "Firmware_Version", "String", ["?"], ""],
-    [7, "System_Details", "String", ["?"], ""]
-   ]
+    [7, "System_Details", "String", ["?"], ""]]
   ],
 
   ["DiskObject", "Record", [], "", []],
@@ -70,14 +66,12 @@
 
   ["DomainNameTypeEnum", "Enumerated", [], "", [
     [1, "FQDN"],
-    [2, "TLD"]
-   ]
+    [2, "TLD"]]
   ],
 
   ["DomainNameObject", "Record", [], "", [
     [1, "type", "DomainNameTypeEnum", [""], ""],
-    [2, "Value", "String", [""], ""]
-   ]
+    [2, "Value", "String", [""], ""]]
   ],
 
   ["EmailMessageObject", "Record", [], "", []],
@@ -86,8 +80,7 @@
 
   ["HostnameObject", "Record", [], "", [
     [1, "Hostname_Value", "String", [""], ""],
-    [2, "Naming_System", "String", ["?"], ""]
-   ]
+    [2, "Naming_System", "String", ["?"], ""]]
   ],
 
   ["MemoryObject", "Record", [], "", []],
@@ -100,8 +93,7 @@
 
   ["PortObject", "Record", [], "", [
     [1, "Port_Value", "Integer", ["?", "[1:]"], ""],
-    [2, "Layer4_Protocol", "Layer4ProtocolType", ["?"], ""]
-   ]
+    [2, "Layer4_Protocol", "Layer4ProtocolType", ["?"], ""]]
   ],
 
   ["ProcessObject", "Record", [], "", []],
@@ -110,37 +102,32 @@
 
   ["SocketAddressChoice", "Choice", [], "", [
     [1, "IP_Address", "AddressObject", [], ""],
-    [2, "Hostname", "HostnameObject", [], ""]
-   ]
+    [2, "Hostname", "HostnameObject", [], ""]]
   ],
 
   ["SocketAddressObject", "Record", [], "", [
     [1, "*", "SocketAddressChoice", [], ""],
-    [2, "Port", "PortObject", ["?"], ""]
-   ]
+    [2, "Port", "PortObject", ["?"], ""]]
   ],
 
   ["NetworkConnectionObject", "Record", [], "", [
     [1, "Layer3Protocol", "Layer3ProtocolType", ["?"], ""],
     [2, "Layer4Protocol", "Layer4ProtocolType", ["?"], ""],
     [3, "SourceSocketAddress", "SocketAddressObject", ["?"], ""],
-    [4, "DestinationSocketAddress", "SocketAddressObject", ["?"], ""]
-   ]
+    [4, "DestinationSocketAddress", "SocketAddressObject", ["?"], ""]]
   ],
 
   ["URITypeEnum", "Enumerated", [], "", [
     [1, "URL"],
     [2, "General URN"],
-    [3, "Domain Name"]
-   ]
+    [3, "Domain Name"]]
   ],
 
   ["SystemObject", "Record", [], "", []],
 
   ["URIObject", "Record", [], "", [
     [1, "type", "URITypeEnum", [], ""],
-    [2, "Value", "String", [], ""]
-   ]
+    [2, "Value", "String", [], ""]]
   ],
 
   ["UserAccountObject", "Record", [], "", []],
@@ -151,8 +138,7 @@
     [3, "Effective_User", "String", ["?"], ""],
     [4, "Effective_User_ID", "String", ["?"], ""],
     [5, "Login_Time", "String", ["?"], ""],
-    [6, "Logout_Time", "String", ["?"], ""]
-   ]
+    [6, "Logout_Time", "String", ["?"], ""]]
   ],
 
   ["VolumeObject", "Record", [], "", []],
@@ -164,8 +150,7 @@
   ["X509CertificateObject", "Enumerated", [], "", [
     [1, "Certificate"],
     [2, "RawCertificate"],
-    [3, "CertificateSignature"]
-   ]
+    [3, "CertificateSignature"]]
   ],
 
   ["CyboxObject", "Attribute", [], "", [
@@ -193,9 +178,7 @@
     [22, "Volume", "VolumeObject", [], ""],
     [23, "Windows_Registry_Key", "WindowsRegistryKeyObject", [], ""],
     [24, "Windows_Service", "WindowsServiceObject", [], ""],
-    [25, "X509_Certificate", "X509CertificateObject", [], ""]
-   ]
-  ]
- ]
+    [25, "X509_Certificate", "X509CertificateObject", [], ""]]
+  ]]
 
 }

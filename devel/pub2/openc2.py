@@ -53,9 +53,7 @@ class Action(Enumerated):
         "augment",     # 32
         "investigate", # 33
         "mitigate",    # 34
-        "remediate",   # 35
-        "response",    # 36
-        "alert"        # 37
+        "remediate"    # 35
     ]
 
 class TargetType(Enumerated):

@@ -1,4 +1,4 @@
-"Generated from openc2.jaen, Mon Oct  3 12:17:56 2016"
+"Generated from openc2.jaen, Tue Oct  4 17:22:35 2016"
 
 {
  "meta": {
@@ -50,10 +50,7 @@
     [32, "augment"],
     [33, "investigate"],
     [34, "mitigate"],
-    [35, "remediate"],
-    [36, "response"],
-    [37, "alert"]
-   ]
+    [35, "remediate"]]
   ],
 
   ["TargetType", "Enumerated", [], "", [
@@ -83,8 +80,7 @@
     [24, "cybox:Windows_Service"],
     [25, "cybox:X509_Certificate"],
     [1, "Data"],
-    [2, "cybox3"]
-   ]
+    [2, "cybox3"]]
   ],
 
   ["ActuatorType", "Enumerated", [], "", [
@@ -132,20 +128,17 @@
     [42, "process-reputation-service"],
     [43, "process-sandbox"],
     [44, "process-virtualization-service"],
-    [45, "process-vulnerability-scanner"]
-   ]
+    [45, "process-vulnerability-scanner"]]
   ],
 
   ["Target", "Record", [], "", [
     [1, "type", "TargetType", [], ""],
-    [2, "specifiers", "cybox:CyboxObject", ["?", "{type}"], ""]
-   ]
+    [2, "specifiers", "cybox:CyboxObject", ["?", "{type}"], ""]]
   ],
 
   ["ActuatorSpecifiers", "Record", [], "", [
     [1, "port", "String", ["?"], ""],
-    [2, "asset_id", "String", ["?"], ""]
-   ]
+    [2, "asset_id", "String", ["?"], ""]]
   ],
 
   ["ActuatorObject", "Attribute", [], "", [
@@ -193,20 +186,17 @@
     [42, "process-reputation-service", "ActuatorSpecifiers", [], ""],
     [43, "process-sandbox", "ActuatorSpecifiers", [], ""],
     [44, "process-virtualization-service", "ActuatorSpecifiers", [], ""],
-    [45, "process-vulnerability-scanner", "ActuatorSpecifiers", [], ""]
-   ]
+    [45, "process-vulnerability-scanner", "ActuatorSpecifiers", [], ""]]
   ],
 
   ["Actuator", "Record", [], "", [
     [1, "type", "String", [], ""],
-    [2, "specifiers", "ActuatorObject", ["?", "{type}"], ""]
-   ]
+    [2, "specifiers", "ActuatorObject", ["?", "{type}"], ""]]
   ],
 
   ["ResponseValue", "Enumerated", [], "", [
     [1, "ack"],
-    [2, "status"]
-   ]
+    [2, "status"]]
   ],
 
   ["MethodValue", "Enumerated", [], "", [
@@ -214,19 +204,17 @@
     [2, "blackhole"],
     [3, "sinkhole"],
     [4, "blacklist"],
-    [5, "whitelist"]
-   ]
+    [5, "whitelist"]]
   ],
 
   ["WhereValue", "Enumerated", [], "", [
     [1, "internal"],
-    [2, "perimeter"]
-   ]
+    [2, "perimeter"]]
   ],
 
-  ["Duration", "String", [">^\d+$"], ""],
+  ["Duration", "String", [">^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"], ""],
 
-  ["DateTime", "String", [">^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?Z|[-+]\d\d:\d\d$"], ""],
+  ["DateTime", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], ""],
 
   ["Modifiers", "Map", [], "", [
     [1, "delay", "Duration", ["?"], ""],
@@ -235,17 +223,14 @@
     [4, "response", "ResponseValue", ["?"], ""],
     [5, "time", "DateTime", ["?"], ""],
     [6, "method", "MethodValue", ["?"], ""],
-    [7, "where", "WhereValue", ["?"], ""]
-   ]
+    [7, "where", "WhereValue", ["?"], ""]]
   ],
 
   ["OpenC2Command", "Record", [], "", [
     [1, "action", "Action", [], ""],
     [2, "target", "Target", [], ""],
     [3, "actuator", "Actuator", ["?"], ""],
-    [4, "modifiers", "Modifiers", ["?"], ""]
-   ]
-  ]
- ]
+    [4, "modifiers", "Modifiers", ["?"], ""]]
+  ]]
 
 }

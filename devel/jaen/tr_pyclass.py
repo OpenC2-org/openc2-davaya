@@ -1,5 +1,5 @@
 """
-Load JASN definitions from Python module
+Load JAEN definitions from Python module
 """
 import importlib, inspect
 from datetime import datetime
@@ -24,6 +24,29 @@ def topological_sort(items):
         if not emitted:
             raise TopologicalSortFailure()
         items = remaining_items
+
+def df_sort(items):
+    """
+    Return list of items in depth-first search order
+    :param items: list of (item, {dependencies}) pairs
+    """
+    def _visit(key):
+        if key in tmarks:
+            raise("SortError")
+        if key in umitems:
+            tmarks.add(key)
+            for k in umitems[key]:
+                _visit(k)
+            umitems.pop(key)
+            tmarks.remove(key)
+            out.append(key)
+
+    out = []
+    tmarks = set()
+    umitems = {i[0]:i[1] for i in items}
+    while umitems:
+        _visit(next(iter(umitems)))
+    return out
 
 def get_meta(this_mod):
     meta = {"module": this_mod.__name__}
@@ -67,20 +90,22 @@ def get_types(this_mod):
                     if isinstance(v, (tuple, list)):
                         v = list(v)
                         vm = v[1].__module__
-                        if vm != modname and vm != "codec":
-                            v[1] = vm + ":" + v[1].__name__
-                        else:
-                            v[1] = v[1].__name__
-                            if vm == modname:
-                                dep.update((v[1],))
+                        v[1] = v[1].__name__
+                        if vm == modname:
+                            dep.update((v[1],))
+                        elif vm != "codec":
+                            v[1] = vm + ":" + v[1]
                     vals.append([n+1] + ([v] if isinstance(v, str) else v))
                 typdefs.update({name: [base, typeopts, typedesc, vals]})
             else:
                 typdefs.update({name: [base, typeopts, typedesc]})
             deps.append((name, dep))
-    return [[t] + typdefs[t] for t in topological_sort(deps)]
+    return [[t] + typdefs[t] for t in df_sort(deps)]
 
 def pyclass_load(modname):
+    """
+    Load JAEN structure from a Python file
+    """
     mod = importlib.import_module(modname)
     return {"meta": get_meta(mod), "types": get_types(mod)}
 
@@ -88,5 +113,5 @@ def pyclass_dump(jaen):
     pass
 
 if __name__ == "__main__":
-    jasn = pyclass_load("openc2")
-    pass                # placeholder for debugging breakpoint
+    jaen = pyclass_load("openc2")
+    pass

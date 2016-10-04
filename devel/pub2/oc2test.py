@@ -48,15 +48,15 @@ msg_jv2 = """
 """
 
 msg_jc3 = """
-["DENY",
+["deny",
 ["cybox:Network_Connection",["IPv4","TCP",[["ip_address",["any"]]],[["ip_address",["10.10.10.2"]]]]],
 ["network-firewall",[null,"30"]],
 {"context_ref": 91,"time": "2016-11-25T08:10:31-04:00","duration": "PT2M30S"}]
 """
 
 msg_jv3 = """
-{ "ACTION": "DENY",
-  "TARGET": {
+{ "action": "deny",
+  "target": {
     "type": "cybox:Network_Connection",
     "specifiers": {
       "Layer3Protocol": "IPv4",
@@ -67,11 +67,11 @@ msg_jv3 = """
       "DestinationSocketAddress": {
         "IP_Address": {
           "Address_Value": "10.10.10.2"}}}},
-  "ACTUATOR": {
+  "actuator": {
     "type": "network-firewall",
     "specifiers": {
       "asset_id": "30"}},
-  "MODIFIERS": {
+  "modifiers": {
     "context_ref": 91,
     "time": "2016-11-25T08:10:31-04:00",
     "duration": "PT2M30S"}}

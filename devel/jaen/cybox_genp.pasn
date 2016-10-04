@@ -1,4 +1,4 @@
--- Generated from cybox.py, Mon Oct  3 12:17:56 2016
+-- Generated from cybox.py, Tue Oct  4 17:24:13 2016
 
 /*
 module:        cybox
@@ -9,9 +9,32 @@ description:   Selected CybOX 2.1 objects used by OpenC2.  Abstract syntax
 namespace:     http://cybox.mitre.org/objects
 sources:       NetworkConnectionObject: Network_Connection_Object.xsd
                Layer3ProtocolType: Network_Connection_Object.xsd
-               HostnameObject: Hostname_Object.xsd
                Layer4ProtocolType: Cybox_common.xsd
+               HostnameObject: Hostname_Object.xsd
 */
+
+NetworkFlowObjectType ::= RECORD {
+}
+
+MemoryObjectType ::= RECORD {
+}
+
+UserAccountObjectType ::= RECORD {
+}
+
+VolumeObjectType ::= RECORD {
+}
+
+WindowsRegistryKeyObjectType ::= RECORD {
+}
+
+ProcessObjectType ::= RECORD {
+}
+
+HostnameObjectType ::= RECORD {
+    Hostname_Value  UTF8String,
+    Naming_System   UTF8String OPTIONAL
+}
 
 AddressObjectType ::= RECORD {
     Address_Value  UTF8String OPTIONAL,
@@ -19,36 +42,9 @@ AddressObjectType ::= RECORD {
     VLAN_Num       INTEGER OPTIONAL
 }
 
-DeviceObjectType ::= MAP {
-    Description       [1] UTF8String OPTIONAL,
-    Device_Type       [2] UTF8String OPTIONAL,
-    Manufacturer      [3] UTF8String OPTIONAL,
-    Model             [4] UTF8String OPTIONAL,
-    Serial_Number     [5] UTF8String OPTIONAL,
-    Firmware_Version  [6] UTF8String OPTIONAL,
-    System_Details    [7] UTF8String OPTIONAL
-}
-
-DiskObjectType ::= RECORD {
-}
-
-DiskPartitionObjectType ::= RECORD {
-}
-
-DomainNameTypeEnum ::= ENUMERATED {
-    FQDN         (1),
-    TLD          (2)
-}
-
-EmailMessageObjectType ::= RECORD {
-}
-
-FileObjectType ::= RECORD {
-}
-
-HostnameObjectType ::= RECORD {
-    Hostname_Value  UTF8String,
-    Naming_System   UTF8String OPTIONAL
+SocketAddressChoice1 ::= CHOICE {
+    IP_Address   [1] AddressObjectType,
+    Hostname     [2] HostnameObjectType
 }
 
 Layer3ProtocolType ::= ENUMERATED {
@@ -66,6 +62,16 @@ Layer3ProtocolType ::= ENUMERATED {
     SCCP         (12)
 }
 
+DomainNameTypeEnum ::= ENUMERATED {
+    FQDN         (1),
+    TLD          (2)
+}
+
+DomainNameObjectType ::= RECORD {
+    type         DomainNameTypeEnum,
+    Value        UTF8String
+}
+
 Layer4ProtocolType ::= ENUMERATED {
     TCP          (1),
     UDP          (2),
@@ -79,16 +85,24 @@ Layer4ProtocolType ::= ENUMERATED {
     DCCP         (10)
 }
 
-MemoryObjectType ::= RECORD {
+URITypeEnum ::= ENUMERATED {
+    URL          (1),
+    General URN  (2),
+    Domain Name  (3)
 }
 
-NetworkFlowObjectType ::= RECORD {
+URIObjectType ::= RECORD {
+    type         URITypeEnum,
+    Value        UTF8String
+}
+
+WindowsServiceObjectType ::= RECORD {
+}
+
+FileObjectType ::= RECORD {
 }
 
 NetworkPacketObjectType ::= RECORD {
-}
-
-NetworkSubnetObjectType ::= RECORD {
 }
 
 PortObjectType ::= RECORD {
@@ -96,32 +110,44 @@ PortObjectType ::= RECORD {
     Layer4_Protocol  Layer4ProtocolType OPTIONAL
 }
 
-ProcessObjectType ::= RECORD {
-}
-
-ProductObjectType ::= RECORD {
-}
-
-SocketAddressChoice1 ::= CHOICE {
-    IP_Address   [1] AddressObjectType,
-    Hostname     [2] HostnameObjectType
-}
-
 SocketAddressObjectType ::= RECORD {
     *            SocketAddressChoice1,
     Port         PortObjectType OPTIONAL
 }
 
+NetworkConnectionObjectType ::= RECORD {
+    Layer3Protocol            Layer3ProtocolType OPTIONAL,
+    Layer4Protocol            Layer4ProtocolType OPTIONAL,
+    SourceSocketAddress       SocketAddressObjectType OPTIONAL,
+    DestinationSocketAddress  SocketAddressObjectType OPTIONAL
+}
+
+DeviceObjectType ::= MAP {
+    Description       [1] UTF8String OPTIONAL,
+    Device_Type       [2] UTF8String OPTIONAL,
+    Manufacturer      [3] UTF8String OPTIONAL,
+    Model             [4] UTF8String OPTIONAL,
+    Serial_Number     [5] UTF8String OPTIONAL,
+    Firmware_Version  [6] UTF8String OPTIONAL,
+    System_Details    [7] UTF8String OPTIONAL
+}
+
+NetworkSubnetObjectType ::= RECORD {
+}
+
+ProductObjectType ::= RECORD {
+}
+
+DiskObjectType ::= RECORD {
+}
+
+EmailMessageObjectType ::= RECORD {
+}
+
 SystemObjectType ::= RECORD {
 }
 
-URITypeEnum ::= ENUMERATED {
-    URL          (1),
-    General URN  (2),
-    Domain Name  (3)
-}
-
-UserAccountObjectType ::= RECORD {
+DiskPartitionObjectType ::= RECORD {
 }
 
 UserSessionObjectType ::= RECORD {
@@ -133,36 +159,10 @@ UserSessionObjectType ::= RECORD {
     Logout_Time         UTF8String OPTIONAL
 }
 
-VolumeObjectType ::= RECORD {
-}
-
-WindowsRegistryKeyObjectType ::= RECORD {
-}
-
-WindowsServiceObjectType ::= RECORD {
-}
-
 X509CertificateObjectType ::= ENUMERATED {
     Certificate           (1),
     RawCertificate        (2),
     CertificateSignature  (3)
-}
-
-DomainNameObjectType ::= RECORD {
-    type         DomainNameTypeEnum,
-    Value        UTF8String
-}
-
-NetworkConnectionObjectType ::= RECORD {
-    Layer3Protocol            Layer3ProtocolType OPTIONAL,
-    Layer4Protocol            Layer4ProtocolType OPTIONAL,
-    SourceSocketAddress       SocketAddressObjectType OPTIONAL,
-    DestinationSocketAddress  SocketAddressObjectType OPTIONAL
-}
-
-URIObjectType ::= RECORD {
-    type         URITypeEnum,
-    Value        UTF8String
 }
 
 CyboxObject ::= ATTRIBUTE {

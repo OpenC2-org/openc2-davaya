@@ -120,12 +120,10 @@ def jaen_dumps(jaen, level=0, indent=1):
             sp4 = sp if v and isinstance(v, list) else ""
             vals.append(sp3 + jaen_dumps(v, level + 1, indent))
         if nest:
-            return "[\n" + sep.join(vals) + "\n" + sp + "]\n"
+            return "[\n" + sep.join(vals) + "]\n"
         return "[" + ", ".join(vals) + sp4 + "]"
-    elif isinstance(jaen, str):
-        return "\"" + jaen + "\""
-    elif isinstance(jaen, (int, bool)):
-        return str(jaen)
+    elif isinstance(jaen, (bool, int, str)):
+        return json.dumps(jaen)
     return "???"
 
 def jaen_dump(jaen, fname, source=""):

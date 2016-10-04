@@ -49,9 +49,7 @@
     [32, "augment"],
     [33, "investigate"],
     [34, "mitigate"],
-    [35, "remediate"],
-    [36, "response"],
-    [37, "alert"]
+    [35, "remediate"]
   ]],
 
   ["TargetType", "Enumerated", [], "", [
@@ -213,9 +211,9 @@
     [2, "perimeter"]
   ]],
 
-  ["Duration", "String", [">^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$"], ""],
+  ["Duration", "String", [">^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"], ""],
 
-  ["DateTime", "String", [">^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$"], ""],
+  ["DateTime", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], ""],
 
   ["Modifiers", "Map", [], "", [
     [1, "delay", "Duration", ["?"], ""],
