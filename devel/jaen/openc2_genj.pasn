@@ -1,4 +1,4 @@
--- Generated from openc2.jaen, Tue Oct  4 17:22:35 2016
+-- Generated from openc2.jaen, Wed Oct  5 17:50:19 2016
 
 /*
 module:        openc2
@@ -10,8 +10,8 @@ description:   Classes that define the content of OpenC2 commands.  These
                XML, or CBOR, or to generate format-specific message schemas.
 namespace:     http://openc2.org/objects
 root:          OpenC2Command
-import:        http://docs.oasis-open.org/CTI/cybox-3: cybox3
-               http://cybox.mitre.org/common-2: cybox
+import:        http://cybox.mitre.org/common-2: cybox
+               http://docs.oasis-open.org/CTI/cybox-3: cybox3
 */
 
 Action ::= ENUMERATED {
@@ -219,8 +219,8 @@ Modifiers ::= MAP {
     delay        [1] Duration OPTIONAL,
     duration     [2] Duration OPTIONAL,
     frequency    [3] Duration OPTIONAL,
-    response     [4] ResponseValue OPTIONAL,
-    time         [5] DateTime OPTIONAL,
+    time         [4] DateTime OPTIONAL,
+    response     [5] ResponseValue OPTIONAL,
     method       [6] MethodValue OPTIONAL,
     where        [7] WhereValue OPTIONAL
 }

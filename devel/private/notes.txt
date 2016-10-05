@@ -1,0 +1,20 @@
+README-based design
+
+JAEN can be expressed in various equivalent syntax languages:
+ * PASN
+ * YANG-Expression - functional programming subset of YANG (pure data, constant assignments only,
+     without control flow or variables)
+ * Abstract ANTLR
+
+JAEN is the philosophical equivalent of JSON - simple data model usable across programming languages,
+    operating systems, and messaging formats.  Additional features from syntax languages is an anti-goal.
+    Minimum essential capability, not lowest common denominator (e.g., PASN MAP).
+
+Rewrite ATTRIBUTE and CHOICE using MAP with options
+ 1. ATTRIBUTE = CHOICE with enumerated type (allows subset of CHOICE defined in different namespace)
+ 2. CHOICE with names/tags (unlike unnamed ASN.1 CHOICE with only tag uniqueness) - promotes name to "*" field
+
+Open vocabularies (can't work without enumeration, make vocabulary extension simple).
+
+Namespaced IDs - int or [int,int]
+

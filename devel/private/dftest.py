@@ -4,31 +4,46 @@ def df_sort(items):
     :param items: list of (item, {dependencies}) pairs
     """
     def _visit(key):
-        if key in tmarks:
+        if key in mark:
             raise("SortError")
-        if key in umitems:
-            tmarks.add(key)
-            for k in umitems[key]:
+        if key in remaining:
+            mark.add(key)
+            for k in remaining[key]:
                 _visit(k)
-            umitems.pop(key)
-            tmarks.remove(key)
+            remaining.pop(key)
+            mark.remove(key)
             out.append(key)
 
     out = []
-    tmarks = set()
-    umitems = {i[0]:i[1] for i in items}
-    while umitems:
-        _visit(next(iter(umitems)))
+    mark = set()
+    remaining = {i[0]:i[1] for i in items}
+    while remaining:
+        _visit(next(iter(remaining)))
+    return out
+
+def walk_sort(items):
+    def visit(item):
+        for i in deps[item]:
+            if i not in out:
+                visit(i)
+                out.append(i)
+
+    out = []
+    deps = {i[0]:i[1] for i in items}
+    for i in {i[0] for i in items} - set().union(*[i[1] for i in items]):
+        visit(i)
+        out.append(i)
     return out
 
 if __name__ == "__main__":
-    items = [("A",["A1","A2"]),
+    items = [("A",["A1","A2","B1"]),
              ("C",[]),
+             ("B2",[]),
              ("D",["A","B","C"]),
-             ("B",["B1"]),
+             ("B",["B1","A1","B2"]),
              ("A1",[]),
              ("B1",[]),
              ("A2",[]),
              ]
-    ilist = df_sort(items)
+    ilist = walk_sort(items)
     print("->",ilist)

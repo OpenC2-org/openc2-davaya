@@ -230,8 +230,8 @@ class Modifiers(Map):
         ("delay", Duration, ["?"], ""),
         ("duration", Duration, ["?"], ""),
         ("frequency", Duration, ["?"], ""),
-        ("response", ResponseValue, ["?"], ""),
         ("time", DateTime, ["?"], ""),
+        ("response", ResponseValue, ["?"], ""),
         ("method", MethodValue, ["?"], ""),
         ("where", WhereValue, ["?"], ""),
         ("context_ref", Integer, ["?"], "")]

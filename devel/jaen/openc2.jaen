@@ -219,8 +219,8 @@
     [1, "delay", "Duration", ["?"], ""],
     [2, "duration", "Duration", ["?"], ""],
     [3, "frequency", "Duration", ["?"], ""],
-    [4, "response", "ResponseValue", ["?"], ""],
-    [5, "time", "DateTime", ["?"], ""],
+    [4, "time", "DateTime", ["?"], ""],
+    [5, "response", "ResponseValue", ["?"], ""],
     [6, "method", "MethodValue", ["?"], ""],
     [7, "where", "WhereValue", ["?"], ""]
   ]],

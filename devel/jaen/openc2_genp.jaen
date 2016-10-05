@@ -1,4 +1,4 @@
-"Generated from openc2.py, Tue Oct  4 17:22:35 2016"
+"Generated from openc2.py, Wed Oct  5 17:50:19 2016"
 
 {
  "meta": {
@@ -14,6 +14,44 @@
  },
 
  "types": [
+  ["Action", "Enumerated", [""], "", [
+    [1, "scan"],
+    [2, "locate"],
+    [3, "query"],
+    [4, "report"],
+    [5, "get"],
+    [6, "notify"],
+    [7, "deny"],
+    [8, "contain"],
+    [9, "allow"],
+    [10, "start"],
+    [11, "stop"],
+    [12, "restart"],
+    [13, "pause"],
+    [14, "resume"],
+    [15, "cancel"],
+    [16, "set"],
+    [17, "update"],
+    [18, "move"],
+    [19, "redirect"],
+    [20, "delete"],
+    [21, "snapshot"],
+    [22, "detonate"],
+    [23, "restore"],
+    [24, "save"],
+    [25, "modify"],
+    [26, "throttle"],
+    [27, "delay"],
+    [28, "substitute"],
+    [29, "copy"],
+    [30, "sync"],
+    [31, "distill"],
+    [32, "augment"],
+    [33, "investigate"],
+    [34, "mitigate"],
+    [35, "remediate"]]
+  ],
+
   ["TargetType", "Enumerated", [""], "", [
     [1, "cybox:Address"],
     [2, "cybox:Device"],
@@ -44,9 +82,9 @@
     [27, "cybox3"]]
   ],
 
-  ["WhereValue", "Enumerated", [""], "", [
-    [1, "internal"],
-    [2, "perimeter"]]
+  ["Target", "Record", [""], "", [
+    [1, "type", "TargetType", [""], ""],
+    [2, "specifiers", "cybox:CyboxObject", ["?", "{type}"], ""]]
   ],
 
   ["ActuatorType", "Enumerated", [""], "", [
@@ -95,77 +133,6 @@
     [43, "process-sandbox"],
     [44, "process-virtualization-service"],
     [45, "process-vulnerability-scanner"]]
-  ],
-
-  ["MethodValue", "Enumerated", [""], "", [
-    [1, "acl"],
-    [2, "blackhole"],
-    [3, "sinkhole"],
-    [4, "blacklist"],
-    [5, "whitelist"]]
-  ],
-
-  ["Target", "Record", [""], "", [
-    [1, "type", "TargetType", [""], ""],
-    [2, "specifiers", "cybox:CyboxObject", ["?", "{type}"], ""]]
-  ],
-
-  ["Action", "Enumerated", [""], "", [
-    [1, "scan"],
-    [2, "locate"],
-    [3, "query"],
-    [4, "report"],
-    [5, "get"],
-    [6, "notify"],
-    [7, "deny"],
-    [8, "contain"],
-    [9, "allow"],
-    [10, "start"],
-    [11, "stop"],
-    [12, "restart"],
-    [13, "pause"],
-    [14, "resume"],
-    [15, "cancel"],
-    [16, "set"],
-    [17, "update"],
-    [18, "move"],
-    [19, "redirect"],
-    [20, "delete"],
-    [21, "snapshot"],
-    [22, "detonate"],
-    [23, "restore"],
-    [24, "save"],
-    [25, "modify"],
-    [26, "throttle"],
-    [27, "delay"],
-    [28, "substitute"],
-    [29, "copy"],
-    [30, "sync"],
-    [31, "distill"],
-    [32, "augment"],
-    [33, "investigate"],
-    [34, "mitigate"],
-    [35, "remediate"]]
-  ],
-
-  ["ResponseValue", "Enumerated", [""], "", [
-    [1, "ack"],
-    [2, "status"]]
-  ],
-
-  ["Duration", "String", [">^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"], ""],
-
-  ["DateTime", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], ""],
-
-  ["Modifiers", "Map", [""], "", [
-    [1, "delay", "Duration", ["?"], ""],
-    [2, "duration", "Duration", ["?"], ""],
-    [3, "frequency", "Duration", ["?"], ""],
-    [4, "response", "ResponseValue", ["?"], ""],
-    [5, "time", "DateTime", ["?"], ""],
-    [6, "method", "MethodValue", ["?"], ""],
-    [7, "where", "WhereValue", ["?"], ""],
-    [8, "context_ref", "Integer", ["?"], ""]]
   ],
 
   ["ActuatorSpecifiers", "Record", [""], "", [
@@ -224,6 +191,39 @@
   ["Actuator", "Record", [""], "", [
     [1, "type", "ActuatorType", [""], ""],
     [2, "specifiers", "ActuatorObject", ["?", "{type}"], ""]]
+  ],
+
+  ["Duration", "String", [">^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"], ""],
+
+  ["DateTime", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], ""],
+
+  ["ResponseValue", "Enumerated", [""], "", [
+    [1, "ack"],
+    [2, "status"]]
+  ],
+
+  ["MethodValue", "Enumerated", [""], "", [
+    [1, "acl"],
+    [2, "blackhole"],
+    [3, "sinkhole"],
+    [4, "blacklist"],
+    [5, "whitelist"]]
+  ],
+
+  ["WhereValue", "Enumerated", [""], "", [
+    [1, "internal"],
+    [2, "perimeter"]]
+  ],
+
+  ["Modifiers", "Map", [""], "", [
+    [1, "delay", "Duration", ["?"], ""],
+    [2, "duration", "Duration", ["?"], ""],
+    [3, "frequency", "Duration", ["?"], ""],
+    [4, "time", "DateTime", ["?"], ""],
+    [5, "response", "ResponseValue", ["?"], ""],
+    [6, "method", "MethodValue", ["?"], ""],
+    [7, "where", "WhereValue", ["?"], ""],
+    [8, "context_ref", "Integer", ["?"], ""]]
   ],
 
   ["OpenC2Command", "Record", [""], "", [

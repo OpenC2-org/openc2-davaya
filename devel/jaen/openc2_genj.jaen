@@ -1,4 +1,4 @@
-"Generated from openc2.jaen, Tue Oct  4 17:22:35 2016"
+"Generated from openc2.jaen, Wed Oct  5 17:50:19 2016"
 
 {
  "meta": {
@@ -220,8 +220,8 @@
     [1, "delay", "Duration", ["?"], ""],
     [2, "duration", "Duration", ["?"], ""],
     [3, "frequency", "Duration", ["?"], ""],
-    [4, "response", "ResponseValue", ["?"], ""],
-    [5, "time", "DateTime", ["?"], ""],
+    [4, "time", "DateTime", ["?"], ""],
+    [5, "response", "ResponseValue", ["?"], ""],
     [6, "method", "MethodValue", ["?"], ""],
     [7, "where", "WhereValue", ["?"], ""]]
   ],

@@ -4,48 +4,24 @@ Load JAEN definitions from Python module
 import importlib, inspect
 from datetime import datetime
 
-def topological_sort(items):
+def topo_sort(items):
     """
-    Generate items in dependency-first order
-    :param items: list of (item, {dependencies}) pairs
-    :return: generator that yields an item with no remaining items that it depends on
+    Topological sort
+    :param items: (item: [dependencies]) pairs
+    :return: list of item in dependency-first order
     """
-    provided = set()
-    while items:
-        remaining_items = []
-        emitted = False
-        for item, dependencies in items:
-            if provided.issuperset(dependencies):
-                yield item
-                provided.add(item)
-                emitted = True
-            else:
-                remaining_items.append((item, dependencies))
-        if not emitted:
-            raise TopologicalSortFailure()
-        items = remaining_items
-
-def df_sort(items):
-    """
-    Return list of items in depth-first search order
-    :param items: list of (item, {dependencies}) pairs
-    """
-    def _visit(key):
-        if key in tmarks:
-            raise("SortError")
-        if key in umitems:
-            tmarks.add(key)
-            for k in umitems[key]:
-                _visit(k)
-            umitems.pop(key)
-            tmarks.remove(key)
-            out.append(key)
+    def visit(item):
+        for i in deps[item]:
+            if i not in out:
+                visit(i)
+                out.append(i)
 
     out = []
-    tmarks = set()
-    umitems = {i[0]:i[1] for i in items}
-    while umitems:
-        _visit(next(iter(umitems)))
+    deps = {i[0]:i[1] for i in items}
+    for i in {i[0] for i in items} - set().union(*[i[1] for i in items]):
+        print("Root:", i)
+        visit(i)
+        out.append(i)
     return out
 
 def get_meta(this_mod):
@@ -83,7 +59,7 @@ def get_types(this_mod):
             base = inspect.getmro(c)[1].__name__        # parent type name
             typeopts = [">" + c.pattern] if hasattr(c, "pattern") else [""]
             typedesc = ""
-            dep = set()
+            dep = []
             if hasattr(c, "vals"):
                 vals = []
                 for n, v in enumerate(c.vals):
@@ -92,7 +68,7 @@ def get_types(this_mod):
                         vm = v[1].__module__
                         v[1] = v[1].__name__
                         if vm == modname:
-                            dep.update((v[1],))
+                            dep.append(v[1])
                         elif vm != "codec":
                             v[1] = vm + ":" + v[1]
                     vals.append([n+1] + ([v] if isinstance(v, str) else v))
@@ -100,7 +76,7 @@ def get_types(this_mod):
             else:
                 typdefs.update({name: [base, typeopts, typedesc]})
             deps.append((name, dep))
-    return [[t] + typdefs[t] for t in df_sort(deps)]
+    return [[t] + typdefs[t] for t in topo_sort(deps)]
 
 def pyclass_load(modname):
     """
