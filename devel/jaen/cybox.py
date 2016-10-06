@@ -58,8 +58,8 @@ class DomainNameTypeEnum(Enumerated):
 class DomainNameObject(Record):
     ns = "DomainNameObj"
     vals = [
-        ("type", DomainNameTypeEnum, [""], ""),
-        ("Value", String, [""], "")]
+        ("type", DomainNameTypeEnum, [], ""),
+        ("Value", String, [], "")]
 
 class EmailMessageObject(Record):
     ns = "EmailMessageObj"
@@ -72,7 +72,7 @@ class FileObject(Record):
 class HostnameObject(Record):      # Hostname_Object.xsd - unspecified string object - FQDN?
     ns = "HostnameObj"
     vals = [
-        ("Hostname_Value", String, [""], ""),    # Optional in cybox, required in OpenC2
+        ("Hostname_Value", String, [], ""),    # Optional in cybox, required in OpenC2
         ("Naming_System", String, ["?"], "")]
 
 class MemoryObject(Record):
@@ -108,13 +108,13 @@ class ProductObject(Record):
 class SocketAddressChoice1(Choice):
     ns = "SocketAddressObj"
     vals = [
-        ("IP_Address", AddressObject, [""], ""),
-        ("Hostname", HostnameObject, [""], "")]
+        ("IP_Address", AddressObject, [], ""),
+        ("Hostname", HostnameObject, [], "")]
 
 class SocketAddressObject(Record):
     ns = "SocketAddressObj"
     vals = [
-        ("*", SocketAddressChoice1, [""], ""),
+        ("*", SocketAddressChoice1, [], ""),
         ("Port", PortObject, ["?"], "")]
 
 class NetworkConnectionObject(Record):      # Network_Connection_Object.xsd
@@ -136,8 +136,8 @@ class URITypeEnum(Enumerated):
 class URIObject(Record):
     ns = "URIObj"
     vals = [
-        ("type", URITypeEnum, [""], ""),
-        ("Value", String, [""], "")]        # cyboxCommon:AnyURIObjectPropertyType
+        ("type", URITypeEnum, [], ""),
+        ("Value", String, [], "")]        # cyboxCommon:AnyURIObjectPropertyType
 
 class UserAccountObject(Record):
     ns = "UserAccountObj"
@@ -172,28 +172,28 @@ class X509CertificateObject(Enumerated):
 class CyboxObject(Attribute):
     ns = "cybox"
     vals = [
-        ("Address", AddressObject, [""], ""),                         #  1
-        ("Device", DeviceObject, [""], ""),                           #  2
-        ("Disk", DiskObject, [""], ""),                               #  3
-        ("Disk_Partition", DiskPartitionObject, [""], ""),            #  4
-        ("Domain_Name", DomainNameObject, [""], ""),                  #  5
-        ("Email_Message", EmailMessageObject, [""], ""),              #  6
-        ("File", FileObject, [""], ""),                               #  7
-        ("Hostname", HostnameObject, [""], ""),                       #  8
-        ("Memory", MemoryObject, [""], ""),                           #  9
-        ("Network_Connection", NetworkConnectionObject, [""], ""),    # 10
-        ("Network_Flow", NetworkFlowObject, [""], ""),                # 11
-        ("Network_Packet", NetworkPacketObject, [""], ""),            # 12
-        ("Network_Subnet", NetworkSubnetObject, [""], ""),            # 13
-        ("Port", PortObject, [""], ""),                               # 14
-        ("Process", ProcessObject, [""], ""),                         # 15
-        ("Product", ProductObject, [""], ""),                         # 16
-        ("Socket_Address", SocketAddressObject, [""], ""),            # 17
-        ("System", SystemObject, [""], ""),                           # 18
-        ("URI", URIObject, [""], ""),                                 # 19
-        ("User_Account", UserAccountObject, [""], ""),                # 20
-        ("User_Session", UserSessionObject, [""], ""),                # 21
-        ("Volume", VolumeObject, [""], ""),                           # 22
-        ("Windows_Registry_Key", WindowsRegistryKeyObject, [""], ""), # 23
-        ("Windows_Service", WindowsServiceObject, [""], ""),          # 24
-        ("X509_Certificate", X509CertificateObject, [""], "")]        # 25
+        ("Address", AddressObject, [], ""),                         #  1
+        ("Device", DeviceObject, [], ""),                           #  2
+        ("Disk", DiskObject, [], ""),                               #  3
+        ("Disk_Partition", DiskPartitionObject, [], ""),            #  4
+        ("Domain_Name", DomainNameObject, [], ""),                  #  5
+        ("Email_Message", EmailMessageObject, [], ""),              #  6
+        ("File", FileObject, [], ""),                               #  7
+        ("Hostname", HostnameObject, [], ""),                       #  8
+        ("Memory", MemoryObject, [], ""),                           #  9
+        ("Network_Connection", NetworkConnectionObject, [], ""),    # 10
+        ("Network_Flow", NetworkFlowObject, [], ""),                # 11
+        ("Network_Packet", NetworkPacketObject, [], ""),            # 12
+        ("Network_Subnet", NetworkSubnetObject, [], ""),            # 13
+        ("Port", PortObject, [], ""),                               # 14
+        ("Process", ProcessObject, [], ""),                         # 15
+        ("Product", ProductObject, [], ""),                         # 16
+        ("Socket_Address", SocketAddressObject, [], ""),            # 17
+        ("System", SystemObject, [], ""),                           # 18
+        ("URI", URIObject, [], ""),                                 # 19
+        ("User_Account", UserAccountObject, [], ""),                # 20
+        ("User_Session", UserSessionObject, [], ""),                # 21
+        ("Volume", VolumeObject, [], ""),                           # 22
+        ("Windows_Registry_Key", WindowsRegistryKeyObject, [], ""), # 23
+        ("Windows_Service", WindowsServiceObject, [], ""),          # 24
+        ("X509_Certificate", X509CertificateObject, [], "")]        # 25

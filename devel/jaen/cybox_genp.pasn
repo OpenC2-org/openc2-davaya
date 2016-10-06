@@ -1,4 +1,4 @@
--- Generated from cybox.py, Wed Oct  5 17:50:19 2016
+-- Generated from cybox.py, Thu Oct  6 17:21:43 2016
 
 /*
 module:        cybox
@@ -8,9 +8,9 @@ description:   Selected CybOX 2.1 objects used by OpenC2.  Abstract syntax
                information extracted from XSD source documents.
 namespace:     http://cybox.mitre.org/objects
 sources:       NetworkConnectionObject: Network_Connection_Object.xsd
-               Layer4ProtocolType: Cybox_common.xsd
                HostnameObject: Hostname_Object.xsd
                Layer3ProtocolType: Network_Connection_Object.xsd
+               Layer4ProtocolType: Cybox_common.xsd
 */
 
 AddressObject ::= RECORD {

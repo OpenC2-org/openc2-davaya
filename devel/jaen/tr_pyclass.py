@@ -3,26 +3,29 @@ Load JAEN definitions from Python module
 """
 import importlib, inspect
 from datetime import datetime
+from textwrap import fill, shorten
+from codec import parse_type_opts, parse_field_opts
 
 def topo_sort(items):
     """
-    Topological sort
-    :param items: (item: [dependencies]) pairs
-    :return: list of item in dependency-first order
+    Topological sort with locality
+    :param items: list of (item: [dependencies]) pairs
+    :return: list of item in dependency-first order, list of roots
     """
-    def visit(item):
+    def walk_tree(item):
         for i in deps[item]:
             if i not in out:
-                visit(i)
+                walk_tree(i)
                 out.append(i)
 
     out = []
     deps = {i[0]:i[1] for i in items}
-    for i in {i[0] for i in items} - set().union(*[i[1] for i in items]):
-        print("Root:", i)
-        visit(i)
-        out.append(i)
-    return out
+    roots = {i[0] for i in items} - set().union(*[i[1] for i in items])
+    for item in roots:
+        walk_tree(item)
+        out.append(item)
+    out = out if out else [i[0] for i in items]     # if cycle detected, don't sort
+    return out, roots
 
 def get_meta(this_mod):
     meta = {"module": this_mod.__name__}
@@ -57,7 +60,7 @@ def get_types(this_mod):
         if module == modname:
             c = getattr(this_mod, name)                 # class that represents this type
             base = inspect.getmro(c)[1].__name__        # parent type name
-            typeopts = [">" + c.pattern] if hasattr(c, "pattern") else [""]
+            typeopts = [">" + c.pattern] if hasattr(c, "pattern") else []
             typedesc = ""
             dep = []
             if hasattr(c, "vals"):
@@ -65,18 +68,18 @@ def get_types(this_mod):
                 for n, v in enumerate(c.vals):
                     if isinstance(v, (tuple, list)):
                         v = list(v)
-                        vm = v[1].__module__
+                        vmod = v[1].__module__
                         v[1] = v[1].__name__
-                        if vm == modname:
+                        if vmod == modname:
                             dep.append(v[1])
-                        elif vm != "codec":
-                            v[1] = vm + ":" + v[1]
+                        elif vmod != "codec":
+                            v[1] = vmod + ":" + v[1]
                     vals.append([n+1] + ([v] if isinstance(v, str) else v))
                 typdefs.update({name: [base, typeopts, typedesc, vals]})
             else:
                 typdefs.update({name: [base, typeopts, typedesc]})
             deps.append((name, dep))
-    return [[t] + typdefs[t] for t in topo_sort(deps)]
+    return [[t] + typdefs[t] for t in topo_sort(deps)[0]]
 
 def pyclass_load(modname):
     """
@@ -85,8 +88,37 @@ def pyclass_load(modname):
     mod = importlib.import_module(modname)
     return {"meta": get_meta(mod), "types": get_types(mod)}
 
-def pyclass_dump(jaen):
-    pass
+def pyclass_dumps(jaen):
+    jm = jaen["meta"]
+    title = "\n" + jm["title"] if "title" in jm else ""
+    desc = "\n\n" + fill(jm["description"], width=80) if "description" in jm else ""
+    pstr = '"""' + title + desc + '\n"""\n\n'
+    pstr += "__version__ = \"" + jm["version"] + "\"\n" if "version" in jm else ""
+    m = set(jm.keys()) - {"title", "description", "version", "import"}
+    if m:
+        pstr += "__meta__ = {\n"
+        pstr += ",\n".join(['    "' + k + '": "' + str(jm[k]) + '"' for k in m])      # TODO: pretty print
+        pstr += "\n}\n\n"
+    pstr += "from codec import Enumerated, Map, Record, Attribute, Choice, String, Integer\n"
+    if "import" in jm:
+        pstr += "import " + ', '.join([v for k,v in jm["import"].items()]) + "\n"
+
+    for td in jaen["types"]:
+        topts = parse_type_opts(td[2])
+        desc = "    # " + shorten(td[3], width=40) if td[3] else ""
+        pstr += "\nclass " + td[0] + "(" + td[1] + "):" + desc + "\n"
+        pstr += '  pattern = "' + topts["pattern"] + '"\n' if "pattern" in topts else ""
+        if len(td) > 4:
+            pstr += "  vals = [\n"
+            pstr += ",\n".join(['    "' + tf[1] + '"' + (", " + tf[2] if len(tf) > 2 else "") for tf in td[4]])
+            pstr += "\n]\n"
+    return pstr
+
+def pyclass_dump(jaen, fname, source=""):
+    with open(fname, "w") as f:
+        if source:
+            f.write("# Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\n\n")
+        f.write(pyclass_dumps(jaen))
 
 if __name__ == "__main__":
     jaen = pyclass_load("openc2")

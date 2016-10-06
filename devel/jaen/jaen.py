@@ -141,9 +141,11 @@ if __name__ == "__main__":
         jaen_check(jaen)
         pasn_dump(jaen, dest + ".pasn", source)
         jaen_dump(jaen, dest + ".jaen", source)
+        pyclass_dump(jaen, dest + ".py", source)
 
         source = fname + ".jaen"
         dest = fname + "_genj"
         jaen = jaen_load(source)
         pasn_dump(jaen, dest + ".pasn", source)
         jaen_dump(jaen, dest + ".jaen", source)
+        pyclass_dump(jaen, dest + ".py", source)

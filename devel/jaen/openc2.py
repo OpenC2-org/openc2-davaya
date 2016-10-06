@@ -1,7 +1,7 @@
 """
 OpenC2 Command Definitions
 
-Classes that define the content of OpenC2 commands.  These classes are used with
+Datatypes that define the content of OpenC2 commands.  These types are used with
 an Encoder/Decoder (codec) to serialize and deserialize commands for transmission
 in a format such as JSON, XML, or CBOR, or to generate format-specific message schemas.
 """
@@ -12,8 +12,7 @@ __meta__ = {
     "root": "OpenC2Command"
 }
 
-from codec import Enumerated, Map, Record, Attribute, Choice
-from codec import String, Integer
+from codec import Enumerated, Map, Record, Attribute, Choice, String, Integer
 import cybox
 
 class Action(Enumerated):
@@ -141,7 +140,7 @@ class ActuatorType(Enumerated):
 class Target(Record):
     ns = "openc2"
     vals = [
-        ("type", TargetType, [""], ""),
+        ("type", TargetType, [], ""),
         ("specifiers", cybox.CyboxObject, ["?","{type}"], "")]
 
 class ActuatorSpecifiers(Record):
@@ -153,57 +152,57 @@ class ActuatorSpecifiers(Record):
 class ActuatorObject(Attribute):            # TODO: define datatypes for each actuator
     ns = "openc2"
     vals = [
-        ("endpoint", ActuatorSpecifiers, [""], ""),
-        ("endpoint-digital-telephone-handset", ActuatorSpecifiers, [""], ""),
-        ("endpoint-laptop", ActuatorSpecifiers, [""], ""),
-        ("endpoint-pos-terminal", ActuatorSpecifiers, [""], ""),
-        ("endpoint-printer", ActuatorSpecifiers, [""], ""),
-        ("endpoint-sensor", ActuatorSpecifiers, [""], ""),
-        ("endpoint-server", ActuatorSpecifiers, [""], ""),
-        ("endpoint-smart-meter", ActuatorSpecifiers, [""], ""),
-        ("endpoint-smart-phone", ActuatorSpecifiers, [""], ""),
-        ("endpoint-tablet", ActuatorSpecifiers, [""], ""),
-        ("endpoint-workstation", ActuatorSpecifiers, [""], ""),
-        ("network", ActuatorSpecifiers, [""], ""),
-        ("network-bridge", ActuatorSpecifiers, [""], ""),
-        ("network-firewall", ActuatorSpecifiers, [""], ""),
-        ("network-gateway", ActuatorSpecifiers, [""], ""),
-        ("network-guard", ActuatorSpecifiers, [""], ""),
-        ("network-hips", ActuatorSpecifiers, [""], ""),
-        ("network-hub", ActuatorSpecifiers, [""], ""),
-        ("network-ids", ActuatorSpecifiers, [""], ""),
-        ("network-ips", ActuatorSpecifiers, [""], ""),
-        ("network-modem", ActuatorSpecifiers, [""], ""),
-        ("network-nic", ActuatorSpecifiers, [""], ""),
-        ("network-proxy", ActuatorSpecifiers, [""], ""),
-        ("network-router", ActuatorSpecifiers, [""], ""),
-        ("network-security-manager", ActuatorSpecifiers, [""], ""),
-        ("network-sense-making", ActuatorSpecifiers, [""], ""),
-        ("network-sensor", ActuatorSpecifiers, [""], ""),
-        ("network-switch", ActuatorSpecifiers, [""], ""),
-        ("network-vpn", ActuatorSpecifiers, [""], ""),
-        ("network-wap", ActuatorSpecifiers, [""], ""),
-        ("process", ActuatorSpecifiers, [""], ""),
-        ("process-aaa-server", ActuatorSpecifiers, [""], ""),
-        ("process-anti-virus-scanner", ActuatorSpecifiers, [""], ""),
-        ("process-connection-scanner", ActuatorSpecifiers, [""], ""),
-        ("process-directory-server", ActuatorSpecifiers, [""], ""),
-        ("process-dns-server", ActuatorSpecifiers, [""], ""),
-        ("process-email-service", ActuatorSpecifiers, [""], ""),
-        ("process-file-scanner", ActuatorSpecifiers, [""], ""),
-        ("process-location-service", ActuatorSpecifiers, [""], ""),
-        ("process-network-scanner", ActuatorSpecifiers, [""], ""),
-        ("process-remediation-service", ActuatorSpecifiers, [""], ""),
-        ("process-reputation-service", ActuatorSpecifiers, [""], ""),
-        ("process-sandbox", ActuatorSpecifiers, [""], ""),
-        ("process-virtualization-service", ActuatorSpecifiers, [""], ""),
-        ("process-vulnerability-scanner", ActuatorSpecifiers, [""], "")
+        ("endpoint", ActuatorSpecifiers, [], ""),
+        ("endpoint-digital-telephone-handset", ActuatorSpecifiers, [], ""),
+        ("endpoint-laptop", ActuatorSpecifiers, [], ""),
+        ("endpoint-pos-terminal", ActuatorSpecifiers, [], ""),
+        ("endpoint-printer", ActuatorSpecifiers, [], ""),
+        ("endpoint-sensor", ActuatorSpecifiers, [], ""),
+        ("endpoint-server", ActuatorSpecifiers, [], ""),
+        ("endpoint-smart-meter", ActuatorSpecifiers, [], ""),
+        ("endpoint-smart-phone", ActuatorSpecifiers, [], ""),
+        ("endpoint-tablet", ActuatorSpecifiers, [], ""),
+        ("endpoint-workstation", ActuatorSpecifiers, [], ""),
+        ("network", ActuatorSpecifiers, [], ""),
+        ("network-bridge", ActuatorSpecifiers, [], ""),
+        ("network-firewall", ActuatorSpecifiers, [], ""),
+        ("network-gateway", ActuatorSpecifiers, [], ""),
+        ("network-guard", ActuatorSpecifiers, [], ""),
+        ("network-hips", ActuatorSpecifiers, [], ""),
+        ("network-hub", ActuatorSpecifiers, [], ""),
+        ("network-ids", ActuatorSpecifiers, [], ""),
+        ("network-ips", ActuatorSpecifiers, [], ""),
+        ("network-modem", ActuatorSpecifiers, [], ""),
+        ("network-nic", ActuatorSpecifiers, [], ""),
+        ("network-proxy", ActuatorSpecifiers, [], ""),
+        ("network-router", ActuatorSpecifiers, [], ""),
+        ("network-security-manager", ActuatorSpecifiers, [], ""),
+        ("network-sense-making", ActuatorSpecifiers, [], ""),
+        ("network-sensor", ActuatorSpecifiers, [], ""),
+        ("network-switch", ActuatorSpecifiers, [], ""),
+        ("network-vpn", ActuatorSpecifiers, [], ""),
+        ("network-wap", ActuatorSpecifiers, [], ""),
+        ("process", ActuatorSpecifiers, [], ""),
+        ("process-aaa-server", ActuatorSpecifiers, [], ""),
+        ("process-anti-virus-scanner", ActuatorSpecifiers, [], ""),
+        ("process-connection-scanner", ActuatorSpecifiers, [], ""),
+        ("process-directory-server", ActuatorSpecifiers, [], ""),
+        ("process-dns-server", ActuatorSpecifiers, [], ""),
+        ("process-email-service", ActuatorSpecifiers, [], ""),
+        ("process-file-scanner", ActuatorSpecifiers, [], ""),
+        ("process-location-service", ActuatorSpecifiers, [], ""),
+        ("process-network-scanner", ActuatorSpecifiers, [], ""),
+        ("process-remediation-service", ActuatorSpecifiers, [], ""),
+        ("process-reputation-service", ActuatorSpecifiers, [], ""),
+        ("process-sandbox", ActuatorSpecifiers, [], ""),
+        ("process-virtualization-service", ActuatorSpecifiers, [], ""),
+        ("process-vulnerability-scanner", ActuatorSpecifiers, [], "")
     ]
 
 class Actuator(Record):
     ns = "openc2"
     vals = [
-        ("type", ActuatorType, [""], ""),
+        ("type", ActuatorType, [], ""),
         ("specifiers", ActuatorObject, ["?","{type}"], "")]
 
 class ResponseValue(Enumerated):
@@ -239,7 +238,7 @@ class Modifiers(Map):
 class OpenC2Command(Record):
     ns = "openc2"
     vals = [
-        ("action", Action, [""], ""),
-        ("target", Target, [""], ""),
+        ("action", Action, [], ""),
+        ("target", Target, [], ""),
         ("actuator", Actuator, ["?"], ""),
         ("modifiers", Modifiers, ["?"], "")]

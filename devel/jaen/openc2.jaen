@@ -82,6 +82,11 @@
     [2,  "cybox3"]
   ]],
 
+  ["Target", "Record", [], "", [
+    [1, "type", "TargetType", [], ""],
+    [2, "specifiers", "cybox:CyboxObject", ["?","{type}"], ""]
+  ]],
+
   ["ActuatorType", "Enumerated", [], "", [
     [1, "endpoint"],
     [2, "endpoint-digital-telephone-handset"],
@@ -128,11 +133,6 @@
     [43, "process-sandbox"],
     [44, "process-virtualization-service"],
     [45, "process-vulnerability-scanner"]
-  ]],
-
-  ["Target", "Record", [], "", [
-    [1, "type", "TargetType", [], ""],
-    [2, "specifiers", "cybox:CyboxObject", ["?","{type}"], ""]
   ]],
 
   ["ActuatorSpecifiers", "Record", [], "", [
@@ -189,9 +189,13 @@
   ]],
 
   ["Actuator", "Record", [], "", [
-    [1, "type", "String", [], ""],
+    [1, "type", "ActuatorType", [], ""],
     [2, "specifiers", "ActuatorObject", ["?","{type}"], ""]
   ]],
+
+  ["Duration", "String", [">^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"], ""],
+
+  ["DateTime", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], ""],
 
   ["ResponseValue", "Enumerated", [], "", [
     [1, "ack"],
@@ -211,10 +215,6 @@
     [2, "perimeter"]
   ]],
 
-  ["Duration", "String", [">^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"], ""],
-
-  ["DateTime", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], ""],
-
   ["Modifiers", "Map", [], "", [
     [1, "delay", "Duration", ["?"], ""],
     [2, "duration", "Duration", ["?"], ""],
@@ -222,7 +222,8 @@
     [4, "time", "DateTime", ["?"], ""],
     [5, "response", "ResponseValue", ["?"], ""],
     [6, "method", "MethodValue", ["?"], ""],
-    [7, "where", "WhereValue", ["?"], ""]
+    [7, "where", "WhereValue", ["?"], ""],
+    [8, "context_ref", "Integer", ["?"], ""]
   ]],
 
   ["OpenC2Command", "Record", [], "", [

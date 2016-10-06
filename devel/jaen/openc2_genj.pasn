@@ -1,4 +1,4 @@
--- Generated from openc2.jaen, Wed Oct  5 17:50:19 2016
+-- Generated from openc2.jaen, Thu Oct  6 17:21:43 2016
 
 /*
 module:        openc2
@@ -10,8 +10,8 @@ description:   Classes that define the content of OpenC2 commands.  These
                XML, or CBOR, or to generate format-specific message schemas.
 namespace:     http://openc2.org/objects
 root:          OpenC2Command
-import:        http://cybox.mitre.org/common-2: cybox
-               http://docs.oasis-open.org/CTI/cybox-3: cybox3
+import:        http://docs.oasis-open.org/CTI/cybox-3: cybox3
+               http://cybox.mitre.org/common-2: cybox
 */
 
 Action ::= ENUMERATED {
@@ -82,6 +82,11 @@ TargetType ::= ENUMERATED {
     cybox3                      (2)
 }
 
+Target ::= RECORD {
+    type         TargetType,
+    specifiers   cybox:CyboxObject.&type OPTIONAL
+}
+
 ActuatorType ::= ENUMERATED {
     endpoint                         (1),
     endpoint-digital-telephone-handset (2),
@@ -128,11 +133,6 @@ ActuatorType ::= ENUMERATED {
     process-sandbox                  (43),
     process-virtualization-service   (44),
     process-vulnerability-scanner    (45)
-}
-
-Target ::= RECORD {
-    type         TargetType,
-    specifiers   cybox:CyboxObject.&type OPTIONAL
 }
 
 ActuatorSpecifiers ::= RECORD {
@@ -189,9 +189,13 @@ ActuatorObject ::= ATTRIBUTE {
 }
 
 Actuator ::= RECORD {
-    type         UTF8String,
+    type         ActuatorType,
     specifiers   ActuatorObject.&type OPTIONAL
 }
+
+Duration ::= UTF8String(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")
+
+DateTime ::= UTF8String(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$")
 
 ResponseValue ::= ENUMERATED {
     ack          (1),
@@ -211,10 +215,6 @@ WhereValue ::= ENUMERATED {
     perimeter    (2)
 }
 
-Duration ::= UTF8String(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")
-
-DateTime ::= UTF8String(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$")
-
 Modifiers ::= MAP {
     delay        [1] Duration OPTIONAL,
     duration     [2] Duration OPTIONAL,
@@ -222,7 +222,8 @@ Modifiers ::= MAP {
     time         [4] DateTime OPTIONAL,
     response     [5] ResponseValue OPTIONAL,
     method       [6] MethodValue OPTIONAL,
-    where        [7] WhereValue OPTIONAL
+    where        [7] WhereValue OPTIONAL,
+    context_ref  [8] INTEGER OPTIONAL
 }
 
 OpenC2Command ::= RECORD {

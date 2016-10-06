@@ -2,21 +2,22 @@
 This folder contains various files that may become part of the reference implementation.
 It is not a project folder; files may be copied into project builds.
 
-####Current content:
+###Current content:
 * OpenC2 message decoder/validator
 * Demo producer - send a hardcoded command 
 * Demo consumer - receive a command and reply
-* Cybox schemas and schema summaries (condensed version with one line per element)
 * Demo commands - JSON commands to be used in Phase 1 demo: Mitigate and Allow/Deny
-* Example commands - good and bad, for validator test suite and interop testing
+* Test commands - good and bad
 
-####Planned content:
+###Planned content:
 * Codec encoder methods
-* OpenC2 abstract message grammar and format converter - JASN, PseudoASN, ASN.1
-* Concrete schema generator - translate grammar into language-specific schemas (JSON, XML, ...)
+* Codec test suite (tox)
+* JSON Abstract Encoding Notation (JAEN) format converter and grammars - Python classes, PseudoASN
+* JAEN codec with dynamically loadable message syntax
+* Concrete schema generators - translate JAEN into language-specific schemas (JSON, XML, CBOR, Proto, ...)
 * Toy actuator - receives and validates messages and returns dummy status/content
 
-####Using the message decoder/validator:
+###Using the message decoder/validator:
 * Install Python 3 if not already available.
     * Code tested on version 3.5.2.  Python 2 not yet supported.
 * Download:
@@ -26,7 +27,7 @@ It is not a project folder; files may be copied into project builds.
     * oc2test.py - Example code to decode, validate and print an OpenC2 command
 * Run oc2test.py - prints example JSON string, decoded command dict, and individual fields of the command.
 
-####Demo producer/consumer:
+###Demo producer/consumer:
 * Install Python dependencies:
     * Bottle (web server)
     * Requests (web client)
