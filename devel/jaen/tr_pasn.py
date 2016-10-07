@@ -6,7 +6,7 @@ import pyparsing as pp
 from copy import deepcopy
 from datetime import datetime
 from codec import parse_type_opts, parse_field_opts
-from textwrap import fill
+from textwrap import fill, shorten
 
 def pasn_loads(pasn_str):
     """
@@ -65,12 +65,12 @@ def pasn_dumps(jaen):
 
     pasn = "/*\n"
     hdrs = jaen["meta"]
-    hdr_list = ["module", "title", "version", "description", "namespace", "root", "import", "sources"]
+    hdr_list = ["module", "title", "version", "description", "namespace", "root", "import"]
     for h in hdr_list + list(set(hdrs) - set(hdr_list)):
         if h in hdrs:
             if h == "description":
                 pasn += fill(hdrs[h], width=80, initial_indent="{0:14} ".format(h + ":"), subsequent_indent=15*" ") + "\n"
-            elif h == "import" or h == "sources":
+            elif h == "import":
                 hh = "{:14} ".format(h + ":")
                 for k, v in hdrs[h].items():
                     pasn += hh + k + ": " + v + "\n"
@@ -79,19 +79,20 @@ def pasn_dumps(jaen):
                 pasn += "{0:14} {1:}\n".format(h + ":", hdrs[h])
     pasn += "*/\n"
 
-    for t in jaen["types"]:
-        tname, ttype = t[0:2]
-        topts = parse_type_opts(t[2])
-        tos = '(PATTERN "' + topts["pattern"] + '")' if "pattern" in topts else ""
-        pasn += "\n" + typeref(tname) + " ::= " + _asn1type(ttype) + tos
-        if len(t) == 5:
-            titems = deepcopy(t[4])
+    for td in jaen["types"]:
+        tname, ttype = td[0:2]
+        topts = parse_type_opts(td[2])
+        tdesc = "    # " + shorten(td[3], width=40) if td[3] else ""
+        tostr = '(PATTERN "' + topts["pattern"] + '")' if "pattern" in topts else ""
+        pasn += "\n" + typeref(tname) + " ::= " + _asn1type(ttype) + tostr
+        if len(td) > 4:
+            titems = deepcopy(td[4])
             for i in titems:
                 i[1] = identifier(i[1])
                 if len(i) > 2:
                     i[2] = _asn1type(i[2])
-            pasn += " {\n"
             flen = min(32, max(12, max([len(i[1]) for i in titems]) + 1 if titems else 0))
+            pasn += " {\n"
             if ttype.lower() == "enumerated":
                 fmt = "    {1:" + str(flen) + "} ({0:d})"
                 pasn += ",\n".join([fmt.format(*i) for i in titems])

@@ -31,11 +31,6 @@ jaen_schema = {
                 },
                 "module": {"type": "string"},
                 "root": {"type": "string"},
-                "sources": {
-                    "type": "object",
-                    "additionalProperties": False,
-                    "patternProperties": {"^\\w+$": {"type": "string"}}
-                },
                 "namespace": {"type": "string"},
                 "title": {"type": "string"},
                 "version": {"type": "string"}

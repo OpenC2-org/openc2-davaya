@@ -60,12 +60,12 @@ def asn1_dumps(jaen):
     """
     asn1 = "/*\n"
     hdrs = jaen["meta"]
-    hdr_list = ["module", "title", "version", "description", "namespace", "root", "import", "sources"]
+    hdr_list = ["module", "title", "version", "description", "namespace", "root", "import"]
     for h in hdr_list + list(set(hdrs) - set(hdr_list)):
         if h in hdrs:
             if h == "description":
                 asn1 += fill(hdrs[h], width=80, initial_indent="{0:14} ".format(h + ":"), subsequent_indent=15*" ") + "\n"
-            elif h == "import" or h == "sources":
+            elif h == "import":
                 hh = "{:14} ".format(h + ":")
                 for k, v in hdrs[h].items():
                     asn1 += hh + k + ": " + v + "\n"

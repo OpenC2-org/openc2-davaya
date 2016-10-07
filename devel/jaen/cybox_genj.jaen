@@ -1,16 +1,10 @@
-"Generated from cybox.jaen, Thu Oct  6 17:21:43 2016"
+"Generated from cybox.jaen, Fri Oct  7 14:42:06 2016"
 
 {
  "meta": {
   "description": "Selected CybOX 2.1 objects used by OpenC2.  Abstract syntax information extracted from XSD source documents.",
   "module": "cybox",
   "namespace": "http://cybox.mitre.org/objects",
-  "sources": {
-   "HostnameObject": "Hostname_Object.xsd",
-   "Layer3ProtocolType": "Network_Connection_Object.xsd",
-   "Layer4ProtocolType": "Cybox_common.xsd",
-   "NetworkConnectionObject": "Network_Connection_Object.xsd"
-  },
   "title": "Cyber Observable Expression 2.1 definitions",
   "version": "0.1"
  },
@@ -39,7 +33,7 @@
     [5, "GRE"],
     [6, "IL"],
     [7, "SCTP"],
-    [8, "Sinec H1"],
+    [8, "Sinec_H1"],
     [9, "SPX"],
     [10, "DCCP"]]
   ],

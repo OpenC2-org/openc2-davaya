@@ -104,14 +104,20 @@ def pyclass_dumps(jaen):
         pstr += "import " + ', '.join([v for k,v in jm["import"].items()]) + "\n"
 
     for td in jaen["types"]:
+        tname, ttype = td[0:2]
         topts = parse_type_opts(td[2])
-        desc = "    # " + shorten(td[3], width=40) if td[3] else ""
-        pstr += "\nclass " + td[0] + "(" + td[1] + "):" + desc + "\n"
+        tdesc = "    # " + shorten(td[3], width=40) if td[3] else ""
+        pstr += "\nclass " + td[0] + "(" + td[1] + "):" + tdesc + "\n"
         pstr += '  pattern = "' + topts["pattern"] + '"\n' if "pattern" in topts else ""
         if len(td) > 4:
             pstr += "  vals = [\n"
-            pstr += ",\n".join(['    "' + tf[1] + '"' + (", " + tf[2] if len(tf) > 2 else "") for tf in td[4]])
-            pstr += "\n]\n"
+            if ttype.lower() == "enumerated":
+                fmt = '    ({0:d}, "{1}")'
+                pstr += ",\n".join([fmt.format(i[0], i[1]) for i in td[4]])
+            else:
+                fmt = '    ({0:d}, "{1}", {2}, {3}, "{4}")'
+                pstr += ",\n".join([fmt.format(i[0], i[1], i[2].replace(":","."), i[3], i[4]) for i in td[4]])
+            pstr += "]\n"
     return pstr
 
 def pyclass_dump(jaen, fname, source=""):

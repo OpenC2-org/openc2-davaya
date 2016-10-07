@@ -1,6 +1,3 @@
-import json, re
-from functools import reduce
-
 """
 Abstract Object Encoder/Decoder
 
@@ -18,6 +15,11 @@ Copyright 2016 David Kemp
 Licensed under the Apache License, Version 2.0
 http://www.apache.org/licenses/LICENSE-2.0
 """
+
+__version__ = "0.1"
+
+import json, re
+from functools import reduce
 
 # TOTO: replace static classes with dynamically loaded JASN schemas
 # TODO: replace error messages with ValidationError exceptions

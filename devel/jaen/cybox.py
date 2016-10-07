@@ -7,11 +7,6 @@ Selected CybOX 2.1 objects used by OpenC2.  Abstract syntax information extracte
 __version__ = "0.1"
 __meta__ = {
     "namespace": "http://cybox.mitre.org/objects",
-    "sources": {"HostnameObject": "Hostname_Object.xsd",
-                "NetworkConnectionObject": "Network_Connection_Object.xsd",
-                "Layer3ProtocolType": "Network_Connection_Object.xsd",
-                "Layer4ProtocolType": "Cybox_common.xsd"
-                }
 }
 
 from codec import Attribute, Choice, Enumerated, Map, Record, Boolean, Integer, String
@@ -23,7 +18,7 @@ class Layer3ProtocolType(Enumerated):      # Network_Connection_Object.xsd
 
 class Layer4ProtocolType(Enumerated):       # Cybox_common.xsd
     ns = "cybox"
-    vals = ["TCP", "UDP", "AH", "ESP", "GRE", "IL", "SCTP", "Sinec H1", "SPX", "DCCP"]
+    vals = ["TCP", "UDP", "AH", "ESP", "GRE", "IL", "SCTP", "Sinec_H1", "SPX", "DCCP"]
 
 class AddressObject(Record):
     ns = "AddressObj"
