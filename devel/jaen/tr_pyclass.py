@@ -39,11 +39,11 @@ def get_meta(this_mod):
     if this_mod.__version__:
         meta.update({"version": str(this_mod.__version__)})
     imports = inspect.getmembers(this_mod, inspect.ismodule)
-    importlist = {}
+    importlist = []
     for i in imports:
         m = getattr(i[1],"__meta__")
         if m and "namespace" in m:
-            importlist.update({m["namespace"]: i[0]})
+            importlist.append([len(importlist)+1, i[0], m["namespace"]])
     if importlist:
         meta.update({"import": importlist})
     m = getattr(this_mod, "__meta__")
@@ -101,7 +101,7 @@ def pyclass_dumps(jaen):
         pstr += "\n}\n\n"
     pstr += "from codec import Enumerated, Map, Record, Attribute, Choice, String, Integer\n"
     if "import" in jm:
-        pstr += "import " + ', '.join([v for k,v in jm["import"].items()]) + "\n"
+        pstr += "import " + ', '.join([v[1] for v in jm["import"]]) + "\n"
 
     for td in jaen["types"]:
         tname, ttype = td[0:2]

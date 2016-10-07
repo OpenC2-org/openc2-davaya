@@ -35,16 +35,7 @@ def pasn_load(fname):
     with open(fname) as f:
         return pasn_loads(f.read())
 
-def typeref(x):             # Convert to ASN.1 typereference (first character upper case)
-    return x
-#    return x.capitalize()
-
-def identifier(x):          # Convert to ASN.1 identifier (first character lower case, no spaces)
-    return x
-#    x = x.replace(" ", "_")
-#    return x[0].lower() + x[1:]
-
-def _asn1type(t):
+def _pasntype(t):
     tl = t.lower()
     atype = {
         "attribute": "ATTRIBUTE", "array": "ARRAY", "map": "MAP", "record": "RECORD",
@@ -72,8 +63,8 @@ def pasn_dumps(jaen):
                 pasn += fill(hdrs[h], width=80, initial_indent="{0:14} ".format(h + ":"), subsequent_indent=15*" ") + "\n"
             elif h == "import":
                 hh = "{:14} ".format(h + ":")
-                for k, v in hdrs[h].items():
-                    pasn += hh + k + ": " + v + "\n"
+                for imp in hdrs[h]:
+                    pasn += hh + "{0:d}, {1}, {2}\n".format(*imp)
                     hh = 15*" "
             else:
                 pasn += "{0:14} {1:}\n".format(h + ":", hdrs[h])
@@ -84,13 +75,12 @@ def pasn_dumps(jaen):
         topts = parse_type_opts(td[2])
         tdesc = "    # " + shorten(td[3], width=40) if td[3] else ""
         tostr = '(PATTERN "' + topts["pattern"] + '")' if "pattern" in topts else ""
-        pasn += "\n" + typeref(tname) + " ::= " + _asn1type(ttype) + tostr
+        pasn += "\n" + tname + " ::= " + ttype + tostr
         if len(td) > 4:
             titems = deepcopy(td[4])
             for i in titems:
-                i[1] = identifier(i[1])
                 if len(i) > 2:
-                    i[2] = _asn1type(i[2])
+                    i[2] = _pasntype(i[2])
             flen = min(32, max(12, max([len(i[1]) for i in titems]) + 1 if titems else 0))
             pasn += " {\n"
             if ttype.lower() == "enumerated":

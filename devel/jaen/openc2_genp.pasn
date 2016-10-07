@@ -1,4 +1,4 @@
--- Generated from openc2.py, Fri Oct  7 14:42:06 2016
+-- Generated from openc2.py, Fri Oct  7 15:55:49 2016
 
 /*
 module:        openc2
@@ -10,10 +10,10 @@ description:   Datatypes that define the content of OpenC2 commands.  These
                XML, or CBOR, or to generate format-specific message schemas.
 namespace:     http://openc2.org/objects
 root:          OpenC2Command
-import:        http://cybox.mitre.org/objects: cybox
+import:        1, cybox, http://cybox.mitre.org/common-2
 */
 
-Action ::= ENUMERATED {
+Action ::= Enumerated {
     scan         (1),
     locate       (2),
     query        (3),
@@ -51,7 +51,7 @@ Action ::= ENUMERATED {
     remediate    (35)
 }
 
-TargetType ::= ENUMERATED {
+TargetType ::= Enumerated {
     cybox:Address               (1),
     cybox:Device                (2),
     cybox:Disk                  (3),
@@ -81,12 +81,12 @@ TargetType ::= ENUMERATED {
     cybox3                      (27)
 }
 
-Target ::= RECORD {
+Target ::= Record {
     type         TargetType,
     specifiers   cybox:CyboxObject.&type OPTIONAL
 }
 
-ActuatorType ::= ENUMERATED {
+ActuatorType ::= Enumerated {
     endpoint                         (1),
     endpoint-digital-telephone-handset (2),
     endpoint-laptop                  (3),
@@ -134,12 +134,12 @@ ActuatorType ::= ENUMERATED {
     process-vulnerability-scanner    (45)
 }
 
-ActuatorSpecifiers ::= RECORD {
+ActuatorSpecifiers ::= Record {
     port         UTF8String OPTIONAL,
     asset_id     UTF8String OPTIONAL
 }
 
-ActuatorObject ::= ATTRIBUTE {
+ActuatorObject ::= Attribute {
     endpoint                         [1] ActuatorSpecifiers,
     endpoint-digital-telephone-handset [2] ActuatorSpecifiers,
     endpoint-laptop                  [3] ActuatorSpecifiers,
@@ -187,21 +187,21 @@ ActuatorObject ::= ATTRIBUTE {
     process-vulnerability-scanner    [45] ActuatorSpecifiers
 }
 
-Actuator ::= RECORD {
+Actuator ::= Record {
     type         ActuatorType,
     specifiers   ActuatorObject.&type OPTIONAL
 }
 
-Duration ::= UTF8String(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")
+Duration ::= String(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")
 
-DateTime ::= UTF8String(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$")
+DateTime ::= String(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$")
 
-ResponseValue ::= ENUMERATED {
+ResponseValue ::= Enumerated {
     ack          (1),
     status       (2)
 }
 
-MethodValue ::= ENUMERATED {
+MethodValue ::= Enumerated {
     acl          (1),
     blackhole    (2),
     sinkhole     (3),
@@ -209,12 +209,12 @@ MethodValue ::= ENUMERATED {
     whitelist    (5)
 }
 
-WhereValue ::= ENUMERATED {
+WhereValue ::= Enumerated {
     internal     (1),
     perimeter    (2)
 }
 
-Modifiers ::= MAP {
+Modifiers ::= Map {
     delay        [1] Duration OPTIONAL,
     duration     [2] Duration OPTIONAL,
     frequency    [3] Duration OPTIONAL,
@@ -225,7 +225,7 @@ Modifiers ::= MAP {
     context_ref  [8] INTEGER OPTIONAL
 }
 
-OpenC2Command ::= RECORD {
+OpenC2Command ::= Record {
     action       Action,
     target       Target,
     actuator     Actuator OPTIONAL,

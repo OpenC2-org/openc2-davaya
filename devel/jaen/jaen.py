@@ -25,9 +25,17 @@ jaen_schema = {
             "properties": {
                 "description": {"type": "string"},
                 "import": {
-                    "type": "object",
-                    "additionalProperties": False,
-                    "patternProperties": {"^\\S+$": {"type": "string"}}
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "items": [
+                            {"type": "integer"},
+                            {"type": "string"},
+                            {"type": "string"}
+                        ]
+                    }
                 },
                 "module": {"type": "string"},
                 "root": {"type": "string"},

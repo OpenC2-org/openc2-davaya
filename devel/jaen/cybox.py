@@ -6,7 +6,7 @@ Selected CybOX 2.1 objects used by OpenC2.  Abstract syntax information extracte
 
 __version__ = "0.1"
 __meta__ = {
-    "namespace": "http://cybox.mitre.org/objects",
+    "namespace": "http://cybox.mitre.org/common-2",
 }
 
 from codec import Attribute, Choice, Enumerated, Map, Record, Boolean, Integer, String
