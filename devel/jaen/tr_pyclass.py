@@ -4,13 +4,17 @@ Load JAEN definitions from Python module
 import importlib, inspect
 from datetime import datetime
 from textwrap import fill, shorten
+from pprint import pformat
 from codec import parse_type_opts, parse_field_opts
 
 def topo_sort(items):
     """
     Topological sort with locality
-    :param items: list of (item: [dependencies]) pairs
-    :return: list of item in dependency-first order, list of roots
+
+    Sorts a list of (item: (dependencies)) pairs so that 1) all dependency items are listed before the parent item,
+    and 2) dependencies are listed in the given order and as close to the parent as possible.
+    Returns the sorted list of items and a list of root items.  A single root indicates a fully-connected hierarchy;
+    multiple roots indicate disconnected items or hierarchies, and no roots indicate a dependency cycle.
     """
     def walk_tree(item):
         for i in deps[item]:
@@ -38,17 +42,20 @@ def get_meta(this_mod):
             meta.update({"description": descr.replace("\n", " ").replace("\r", "")})
     if this_mod.__version__:
         meta.update({"version": str(this_mod.__version__)})
-    imports = inspect.getmembers(this_mod, inspect.ismodule)
-    importlist = []
-    for i in imports:
-        m = getattr(i[1],"__meta__")
-        if m and "namespace" in m:
-            importlist.append([len(importlist)+1, i[0], m["namespace"]])
-    if importlist:
-        meta.update({"import": importlist})
     m = getattr(this_mod, "__meta__")
     if m:
         meta.update(m)
+        if "module" in m:       # explicit meta module name overrides filename
+            meta.update({"module": m["module"]})
+        if "import" not in m:   # explicit meta imports overrides import statements
+            imports = inspect.getmembers(this_mod, inspect.ismodule)
+            importlist = []
+            for i in imports:
+                m = getattr(i[1],"__meta__")
+                if m and "namespace" in m:
+                    importlist.append([len(importlist)+1, i[0], m["namespace"]])
+            if importlist:
+                meta.update({"import": importlist})
     return meta
 
 def get_types(this_mod):
@@ -93,12 +100,10 @@ def pyclass_dumps(jaen):
     title = "\n" + jm["title"] if "title" in jm else ""
     desc = "\n\n" + fill(jm["description"], width=80) if "description" in jm else ""
     pstr = '"""' + title + desc + '\n"""\n\n'
-    pstr += "__version__ = \"" + jm["version"] + "\"\n" if "version" in jm else ""
-    m = set(jm.keys()) - {"title", "description", "version", "import"}
+    pstr += '__version__ = "' + jm["version"] + '"\n' if "version" in jm else ""
+    m = set(jm.keys()) - {"title", "description", "version"}
     if m:
-        pstr += "__meta__ = {\n"
-        pstr += ",\n".join(['    "' + k + '": "' + str(jm[k]) + '"' for k in m])      # TODO: pretty print
-        pstr += "\n}\n\n"
+        pstr += "__meta__ = " + pformat({k:jm[k] for k in m}, indent=2) + "\n\n"
     pstr += "from codec import Enumerated, Map, Record, Attribute, Choice, String, Integer\n"
     if "import" in jm:
         pstr += "import " + ', '.join([v[1] for v in jm["import"]]) + "\n"

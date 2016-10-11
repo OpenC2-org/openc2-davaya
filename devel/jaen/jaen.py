@@ -138,17 +138,23 @@ def jaen_dump(jaen, fname, source=""):
 if __name__ == "__main__":
     for fname in ("cybox", "openc2"):
 
+        source = fname + ".jaen"
+        dest = fname + "_genj"
+        jaen = jaen_load(source)
+        jaen_dump(jaen, dest + ".jaen", source)
+        pyclass_dump(jaen, dest + ".py", source)
+        pasn_dump(jaen, dest + ".pasn", source)
+
         source = fname + ".py"
         dest = fname + "_genp"
         jaen = pyclass_load(fname)
         jaen_check(jaen)
-        pasn_dump(jaen, dest + ".pasn", source)
         jaen_dump(jaen, dest + ".jaen", source)
-        pyclass_dump(jaen, dest + ".py", source)
+#        pyclass_dump(jaen, dest + ".py", source)
+#        pasn_dump(jaen, dest + ".pasn", source)
 
-        source = fname + ".jaen"
-        dest = fname + "_genj"
-        jaen = jaen_load(source)
-        pasn_dump(jaen, dest + ".pasn", source)
+        source = fname + ".pasn"
+        dest = fname + "_gena"
+        jaen = pasn_load(source)
+        jaen_check(jaen)
         jaen_dump(jaen, dest + ".jaen", source)
-        pyclass_dump(jaen, dest + ".py", source)

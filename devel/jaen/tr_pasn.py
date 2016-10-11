@@ -2,7 +2,7 @@
 Translate JAEN to and from Pseudo-ASN
 """
 
-import pyparsing as pp
+import grako
 from copy import deepcopy
 from datetime import datetime
 from codec import parse_type_opts, parse_field_opts
@@ -13,20 +13,17 @@ def pasn_loads(pasn_str):
     Parse a Pseudo_ASN (PASN) file
     """
 
-    # PASN grammar
-    identifier = pp.Word(pp.alphas + "_")
-    assign = pp.Literal("::=")
-    # typedef = identifier.setName("typeref") + assign + identifier.setName("basetype")
-    comment1 = pp.Literal("#") + pp.originalTextFor(pp.SkipTo(pp.LineEnd()))
-    # typelist = pp.OneOrMore(typedef)
-    meta1 = pp.LineStart() + identifier + pp.Literal(":") + pp.SkipTo(pp.LineEnd()).setDebug()
-    meta2 = pp.LineStart() + pp.White() + pp.SkipTo(pp.LineEnd()).setDebug()
-    metaval = meta1 + pp.ZeroOrMore(meta2)
-    # metalist = pp.ZeroOrMore(comment1) + pp.Literal("/*") + pp.OneOrMore(metaval) + pp.Literal("*/")
-    metalist = pp.SkipTo(pp.Literal("/*")).setDebug() + pp.Literal("/*") + pp.OneOrMore(
-    metaval).setDebug() + pp.Literal("*/")
+    pasn_grammar = """\
+    @@whitespace :: /[\t ]+/
+#   pasn = meta types ;
+    pasn = meta ~ types ~ $ ;    # cuts yield more specific error messages?
+    meta = '/*' { metaval }+ '*/' ;
+    metaval = /.*\n/!'*/' ;
+    types = {} ;
+    """
 
-    pasn = metalist.parseString(pasn_str, parseAll=False)
+    model = grako.genmodel("model", pasn_grammar)
+    pasn = model.parse(pasn_str)
     print(pasn)
     jaen = {"meta": {}, "types": []}
     return jaen

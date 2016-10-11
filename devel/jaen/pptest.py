@@ -17,8 +17,8 @@ c_open = pp.Literal("/*").suppress()
 c_close = pp.Literal("*/").suppress()
 meta1 = metakey + pp.Literal(":").suppress() + pp.SkipTo(pp.LineEnd())
 meta2 = pp.White().suppress() + pp.SkipTo(pp.LineEnd())
-meta_end = metakey | c_close
-# meta_end = pp.Literal("nam") | c_close
+# meta_end = metakey | c_close
+meta_end = pp.Literal("nam") | c_close
 metaval = pp.Group(meta1 + pp.ZeroOrMore(meta2, stopOn=meta_end)).setDebug()
 metalist = c_open + pp.OneOrMore(metaval) + c_close
 

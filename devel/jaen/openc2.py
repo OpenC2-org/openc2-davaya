@@ -9,7 +9,11 @@ in a format such as JSON, XML, or CBOR, or to generate format-specific message s
 __version__ = "0.1"
 __meta__ = {
     "namespace":"http://openc2.org/objects",
-    "root": "OpenC2Command"
+    "root": "OpenC2Command",
+    "import": [
+        [1, 'cybox', 'http://cybox.mitre.org/common-2'],
+        [2, 'cybox3', 'http://docs.oasis-open.org/CTI/cybox-3']],
+    "module": "openc2"
 }
 
 from codec import Enumerated, Map, Record, Attribute, Choice, String, Integer

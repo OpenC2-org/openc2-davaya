@@ -8,6 +8,51 @@
 },
 
 "types": [
+  ["AddressObject", "Record", [], "", [
+    [1, "Address_Value", "String", ["?"], ""],
+    [2, "VLAN_Name", "String", ["?"], ""],
+    [3, "VLAN_Num", "Integer", ["?"], ""]
+  ]],
+
+  ["DeviceObject", "Map", [], "", [
+    [1, "Description", "String", ["?"], ""],
+    [2, "Device_Type", "String", ["?"], ""],
+    [3, "Manufacturer", "String", ["?"], ""],
+    [4, "Model", "String", ["?"], ""],
+    [5, "Serial_Number", "String", ["?"], ""],
+    [6, "Firmware_Version", "String", ["?"], ""],
+    [7, "System_Details", "String", ["?"], ""]
+  ]],
+
+  ["DiskObject", "Record", [], "", [
+  ]],
+
+  ["DiskPartitionObject", "Record", [], "", [
+  ]],
+
+  ["DomainNameTypeEnum", "Enumerated", [], "", [
+    [1, "FQDN"],
+    [2, "TLD"]
+  ]],
+
+  ["DomainNameObject", "Record", [], "", [
+    [1, "type", "DomainNameTypeEnum", [], ""],
+    [2, "Value", "String", [], ""]
+  ]],
+
+  ["EmailMessageObject", "Record", [], "", [
+  ]],
+
+  ["FileObject", "Record", [], "", [
+  ]],
+
+  ["HostnameObject", "Record", [], "", [
+    [1, "Hostname_Value", "String", [], ""],
+    [2, "Naming_System", "String", ["?"], ""]
+  ]],
+
+  ["MemoryObject", "Record", [], "", [
+  ]],
 
   ["Layer3ProtocolType", "Enumerated", [], "", [
     [1, "IPv4"],
@@ -37,50 +82,25 @@
     [10, "DCCP"]
   ]],
 
-  ["AddressObject", "Record", [], "", [
-    [1, "Address_Value", "String", ["?"], ""],
-    [2, "VLAN_Name", "String", ["?"], ""],
-    [3, "VLAN_Num", "Integer", ["?"], ""]
+  ["SocketAddressChoice", "Choice", [], "", [
+    [1, "IP_Address", "AddressObject", [], ""],
+    [2, "Hostname", "HostnameObject", [], ""] ]],
+
+  ["PortObject", "Record", [], "", [
+    [1, "Port_Value", "Integer", ["?","[1:]"], ""],
+    [2, "Layer4_Protocol", "Layer4ProtocolType", ["?"], ""]
   ]],
 
-  ["DeviceObject", "Map", [], "", [
-    [1, "Description", "String", ["?"], ""],
-    [2, "Device_Type", "String", ["?"], ""],
-    [3, "Manufacturer", "String", ["?"], ""],
-    [4, "Model", "String", ["?"], ""],
-    [5, "Serial_Number", "String", ["?"], ""],
-    [6, "Firmware_Version", "String", ["?"], ""],
-    [7, "System_Details", "String", ["?"], ""]
+  ["SocketAddressObject", "Record", [], "", [
+    [1, "*", "SocketAddressChoice", [], ""],
+    [2, "Port", "PortObject", ["?"], ""]
   ]],
 
-  ["DiskObject", "Record", [], "", [
-  ]],
-
-  ["DiskPartitionObject", "Record", [], "", [
-  ]],
-
-  ["DomainNameTypeEnum", "Enumerated", [], "", [
-    [1, "FQDN"],
-    [2, "TLD"]
-  ]],
-
-  ["DomainNameObject", "Record", [], "", [
-    [1, "type", "DomainNameTypeEnum", [""], ""],
-    [2, "Value", "String", [""], ""]
-  ]],
-
-  ["EmailMessageObject", "Record", [], "", [
-  ]],
-
-  ["FileObject", "Record", [], "", [
-  ]],
-
-  ["HostnameObject", "Record", [], "", [
-    [1, "Hostname_Value", "String", [""], ""],
-    [2, "Naming_System", "String", ["?"], ""]
-  ]],
-
-  ["MemoryObject", "Record", [], "", [
+  ["NetworkConnectionObject", "Record", [], "", [
+    [1, "Layer3Protocol", "Layer3ProtocolType", ["?"], ""],
+    [2, "Layer4Protocol", "Layer4ProtocolType", ["?"], ""],
+    [3, "SourceSocketAddress", "SocketAddressObject", ["?"], ""],
+    [4, "DestinationSocketAddress", "SocketAddressObject", ["?"], ""]
   ]],
 
   ["NetworkFlowObject", "Record", [], "", [
@@ -92,39 +112,19 @@
   ["NetworkSubnetObject", "Record", [], "", [
   ]],
 
-  ["PortObject", "Record", [], "", [
-    [1, "Port_Value", "Integer", ["?","[1:]"], ""],
-    [2, "Layer4_Protocol", "Layer4ProtocolType", ["?"], ""]
-  ]],
-
   ["ProcessObject", "Record", [], "", [
   ]],
 
   ["ProductObject", "Record", [], "", [
   ]],
 
-  ["SocketAddressChoice", "Choice", [], "", [
-    [1, "IP_Address", "AddressObject", [], ""],
-    [2, "Hostname", "HostnameObject", [], ""] ]],
-
-  ["SocketAddressObject", "Record", [], "", [
-    [1, "*", "SocketAddressChoice", [], ""],
-    [2, "Port", "PortObject", ["?"], ""] ]],
-
-  ["NetworkConnectionObject", "Record", [], "", [
-    [1, "Layer3Protocol", "Layer3ProtocolType", ["?"], ""],
-    [2, "Layer4Protocol", "Layer4ProtocolType", ["?"], ""],
-    [3, "SourceSocketAddress", "SocketAddressObject", ["?"], ""],
-    [4, "DestinationSocketAddress", "SocketAddressObject", ["?"], ""]
+  ["SystemObject", "Record", [], "", [
   ]],
 
   ["URITypeEnum", "Enumerated", [], "", [
     [1, "URL"],
     [2, "General URN"],
     [3, "Domain Name"]
-  ]],
-
-  ["SystemObject", "Record", [], "", [
   ]],
 
   ["URIObject", "Record", [], "", [

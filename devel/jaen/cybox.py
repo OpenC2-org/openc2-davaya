@@ -100,7 +100,7 @@ class ProductObject(Record):
     ns = "ProductObj"
     vals = []                          # TODO: fill in
 
-class SocketAddressChoice1(Choice):
+class SocketAddressChoice(Choice):
     ns = "SocketAddressObj"
     vals = [
         ("IP_Address", AddressObject, [], ""),
@@ -109,7 +109,7 @@ class SocketAddressChoice1(Choice):
 class SocketAddressObject(Record):
     ns = "SocketAddressObj"
     vals = [
-        ("*", SocketAddressChoice1, [], ""),
+        ("*", SocketAddressChoice, [], ""),
         ("Port", PortObject, ["?"], "")]
 
 class NetworkConnectionObject(Record):      # Network_Connection_Object.xsd
