@@ -2,30 +2,41 @@
 Translate JAEN to and from Pseudo-ASN
 """
 
-import grako
+import json, re
 from copy import deepcopy
 from datetime import datetime
 from codec import parse_type_opts, parse_field_opts
 from textwrap import fill, shorten
+
+def _parse_import(import_str):
+    id, ns, uid = re.match("(\d+),\s*(\w+),\s*(.+)$", import_str).groups()
+    return [int(id), ns, uid]
 
 def pasn_loads(pasn_str):
     """
     Parse a Pseudo_ASN (PASN) file
     """
 
-    pasn_grammar = """\
-    @@whitespace :: /[\t ]+/
-#   pasn = meta types ;
-    pasn = meta ~ types ~ $ ;    # cuts yield more specific error messages?
-    meta = '/*' { metaval }+ '*/' ;
-    metaval = /.*\n/!'*/' ;
-    types = {} ;
-    """
-
-    model = grako.genmodel("model", pasn_grammar)
-    pasn = model.parse(pasn_str)
-    print(pasn)
-    jaen = {"meta": {}, "types": []}
+    pre_m = re.match("((.|\n)*?)(?=(/\*|$))", pasn_str)
+    meta_m = re.match("/\*((.|\n)*?)(?=(\*/|$))", pasn_str[pre_m.end():])
+    types_m = re.match("\*/((.|\n)*)", pasn_str[pre_m.end() + meta_m.end():])
+    meta_str = meta_m.group(1).strip()
+    types_str = types_m.group(1).strip()
+    meta = {}
+    for line in meta_str.split("\n"):
+        k, v1, v2 = re.match("^(\w+):\s*(.*)|\s+(.*)", line).groups()
+        if k:
+            meta[k] = [_parse_import(v1)] if k == "import" else v1
+            key = k
+        elif key:
+            if key == "import":
+                meta[key].append(_parse_import(v2))
+            else:
+                meta[key] += " " + v2
+        else:
+            print("pasn_loads: invalid meta continuation:", k, v1, v2)
+    types = []
+    jaen = {"meta": meta, "types": types}
     return jaen
 
 def pasn_load(fname):
