@@ -2,7 +2,7 @@
 Translate JAEN to and from Pseudo-ASN
 """
 
-import json, re
+import grako, re
 from copy import deepcopy
 from datetime import datetime
 from codec import parse_type_opts, parse_field_opts
@@ -22,6 +22,8 @@ def pasn_loads(pasn_str):
     types_m = re.match("\*/((.|\n)*)", pasn_str[pre_m.end() + meta_m.end():])
     meta_str = meta_m.group(1).strip()
     types_str = types_m.group(1).strip()
+
+    # Load meta attributes contained in comment block /* ... */
     meta = {}
     for line in meta_str.split("\n"):
         k, v1, v2 = re.match("^(\w+):\s*(.*)|\s+(.*)", line).groups()
@@ -35,7 +37,22 @@ def pasn_loads(pasn_str):
                 meta[key] += " " + v2
         else:
             print("pasn_loads: invalid meta continuation:", k, v1, v2)
-    types = []
+
+    # Load type definitions
+    typedef_grammar = """\
+typedefs = {typedef}+ $ ;
+typedef = name "::=" basetype [options] [fieldlist] ;
+name = /\w+/ ;
+basetype = /\w+/ ;
+options = "(" /.+?\)/ ;
+fieldlist = "{" fields ;
+fields = field {"," field}* ;
+field = /.+?(?=[,}])/ ;
+"""
+    model = grako.genmodel("model", typedef_grammar)
+    types_ast = model.parse(types_str)
+    print(types_ast)
+
     jaen = {"meta": meta, "types": types}
     return jaen
 

@@ -12,6 +12,7 @@ from tr_pasn import pasn_load, pasn_dump
 from tr_pyclass import pyclass_load, pyclass_dump
 
 # TODO: Establish CTI/JSON namespace conventions, merge "module" (name) and "namespace" (module unique id) properties
+# TODO: Update JAEN file to be array of namespaces ( {meta, types} pairs )
 
 jaen_schema = {
     "type": "object",
