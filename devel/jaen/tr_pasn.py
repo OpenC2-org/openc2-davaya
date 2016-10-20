@@ -40,15 +40,44 @@ def pasn_loads(pasn_str):
 
     # Load type definitions
     typedef_grammar = """\
-typedefs = {typedef}+ $ ;
-typedef = name "::=" basetype [options] [fieldlist] ;
-name = /\w+/ ;
-basetype = /\w+/ ;
-options = "(" /.+?\)/ ;
-fieldlist = "{" fields ;
-fields = field {"," field}* ;
-field = /.+?(?=[,}])/ ;
+doc = [begin @:{meta} end] {typedef}+ $ ;
+begin = "/*" ;
+end = "*/" ;
+meta = NL Key KS Val {SP Val} ;
+NL = /(\n|\r)*/ ;
+Key = /\w+/ ;
+KS = ":" ;
+Val = /.+/ ;
+SP = /( |\t)+/ ;
+typedef = name:name "::=" type:name [topts:topts] [tdesc:comment] [fields:fieldlist] ;
+topts = "("
+      ("PATTERN" any)
+    | ("Foo")
+    ")" ;
+any = /(\w|_|-)+|\s+|./;
+comment = "--" /.*/ ;
+fieldlist = "{" @:",".{ field } "}" ;
+field = { !"}" !"," (name:name tag:etag) | ( name:(name|"*") [tag:ftag] type:name [fopts:fopts] [fdesc:comment] ) } ;
+etag = "(" @:/\d+/ ")" ;
+ftag = "[" @:/\d+/ "]" ;
+fopts = "OPTIONAL"
+      | "MIN"
+      | "MAX"
+      ;
+name = /(\w|_|-)+/ ;
 """
+
+    # meta = "module:" any
+    # | "title:" any
+    # | "version:" any
+    # | "description:" any
+    # | "namespace:" any
+    # ;
+    # doc = [any] [begin {meta} end] {typedef}+ $ ;
+    # options = "(" { !")" tok } ")";
+    # tok = / (\w | _ | -)+ |\s + |./;
+    # fopts = /(.|\n)+?(?=[,}])/ ;
+
     model = grako.genmodel("model", typedef_grammar)
     types_ast = model.parse(types_str)
     print(types_ast)
