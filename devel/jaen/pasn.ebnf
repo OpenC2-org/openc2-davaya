@@ -1,0 +1,33 @@
+# EBNF Grammar for Pseudo-ASN files
+# Compile into parser using:  $ python -m grako pasn.ebnf -o pasn_parse.py -m pasn
+
+pasndoc = head:{!(name defined_as) !begin any}
+          metas:[meta]
+          types:{type}+ $
+          ;
+meta = begin {!end [NL] @:Line NL} end ;
+type = name:name defined_as type:name [topts:topts] [tdesc:comment] [fields:fieldlist] ;
+
+name = /(\w|_|-)+/ ;
+any = /(\w|_|-)+|\s+|./ ;
+Line = /.*/ ;
+begin = "/*" ;
+end = "*/" ;
+defined_as = "::=" ;
+NL = /(\n|\r)+/ ;
+topts = "("
+      ("PATTERN" any)
+    | ("Foo")
+    ")" ;
+comment = "--" /.*/ ;
+fieldlist = "{" @:",".{ field } "}" ;
+field = { !"}" !","
+        ( name:name tag:etag )                                                  # Enumeration value, or
+      | ( name:(name|"*") [tag:ftag] type:name [fopts:fopts] [fdesc:comment] )  # structured datatype field
+      } ;
+etag = "(" @:/\d+/ ")" ;
+ftag = "[" @:/\d+/ "]" ;
+fopts = "OPTIONAL"
+      | "MIN"
+      | "MAX"
+      ;

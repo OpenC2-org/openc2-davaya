@@ -2,7 +2,8 @@
 Translate JAEN to and from Pseudo-ASN
 """
 
-import grako, re
+import re
+import pasn_parse
 from copy import deepcopy
 from datetime import datetime
 from codec import parse_type_opts, parse_field_opts
@@ -12,76 +13,36 @@ def _parse_import(import_str):
     id, ns, uid = re.match("(\d+),\s*(\w+),\s*(.+)$", import_str).groups()
     return [int(id), ns, uid]
 
+def _nstr(v):
+    return v if v else ""
+
+def _topts(v):
+    return []
+
+def _fopts(v):
+    return []
+
 def pasn_loads(pasn_str):
     """
     Parse a Pseudo_ASN (PASN) file
     """
 
-    pre_m = re.match("((.|\n)*?)(?=(/\*|$))", pasn_str)
-    meta_m = re.match("/\*((.|\n)*?)(?=(\*/|$))", pasn_str[pre_m.end():])
-    types_m = re.match("\*/((.|\n)*)", pasn_str[pre_m.end() + meta_m.end():])
-    meta_str = meta_m.group(1).strip()
-    types_str = types_m.group(1).strip()
-
-    # Load meta attributes contained in comment block /* ... */
+    parser = pasn_parse.pasnParser(parseinfo=False)
+    ast = parser.parse(pasn_str, 'pasndoc')
     meta = {}
-    for line in meta_str.split("\n"):
-        k, v1, v2 = re.match("^(\w+):\s*(.*)|\s+(.*)", line).groups()
-        if k:
-            meta[k] = [_parse_import(v1)] if k == "import" else v1
-            key = k
-        elif key:
-            if key == "import":
-                meta[key].append(_parse_import(v2))
+    types = []
+    for t in ast["types"]:
+        fields = []
+        for n, f in enumerate(t["fields"]):
+            tag = n + 1 if t["type"] == "Record" else f["tag"]
+            if tag:
+                if t["type"] == "Enumerated":
+                    fields.append([tag, f["name"]])
+                else:
+                    fields.append([tag, f["name"], f["type"], _fopts(f["fopts"]), _nstr(f["fdesc"])])
             else:
-                meta[key] += " " + v2
-        else:
-            print("pasn_loads: invalid meta continuation:", k, v1, v2)
-
-    # Load type definitions
-    typedef_grammar = """\
-doc = [begin @:{meta} end] {typedef}+ $ ;
-begin = "/*" ;
-end = "*/" ;
-meta = NL Key KS Val {SP Val} ;
-NL = /(\n|\r)*/ ;
-Key = /\w+/ ;
-KS = ":" ;
-Val = /.+/ ;
-SP = /( |\t)+/ ;
-typedef = name:name "::=" type:name [topts:topts] [tdesc:comment] [fields:fieldlist] ;
-topts = "("
-      ("PATTERN" any)
-    | ("Foo")
-    ")" ;
-any = /(\w|_|-)+|\s+|./;
-comment = "--" /.*/ ;
-fieldlist = "{" @:",".{ field } "}" ;
-field = { !"}" !"," (name:name tag:etag) | ( name:(name|"*") [tag:ftag] type:name [fopts:fopts] [fdesc:comment] ) } ;
-etag = "(" @:/\d+/ ")" ;
-ftag = "[" @:/\d+/ "]" ;
-fopts = "OPTIONAL"
-      | "MIN"
-      | "MAX"
-      ;
-name = /(\w|_|-)+/ ;
-"""
-
-    # meta = "module:" any
-    # | "title:" any
-    # | "version:" any
-    # | "description:" any
-    # | "namespace:" any
-    # ;
-    # doc = [any] [begin {meta} end] {typedef}+ $ ;
-    # options = "(" { !")" tok } ")";
-    # tok = / (\w | _ | -)+ |\s + |./;
-    # fopts = /(.|\n)+?(?=[,}])/ ;
-
-    model = grako.genmodel("model", typedef_grammar)
-    types_ast = model.parse(types_str)
-    print(types_ast)
-
+                print("Warning: empty field:", t["name"])
+        types.append([t["name"], t["type"], _topts(t["topts"]), _nstr(t["tdesc"]), fields])
     jaen = {"meta": meta, "types": types}
     return jaen
 
