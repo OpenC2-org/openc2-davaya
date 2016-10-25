@@ -156,6 +156,7 @@ if __name__ == "__main__":
 
         source = fname + ".pasn"
         dest = fname + "_gena"
+        jaen = {}
         jaen = pasn_load(source)
         jaen_check(jaen)
         jaen_dump(jaen, dest + ".jaen", source)

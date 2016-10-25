@@ -21,7 +21,7 @@ Layer3ProtocolType ::= Enumerated {
     IPSec        (9),
     IPX          (10),
     Routed-SMLT  (11),
-    SCCP         (12),
+    SCCP         (12)
 }
 
 Layer4ProtocolType ::= Enumerated {

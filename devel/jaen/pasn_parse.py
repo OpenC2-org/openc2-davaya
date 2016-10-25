@@ -59,7 +59,7 @@ class pasnParser(Parser):
         comments_re=None,
         eol_comments_re=None,
         ignorecase=None,
-        left_recursion=True,
+        left_recursion=False,
         parseinfo=True,
         keywords=None,
         namechars='',
@@ -83,13 +83,13 @@ class pasnParser(Parser):
         )
 
     @graken()
-    def _pasndoc_(self):
+    def _pasn_(self):
 
         def block1():
             with self._ifnot():
                 with self._group():
                     self._name_()
-                    self._defined_as_()
+                    self._define_()
             with self._ifnot():
                 self._begin_()
             self._any_()
@@ -117,45 +117,13 @@ class pasnParser(Parser):
             with self._ifnot():
                 self._end_()
             with self._optional():
+                with self._optional():
+                    self._WS_()
                 self._NL_()
-            self._Line_()
+            self._KVal_()
             self.name_last_node('@')
-            self._NL_()
         self._closure(block0)
         self._end_()
-
-    @graken()
-    def _type_(self):
-        self._name_()
-        self.name_last_node('name')
-        self._defined_as_()
-        self._name_()
-        self.name_last_node('type')
-        with self._optional():
-            self._topts_()
-            self.name_last_node('topts')
-        with self._optional():
-            self._comment_()
-            self.name_last_node('tdesc')
-        with self._optional():
-            self._fieldlist_()
-            self.name_last_node('fields')
-        self.ast._define(
-            ['fields', 'name', 'tdesc', 'topts', 'type'],
-            []
-        )
-
-    @graken()
-    def _name_(self):
-        self._pattern(r'(\w|_|-)+')
-
-    @graken()
-    def _any_(self):
-        self._pattern(r'(\w|_|-)+|\s+|.')
-
-    @graken()
-    def _Line_(self):
-        self._pattern(r'.*')
 
     @graken()
     def _begin_(self):
@@ -166,26 +134,75 @@ class pasnParser(Parser):
         self._token('*/')
 
     @graken()
-    def _defined_as_(self):
-        self._token('::=')
+    def _KVal_(self):
+        self._name_()
+        self.name_last_node('key')
+        self._token(':')
+
+        def block2():
+            self._Val_()
+        self._positive_closure(block2)
+        self.name_last_node('val')
+        self.ast._define(
+            ['key', 'val'],
+            []
+        )
+
+    @graken()
+    def _Val_(self):
+        self._WS_()
+        self._pattern(r'.*')
+        self.name_last_node('@')
+        self._NL_()
+
+    @graken()
+    def _WS_(self):
+        self._pattern(r'\s+')
 
     @graken()
     def _NL_(self):
         self._pattern(r'(\n|\r)+')
 
     @graken()
-    def _topts_(self):
-        with self._choice():
-            with self._option():
-                self._token('(')
-                with self._group():
-                    self._token('PATTERN')
-                    self._any_()
-            with self._option():
-                with self._group():
-                    self._token('Foo')
-                self._token(')')
-            self._error('expecting one of: Foo')
+    def _type_(self):
+        self._name_()
+        self.name_last_node('name')
+        self._define_()
+        self._name_()
+        self.name_last_node('type')
+        with self._optional():
+            self._topts_()
+            self.name_last_node('topts')
+        with self._optional():
+            self._comment_()
+            self.name_last_node('tdesc')
+        with self._optional():
+            self._fields_()
+            self.name_last_node('fields')
+        self.ast._define(
+            ['fields', 'name', 'tdesc', 'topts', 'type'],
+            []
+        )
+
+    @graken()
+    def _any_(self):
+        self._pattern(r'(\w|_|-)+|\s+|.')
+
+    @graken()
+    def _name_(self):
+        self._pattern(r'(\w|_|-)+')
+
+    @graken()
+    def _qname_(self):
+        self._pattern(r'(\w+:)?(\w|_|-)+')
+
+    @graken()
+    def _int_(self):
+        self._pattern(r'\d+')
+
+    @graken()
+    def _define_(self):
+        self._token('::=')
 
     @graken()
     def _comment_(self):
@@ -193,7 +210,15 @@ class pasnParser(Parser):
         self._pattern(r'.*')
 
     @graken()
-    def _fieldlist_(self):
+    def _topts_(self):
+        self._token('(')
+        with self._group():
+            self._token('PATTERN')
+            self._any_()
+        self._token(')')
+
+    @graken()
+    def _fields_(self):
         self._token('{')
 
         def sep1():
@@ -207,42 +232,35 @@ class pasnParser(Parser):
 
     @graken()
     def _field_(self):
-
-        def block0():
-            with self._choice():
-                with self._option():
-                    with self._ifnot():
-                        self._token('}')
-                    with self._ifnot():
-                        self._token(',')
+        with self._choice():
+            with self._option():
+                with self._group():
+                    self._qname_()
+                    self.name_last_node('name')
+                    self._etag_()
+                    self.name_last_node('tag')
+            with self._option():
+                with self._group():
                     with self._group():
-                        self._name_()
-                        self.name_last_node('name')
-                        self._etag_()
+                        with self._choice():
+                            with self._option():
+                                self._qname_()
+                            with self._option():
+                                self._token('*')
+                            self._error('expecting one of: *')
+                    self.name_last_node('name')
+                    with self._optional():
+                        self._ftag_()
                         self.name_last_node('tag')
-                with self._option():
-                    with self._group():
-                        with self._group():
-                            with self._choice():
-                                with self._option():
-                                    self._name_()
-                                with self._option():
-                                    self._token('*')
-                                self._error('expecting one of: *')
-                        self.name_last_node('name')
-                        with self._optional():
-                            self._ftag_()
-                            self.name_last_node('tag')
-                        self._name_()
-                        self.name_last_node('type')
-                        with self._optional():
-                            self._fopts_()
-                            self.name_last_node('fopts')
-                        with self._optional():
-                            self._comment_()
-                            self.name_last_node('fdesc')
-                self._error('no available options')
-        self._closure(block0)
+                    self._qname_()
+                    self.name_last_node('type')
+                    with self._optional():
+                        self._fopts_()
+                        self.name_last_node('fopts')
+                    with self._optional():
+                        self._comment_()
+                        self.name_last_node('fdesc')
+            self._error('no available options')
         self.ast._define(
             ['fdesc', 'fopts', 'name', 'tag', 'type'],
             []
@@ -251,14 +269,14 @@ class pasnParser(Parser):
     @graken()
     def _etag_(self):
         self._token('(')
-        self._pattern(r'\d+')
+        self._int_()
         self.name_last_node('@')
         self._token(')')
 
     @graken()
     def _ftag_(self):
         self._token('[')
-        self._pattern(r'\d+')
+        self._int_()
         self.name_last_node('@')
         self._token(']')
 
@@ -269,28 +287,21 @@ class pasnParser(Parser):
                 self._token('OPTIONAL')
             with self._option():
                 self._token('MIN')
+                self._int_()
             with self._option():
                 self._token('MAX')
-            self._error('expecting one of: MAX MIN OPTIONAL')
+                self._int_()
+            with self._option():
+                self._token('.&')
+                self._name_()
+            self._error('expecting one of: OPTIONAL')
 
 
 class pasnSemantics(object):
-    def pasndoc(self, ast):
+    def pasn(self, ast):
         return ast
 
     def meta(self, ast):
-        return ast
-
-    def type(self, ast):
-        return ast
-
-    def name(self, ast):
-        return ast
-
-    def any(self, ast):
-        return ast
-
-    def Line(self, ast):
         return ast
 
     def begin(self, ast):
@@ -299,19 +310,43 @@ class pasnSemantics(object):
     def end(self, ast):
         return ast
 
-    def defined_as(self, ast):
+    def KVal(self, ast):
+        return ast
+
+    def Val(self, ast):
+        return ast
+
+    def WS(self, ast):
         return ast
 
     def NL(self, ast):
         return ast
 
-    def topts(self, ast):
+    def type(self, ast):
+        return ast
+
+    def any(self, ast):
+        return ast
+
+    def name(self, ast):
+        return ast
+
+    def qname(self, ast):
+        return ast
+
+    def int(self, ast):
+        return ast
+
+    def define(self, ast):
         return ast
 
     def comment(self, ast):
         return ast
 
-    def fieldlist(self, ast):
+    def topts(self, ast):
+        return ast
+
+    def fields(self, ast):
         return ast
 
     def field(self, ast):

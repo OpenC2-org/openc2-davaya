@@ -24,17 +24,21 @@ def _fopts(v):
 
 def pasn_loads(pasn_str):
     """
-    Parse a Pseudo_ASN (PASN) file
+    Load abstract syntax from Pseudo_ASN file
     """
 
-    parser = pasn_parse.pasnParser(parseinfo=False)
-    ast = parser.parse(pasn_str, 'pasndoc')
+    parser = pasn_parse.pasnParser(parseinfo=True, )
+
+    ast = parser.parse(pasn_str, 'pasn', trace=False)
     meta = {}
+    for m in ast["metas"]:
+        meta[m["key"]] = " ".join(m["val"])
+
     types = []
     for t in ast["types"]:
         fields = []
         for n, f in enumerate(t["fields"]):
-            tag = n + 1 if t["type"] == "Record" else f["tag"]
+            tag = n + 1 if t["type"] == "Record" else int(f["tag"])
             if tag:
                 if t["type"] == "Enumerated":
                     fields.append([tag, f["name"]])

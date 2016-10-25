@@ -1,33 +1,38 @@
 # EBNF Grammar for Pseudo-ASN files
-# Compile into parser using:  $ python -m grako pasn.ebnf -o pasn_parse.py -m pasn
+# Compile grammar into parser using:  $ python -m grako pasn.ebnf -o pasn_parse.py
 
-pasndoc = head:{!(name defined_as) !begin any}
-          metas:[meta]
-          types:{type}+ $
-          ;
-meta = begin {!end [NL] @:Line NL} end ;
-type = name:name defined_as type:name [topts:topts] [tdesc:comment] [fields:fieldlist] ;
+@@grammar :: pasn
 
-name = /(\w|_|-)+/ ;
-any = /(\w|_|-)+|\s+|./ ;
-Line = /.*/ ;
+pasn = head:{!(name define) !begin any}   # Ignore anything before meta
+    metas:[meta]                          # Administrative information - key:value pairs
+    types:{type}+ $                       # Datatype definitions
+    ;
+meta = begin {!end [[WS] NL] @:KVal} end ;
 begin = "/*" ;
 end = "*/" ;
-defined_as = "::=" ;
+KVal = key:name ":" val:{Val}+ ;               # Don't skip whitespace
+Val = WS @:/.*/ NL ;
+WS = /\s+/ ;
 NL = /(\n|\r)+/ ;
-topts = "("
-      ("PATTERN" any)
-    | ("Foo")
-    ")" ;
+
+type = name:name define type:name [topts:topts] [tdesc:comment] [fields:fields] ;
+any =  /(\w|_|-)+|\s+|./ ;
+name = /(\w|_|-)+/ ;
+qname = /(\w+:)?(\w|_|-)+/ ;
+int = /\d+/ ;
+define = "::=" ;
 comment = "--" /.*/ ;
-fieldlist = "{" @:",".{ field } "}" ;
-field = { !"}" !","
-        ( name:name tag:etag )                                                  # Enumeration value, or
-      | ( name:(name|"*") [tag:ftag] type:name [fopts:fopts] [fdesc:comment] )  # structured datatype field
-      } ;
-etag = "(" @:/\d+/ ")" ;
-ftag = "[" @:/\d+/ "]" ;
-fopts = "OPTIONAL"
-      | "MIN"
-      | "MAX"
+topts = "("                 # Datatype options
+        ("PATTERN" any)
+      ")" ;
+fields = "{" @:",".{ field } "}" ;
+field = ( name:qname tag:etag )                                                  # Enumeration value, or
+      | ( name:(qname|"*") [tag:ftag] type:qname [fopts:fopts] [fdesc:comment] )  #  structured datatype field
+      ;
+etag = "(" @:int ")" ;
+ftag = "[" @:int "]" ;
+fopts = "OPTIONAL"          # Field options
+      | "MIN" int
+      | "MAX" int
+      | ".&" name
       ;
