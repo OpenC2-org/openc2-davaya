@@ -23,7 +23,7 @@ int = /\d+/ ;
 define = "::=" ;
 comment = "--" /.*/ ;
 topts = "("                 # Datatype options
-        ("PATTERN" any)
+        ("PATTERN" { !"any)
       ")" ;
 fields = "{" @:",".{ field } "}" ;
 field = ( name:qname tag:etag )                                                  # Enumeration value, or
@@ -31,8 +31,8 @@ field = ( name:qname tag:etag )                                                 
       ;
 etag = "(" @:int ")" ;
 ftag = "[" @:int "]" ;
-fopts = "OPTIONAL"          # Field options
+fopts = { "OPTIONAL"          # Field options
       | "MIN" int
       | "MAX" int
       | ".&" name
-      ;
+      }+ ;

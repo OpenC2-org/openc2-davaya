@@ -282,19 +282,22 @@ class pasnParser(Parser):
 
     @graken()
     def _fopts_(self):
-        with self._choice():
-            with self._option():
-                self._token('OPTIONAL')
-            with self._option():
-                self._token('MIN')
-                self._int_()
-            with self._option():
-                self._token('MAX')
-                self._int_()
-            with self._option():
-                self._token('.&')
-                self._name_()
-            self._error('expecting one of: OPTIONAL')
+
+        def block0():
+            with self._choice():
+                with self._option():
+                    self._token('OPTIONAL')
+                with self._option():
+                    self._token('MIN')
+                    self._int_()
+                with self._option():
+                    self._token('MAX')
+                    self._int_()
+                with self._option():
+                    self._token('.&')
+                    self._name_()
+                self._error('expecting one of: OPTIONAL')
+        self._positive_closure(block0)
 
 
 class pasnSemantics(object):
