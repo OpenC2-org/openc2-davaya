@@ -226,8 +226,23 @@ Modifiers ::= MAP {
 }
 
 OpenC2Command ::= RECORD {
-    action       Action,
-    target       Target,
-    actuator     Actuator OPTIONAL,
-    modifiers    Modifiers OPTIONAL
+    action      Action,
+    target      Target,
+    actuator    Actuator OPTIONAL,
+    modifiers   Modifiers OPTIONAL
+}
+
+OpenC2Response ::= RECORD {
+    cmdref      UTF8String,      -- or UUID?
+    results     UTF8String
+}
+
+OpenC2Alert ::= RECORD {
+    message     UTF8String
+}
+
+OpenC2Object ::= CHOICE {
+    command     OpenC2Command,
+    response    OpenC2Response,
+    alert       OpenC2Alert
 }

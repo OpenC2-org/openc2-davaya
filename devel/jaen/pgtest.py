@@ -7,8 +7,8 @@ name = /(\w|_|-)+/ ;
 qname = /(\w+:)?(\w|_|-)+/ ;
 int = /\d+/ ;
 define = "::=" ;
-comment = "--" /.*/ ;
-fields = "{" @:",".{ field } "}" ;
+comment = "--" @:/.*/ ;
+fields = "{" [td:comment] ",".{ field } "}" ;
 field = ( name:qname tag:etag )                                                  # Enumeration value, or
       | ( name:(qname|"*") [tag:ftag] type:qname [fopts:fopts] [fdesc:comment] )  #  structured datatype field
       ;
