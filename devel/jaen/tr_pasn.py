@@ -32,21 +32,31 @@ def pasn_loads(pasn_str):
     ast = parser.parse(pasn_str, 'pasn', trace=False)
     meta = {}
     for m in ast["metas"]:
-        meta[m["key"]] = " ".join(m["val"])
+        k = m["key"]
+        if k.lower() == "import":
+            meta[k] = [[f.strip() for f in v.split(",")] for v in m["val"]]
+        else:
+            meta[k] = " ".join(m["val"])
 
     types = []
     for t in ast["types"]:
         fields = []
-        for n, f in enumerate(t["fields"]):
-            tag = n + 1 if t["type"] == "Record" else int(f["tag"])
-            if tag:
-                if t["type"] == "Enumerated":
-                    fields.append([tag, f["name"]])
+        tdesc = t["td1"] if t["td1"] else t["td2"]
+        if t["f"]:
+            for n, f in enumerate(t["f"]["fields"]):
+                fdesc = f["fd2"]
+                if t["type"].lower() == "record":
+                    tag = n + 1
+                elif isinstance(f["tag"], str):
+                    tag = int(f["tag"])
                 else:
-                    fields.append([tag, f["name"], f["type"], _fopts(f["fopts"]), _nstr(f["fdesc"])])
-            else:
-                print("Warning: empty field:", t["name"])
-        types.append([t["name"], t["type"], _topts(t["topts"]), _nstr(t["tdesc"]), fields])
+                    print("Error: missing tag", t["name"], f["name"])
+                if tag:
+                    if t["type"].lower() == "enumerated":
+                        fields.append([tag, f["name"], _nstr(fdesc)])
+                    else:
+                        fields.append([tag, f["name"], f["type"], _fopts(f["fopts"]), _nstr(fdesc)])
+            types.append([t["name"], t["type"], _topts(t["topts"]), _nstr(tdesc), fields])
     jaen = {"meta": meta, "types": types}
     return jaen
 

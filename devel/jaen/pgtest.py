@@ -2,18 +2,21 @@ import grako, json
 
 grammar = """\
 doc = types:{type}+ $ ;
-type = name:name define type:name [tdesc:comment] [fields:fields] ;
+type = name:name define type:name [topts:topts] td1:cmt [f:fields] ;
 name = /(\w|_|-)+/ ;
 qname = /(\w+:)?(\w|_|-)+/ ;
 int = /\d+/ ;
 define = "::=" ;
-comment = "--" @:/.*/ ;
-fields = "{" [td:comment] ",".{ field } "}" ;
-field = ( name:qname tag:etag )                                                  # Enumeration value, or
-      | ( name:(qname|"*") [tag:ftag] type:qname [fopts:fopts] [fdesc:comment] )  #  structured datatype field
+cmt = ["--" @:/.*/] ;
+str = '"' @:{ !'"' /./ } '"' ;
+fields = "{" td2:cmt fields:",".{ field } "}" ;
+field = ( fd1:cmt name:qname tag:etag fd2:cmt )                                   # Enumeration value, or
+      | ( fd1:cmt name:(qname|"*") [tag:ftag] type:qname [fopts:fopts] fd2:cmt )  #  structured datatype field
       ;
 etag = "(" @:int ")" ;
 ftag = "[" @:int "]" ;
+topts = { "(" @:("PATTERN" str) ")"
+      }+ ;
 fopts = { "OPTIONAL"          # Field options
       | "MIN" int
       | "MAX" int
@@ -21,7 +24,7 @@ fopts = { "OPTIONAL"          # Field options
       }+ ;
 """
 
-teststr1 = """\
+teststr = """\
 Action ::= ENUMERATED {
     scan         (1),
     locate       (2),
@@ -39,16 +42,23 @@ Target ::= RECORD {
 }
 """
 
+teststr1 = """\
+Action ::= ENUMERATED {
+    scan         (1),
+    locate       (2)
+}
+"""
+
 teststr2 = """\
 Action ::= ENUMERATED {    -- type description
-    scan         (1),
-    locate       (2),
-    query        (3)
+    scan         (1),       -- f1 description
+    locate       (2),       -- f2 description
+    query        (3)        -- f3 description
 }
 """
 
 teststr3 = """\
-Target ::= RECORD {
+Target ::= RECORD {    -- type description
     type         TargetType,           -- field description
     specifiers   cybox:CyboxObject.&type OPTIONAL   -- here's another
 }
@@ -66,5 +76,5 @@ WhereValue ::= ENUMERATED {
 """
 
 pasng = grako.genmodel("xyz", grammar)
-ast = pasng.parse(teststr2)
+ast = pasng.parse(teststr4)
 print(json.dumps(ast, indent=2))

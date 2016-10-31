@@ -61,7 +61,7 @@ jaen_schema = {
                     {   "type": "array",
                         "items": {
                             "type": "array",
-                            "minItems": 2,
+                            "minItems": 3,
                             "maxItems": 5,
                             "items": [
                                 {"type": "integer"},
@@ -86,7 +86,7 @@ def jaen_check(jaen):
         if t[1].lower() in ("string", "integer", "number", "boolean") and len(t) != 4:    # TODO: trace back to base type
             print("Type format error:", t[0], "- primitive type", t[1], "cannot have items")
         if len(t) > 4:
-            n = 2 if t[1].lower() == "enumerated" else 5
+            n = 3 if t[1].lower() == "enumerated" else 5
             tags = set()
             record = t[1].lower() == "record"
             for k, i in enumerate(t[4]):          # item definition: 0-tag, 1-name, 2-type, 3-options, 4-description

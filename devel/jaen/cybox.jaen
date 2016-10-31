@@ -31,8 +31,8 @@
   ]],
 
   ["DomainNameTypeEnum", "Enumerated", [], "", [
-    [1, "FQDN"],
-    [2, "TLD"]
+    [1, "FQDN", ""],
+    [2, "TLD", ""]
   ]],
 
   ["DomainNameObject", "Record", [], "", [
@@ -55,31 +55,31 @@
   ]],
 
   ["Layer3ProtocolType", "Enumerated", [], "", [
-    [1, "IPv4"],
-    [2, "IPv6"],
-    [3, "ICMP"],
-    [4, "IGMP"],
-    [5, "IGRP"],
-    [6, "CLNP"],
-    [7, "EGP"],
-    [8, "EIGRP"],
-    [9, "IPSec"],
-    [10, "IPX"],
-    [11, "Routed-SMLT"],
-    [12, "SCCP"]
+    [1, "IPv4", ""],
+    [2, "IPv6", ""],
+    [3, "ICMP", ""],
+    [4, "IGMP", ""],
+    [5, "IGRP", ""],
+    [6, "CLNP", ""],
+    [7, "EGP", ""],
+    [8, "EIGRP", ""],
+    [9, "IPSec", ""],
+    [10, "IPX", ""],
+    [11, "Routed-SMLT", ""],
+    [12, "SCCP", ""]
   ]],
 
   ["Layer4ProtocolType", "Enumerated", [], "", [
-    [1, "TCP"],
-    [2, "UDP"],
-    [3, "AH"],
-    [4, "ESP"],
-    [5, "GRE"],
-    [6, "IL"],
-    [7, "SCTP"],
-    [8, "Sinec_H1"],
-    [9, "SPX"],
-    [10, "DCCP"]
+    [1, "TCP", ""],
+    [2, "UDP", ""],
+    [3, "AH", ""],
+    [4, "ESP", ""],
+    [5, "GRE", ""],
+    [6, "IL", ""],
+    [7, "SCTP", ""],
+    [8, "Sinec_H1", ""],
+    [9, "SPX", ""],
+    [10, "DCCP", ""]
   ]],
 
   ["SocketAddressChoice", "Choice", [], "", [
@@ -122,9 +122,9 @@
   ]],
 
   ["URITypeEnum", "Enumerated", [], "", [
-    [1, "URL"],
-    [2, "General URN"],
-    [3, "Domain Name"]
+    [1, "URL", ""],
+    [2, "General URN", ""],
+    [3, "Domain Name", ""]
   ]],
 
   ["URIObject", "Record", [], "", [
@@ -154,9 +154,9 @@
   ]],
 
   ["X509CertificateObject", "Enumerated", [], "", [
-    [1, "Certificate"],
-    [2, "RawCertificate"],
-    [3, "CertificateSignature"]
+    [1, "Certificate", ""],
+    [2, "RawCertificate", ""],
+    [3, "CertificateSignature", ""]
   ]],
 
   ["CyboxObject", "Attribute", [], "", [

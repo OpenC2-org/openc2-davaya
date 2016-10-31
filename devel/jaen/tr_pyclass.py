@@ -69,6 +69,7 @@ def get_types(this_mod):
             base = inspect.getmro(c)[1].__name__        # parent type name
             typeopts = [">" + c.pattern] if hasattr(c, "pattern") else []
             typedesc = ""
+            fdesc = ""                          # No description for enumerated strings
             dep = []
             if hasattr(c, "vals"):
                 vals = []
@@ -81,7 +82,7 @@ def get_types(this_mod):
                             dep.append(v[1])
                         elif vmod != "codec":
                             v[1] = vmod + ":" + v[1]
-                    vals.append([n+1] + ([v] if isinstance(v, str) else v))
+                    vals.append([n+1] + ([v, fdesc] if isinstance(v, str) else v))
                 typdefs.update({name: [base, typeopts, typedesc, vals]})
             else:
                 typdefs.update({name: [base, typeopts, typedesc]})
@@ -117,8 +118,8 @@ def pyclass_dumps(jaen):
         if len(td) > 4:
             pstr += "  vals = [\n"
             if ttype.lower() == "enumerated":
-                fmt = '    ({0:d}, "{1}")'
-                pstr += ",\n".join([fmt.format(i[0], i[1]) for i in td[4]])
+                fmt = '    ({0:d}, "{1}", "{2}")'
+                pstr += ",\n".join([fmt.format(i[0], i[1], i[2]) for i in td[4]])
             else:
                 fmt = '    ({0:d}, "{1}", {2}, {3}, "{4}")'
                 pstr += ",\n".join([fmt.format(i[0], i[1], i[2].replace(":","."), i[3], i[4]) for i in td[4]])

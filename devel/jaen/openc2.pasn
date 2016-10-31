@@ -242,7 +242,7 @@ OpenC2Alert ::= RECORD {
 }
 
 OpenC2Object ::= CHOICE {
-    command     OpenC2Command,
-    response    OpenC2Response,
-    alert       OpenC2Alert
+    command     [1] OpenC2Command,
+    response    [2] OpenC2Response,
+    alert       [3] OpenC2Alert
 }

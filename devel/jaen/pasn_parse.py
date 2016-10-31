@@ -174,13 +174,13 @@ class pasnParser(Parser):
             self._topts_()
             self.name_last_node('topts')
         with self._optional():
-            self._comment_()
-            self.name_last_node('tdesc')
+            self._cmt_()
+            self.name_last_node('td1')
         with self._optional():
             self._fields_()
-            self.name_last_node('fields')
+            self.name_last_node('f')
         self.ast._define(
-            ['fields', 'name', 'tdesc', 'topts', 'type'],
+            ['f', 'name', 'td1', 'topts', 'type'],
             []
         )
 
@@ -205,42 +205,63 @@ class pasnParser(Parser):
         self._token('::=')
 
     @graken()
-    def _comment_(self):
+    def _cmt_(self):
         self._token('--')
         self._pattern(r'.*')
+        self.name_last_node('@')
 
     @graken()
-    def _topts_(self):
-        self._token('(')
-        with self._group():
-            self._token('PATTERN')
-            self._any_()
-        self._token(')')
+    def _str_(self):
+        self._token('"')
+
+        def block1():
+            with self._ifnot():
+                self._token('"')
+            self._pattern(r'.')
+        self._closure(block1)
+        self.name_last_node('@')
+        self._token('"')
 
     @graken()
     def _fields_(self):
         self._token('{')
+        with self._optional():
+            self._cmt_()
+            self.name_last_node('td2')
 
-        def sep1():
+        def sep2():
             self._token(',')
 
-        def block1():
+        def block2():
             self._field_()
-        self._closure(block1, sep=sep1)
-        self.name_last_node('@')
+        self._closure(block2, sep=sep2)
+        self.name_last_node('fields')
         self._token('}')
+        self.ast._define(
+            ['fields', 'td2'],
+            []
+        )
 
     @graken()
     def _field_(self):
         with self._choice():
             with self._option():
                 with self._group():
+                    with self._optional():
+                        self._cmt_()
+                        self.name_last_node('fd1')
                     self._qname_()
                     self.name_last_node('name')
                     self._etag_()
                     self.name_last_node('tag')
+                    with self._optional():
+                        self._cmt_()
+                        self.name_last_node('fd2')
             with self._option():
                 with self._group():
+                    with self._optional():
+                        self._cmt_()
+                        self.name_last_node('fd1')
                     with self._group():
                         with self._choice():
                             with self._option():
@@ -258,11 +279,11 @@ class pasnParser(Parser):
                         self._fopts_()
                         self.name_last_node('fopts')
                     with self._optional():
-                        self._comment_()
-                        self.name_last_node('fdesc')
+                        self._cmt_()
+                        self.name_last_node('fd2')
             self._error('no available options')
         self.ast._define(
-            ['fdesc', 'fopts', 'name', 'tag', 'type'],
+            ['fd1', 'fd2', 'fopts', 'name', 'tag', 'type'],
             []
         )
 
@@ -279,6 +300,18 @@ class pasnParser(Parser):
         self._int_()
         self.name_last_node('@')
         self._token(']')
+
+    @graken()
+    def _topts_(self):
+
+        def block0():
+            self._token('(')
+            with self._group():
+                self._token('PATTERN')
+                self._str_()
+            self.name_last_node('@')
+            self._token(')')
+        self._positive_closure(block0)
 
     @graken()
     def _fopts_(self):
@@ -343,10 +376,10 @@ class pasnSemantics(object):
     def define(self, ast):
         return ast
 
-    def comment(self, ast):
+    def cmt(self, ast):
         return ast
 
-    def topts(self, ast):
+    def str(self, ast):
         return ast
 
     def fields(self, ast):
@@ -359,6 +392,9 @@ class pasnSemantics(object):
         return ast
 
     def ftag(self, ast):
+        return ast
+
+    def topts(self, ast):
         return ast
 
     def fopts(self, ast):
