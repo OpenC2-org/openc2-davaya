@@ -34,7 +34,7 @@ def pasn_loads(pasn_str):
     for m in ast["metas"]:
         k = m["key"]
         if k.lower() == "import":
-            meta[k] = [[f.strip() for f in v.split(",")] for v in m["val"]]
+            meta[k] = [[int(x), y.strip(), z.strip()] for x,y,z in (s.split(",") for s in m["val"])]
         else:
             meta[k] = " ".join(m["val"])
 
@@ -56,7 +56,7 @@ def pasn_loads(pasn_str):
                         fields.append([tag, f["name"], _nstr(fdesc)])
                     else:
                         fields.append([tag, f["name"], f["type"], _fopts(f["fopts"]), _nstr(fdesc)])
-            types.append([t["name"], t["type"], _topts(t["topts"]), _nstr(tdesc), fields])
+        types.append([t["name"], t["type"], _topts(t["topts"]), _nstr(tdesc), fields])
     jaen = {"meta": meta, "types": types}
     return jaen
 
