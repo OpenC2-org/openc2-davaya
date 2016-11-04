@@ -82,6 +82,11 @@ TargetType ::= ENUMERATED {
     cybox3                      (2)
 }
 
+Target ::= RECORD {
+    type         TargetType,
+    specifiers   cybox:CyboxObject.&type OPTIONAL
+}
+
 ActuatorType ::= ENUMERATED {
     endpoint                         (1),
     endpoint-digital-telephone-handset (2),
@@ -128,11 +133,6 @@ ActuatorType ::= ENUMERATED {
     process-sandbox                  (43),
     process-virtualization-service   (44),
     process-vulnerability-scanner    (45)
-}
-
-Target ::= RECORD {
-    type         TargetType,
-    specifiers   cybox:CyboxObject.&type OPTIONAL
 }
 
 ActuatorSpecifiers ::= RECORD {
@@ -193,12 +193,16 @@ Actuator ::= RECORD {
     specifiers   ActuatorObject.&type OPTIONAL
 }
 
+Duration ::= UTF8String(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")
+
+DateTime ::= UTF8String(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$")
+
 ResponseValue ::= ENUMERATED {
     ack          (1),
     status       (2)
 }
 
-MethodValue ::= ENUMERATED {
+DenyMethod ::= ENUMERATED {
     acl          (1),
     blackhole    (2),
     sinkhole     (3),
@@ -206,23 +210,52 @@ MethodValue ::= ENUMERATED {
     whitelist    (5)
 }
 
+PauseMethod ::= ENUMERATED {
+    hibernate    (1),
+    sleep        (2),
+    suspend      (3)
+}
+
+ScanMethod ::= ENUMERATED {
+    authenticated     (1),
+    non-authenticated (2)
+}
+
+StartMethod ::= ENUMERATED {
+    spawn       (1)
+}
+
+StopMethod ::= ENUMERATED {
+    graceful    (1),
+    immediate   (2)
+}
+
+MethodValue ::= CHOICE {
+    deny     [1] DenyMethod,
+    pause    [2] PauseMethod,
+    scan     [3] ScanMethod,
+    start    [4] StartMethod,
+    stop     [5] StopMethod
+}
+
 WhereValue ::= ENUMERATED {
     internal     (1),
     perimeter    (2)
 }
 
-Duration ::= UTF8String(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")
-
-DateTime ::= UTF8String(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$")
+CommandID ::= String
 
 Modifiers ::= MAP {
     delay        [1] Duration OPTIONAL,
     duration     [2] Duration OPTIONAL,
     frequency    [3] Duration OPTIONAL,
-    response     [4] ResponseValue OPTIONAL,
-    time         [5] DateTime OPTIONAL,
+    datetime     [4] DateTime OPTIONAL,
+    response     [5] ResponseValue OPTIONAL,
     method       [6] MethodValue OPTIONAL,
-    where        [7] WhereValue OPTIONAL
+    where        [7] WhereValue OPTIONAL,
+    id           [8] CommandId OPTIONAL,
+    command-ref  [9] CommandID OPTIONAL,
+    context_ref  [10] INTEGER OPTIONAL
 }
 
 OpenC2Command ::= RECORD {

@@ -9,6 +9,41 @@ from datetime import datetime
 from codec import parse_type_opts, parse_field_opts
 from textwrap import fill, shorten
 
+class Pasntype():
+
+    def __init__(self):
+        types = [
+            ("Attribute", "ATTRIBUTE"),
+            ("Array", "ARRAY"),
+            ("Choice", "CHOICE"),
+            ("Enumerated", "ENUMERATED"),
+            ("Map", "MAP"),
+            ("Record", "RECORD"),
+            ("Boolean", "BOOLEAN"),
+            ("Integer", "INTEGER"),
+            ("Number", "REAL"),
+            ("String", "UTF8String")
+        ]
+        self._ptype = {t[0].lower():t[1] for t in types}
+        self._jtype = {t[1].lower():t[0] for t in types}
+
+    def ptype(self, jt):
+        t = jt.lower()
+        return self._ptype[t] if t in self._ptype else jt
+
+    def jtype(self, pt):
+        t = pt.lower()
+        return self._jtype[t] if t in self._jtype else pt
+
+#def _pasntype(t):
+#    tl = t.lower()
+#    atype = {
+#        "attribute": "ATTRIBUTE", "array": "ARRAY", "map": "MAP", "record": "RECORD",
+#        "choice": "CHOICE", "enumerated": "ENUMERATED",
+#        "boolean": "BOOLEAN", "integer": "INTEGER", "number": "REAL", "string": "UTF8String"}
+#    return atype[tl] if tl in atype else t
+
+
 def _parse_import(import_str):
     id, ns, uid = re.match("(\d+),\s*(\w+),\s*(.+)$", import_str).groups()
     return [int(id), ns, uid]
@@ -38,10 +73,12 @@ def pasn_loads(pasn_str):
         else:
             meta[k] = " ".join(m["val"])
 
+    pt = Pasntype()
     types = []
     for t in ast["types"]:
         fields = []
         tdesc = t["td1"] if t["td1"] else t["td2"]
+        tdef = [t["name"], pt.jtype(t["type"]), _topts(t["topts"]), _nstr(tdesc)]
         if t["f"]:
             for n, f in enumerate(t["f"]["fields"]):
                 fdesc = f["fd2"]
@@ -55,22 +92,15 @@ def pasn_loads(pasn_str):
                     if t["type"].lower() == "enumerated":
                         fields.append([tag, f["name"], _nstr(fdesc)])
                     else:
-                        fields.append([tag, f["name"], f["type"], _fopts(f["fopts"]), _nstr(fdesc)])
-        types.append([t["name"], t["type"], _topts(t["topts"]), _nstr(tdesc), fields])
+                        fields.append([tag, f["name"], pt.jtype(f["type"]), _fopts(f["fopts"]), _nstr(fdesc)])
+            tdef.append(fields)
+        types.append(tdef)
     jaen = {"meta": meta, "types": types}
     return jaen
 
 def pasn_load(fname):
     with open(fname) as f:
         return pasn_loads(f.read())
-
-def _pasntype(t):
-    tl = t.lower()
-    atype = {
-        "attribute": "ATTRIBUTE", "array": "ARRAY", "map": "MAP", "record": "RECORD",
-        "choice": "CHOICE", "enumerated": "ENUMERATED",
-        "boolean": "BOOLEAN", "integer": "INTEGER", "number": "REAL", "string": "UTF8String"}
-    return atype[tl] if tl in atype else t
 
 def pasn_dumps(jaen):
     """
@@ -99,6 +129,7 @@ def pasn_dumps(jaen):
                 pasn += "{0:14} {1:}\n".format(h + ":", hdrs[h])
     pasn += "*/\n"
 
+    pt = Pasntype()
     for td in jaen["types"]:
         tname, ttype = td[0:2]
         topts = parse_type_opts(td[2])
@@ -108,8 +139,8 @@ def pasn_dumps(jaen):
         if len(td) > 4:
             titems = deepcopy(td[4])
             for i in titems:
-                if len(i) > 2:
-                    i[2] = _pasntype(i[2])
+                if len(i) > 3:
+                    i[2] = pt.ptype(i[2])
             flen = min(32, max(12, max([len(i[1]) for i in titems]) + 1 if titems else 0))
             pasn += " {\n"
             if ttype.lower() == "enumerated":

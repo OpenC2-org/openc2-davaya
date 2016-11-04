@@ -6,7 +6,7 @@ Licensed under the Apache License, Version 2.0
 http://www.apache.org/licenses/LICENSE-2.0
 """
 
-import json, jsonschema, os
+import json, jsonschema
 from datetime import datetime
 from tr_pasn import pasn_load, pasn_dump
 from tr_pyclass import pyclass_load, pyclass_dump
@@ -81,7 +81,12 @@ jaen_schema = {
 }
 
 def jaen_check(jaen):
+    """
+    Check JAEN structure against schema, then perform additional checks on type definitions
+    """
+
     jsonschema.Draft4Validator(jaen_schema).validate(jaen)
+
     for t in jaen["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-description, 4-item list
         if t[1].lower() in ("string", "integer", "number", "boolean") and len(t) != 4:    # TODO: trace back to base type
             print("Type format error:", t[0], "- primitive type", t[1], "cannot have items")
@@ -139,6 +144,8 @@ def jaen_dump(jaen, fname, source=""):
 if __name__ == "__main__":
     for fname in ("cybox", "openc2"):
 
+    # Convert JAEN to all formats
+
         source = fname + ".jaen"
         dest = fname + "_genj"
         jaen = jaen_load(source)
@@ -146,17 +153,18 @@ if __name__ == "__main__":
         pyclass_dump(jaen, dest + ".py", source)
         pasn_dump(jaen, dest + ".pasn", source)
 
+    # Convert Python classes to JAEN
+
         source = fname + ".py"
         dest = fname + "_genp"
         jaen = pyclass_load(fname)
         jaen_check(jaen)
         jaen_dump(jaen, dest + ".jaen", source)
-#        pyclass_dump(jaen, dest + ".py", source)
-#        pasn_dump(jaen, dest + ".pasn", source)
+
+    # Convert PASN to JAEN
 
         source = fname + ".pasn"
         dest = fname + "_gena"
-        jaen = {}
         jaen = pasn_load(source)
         jaen_check(jaen)
         jaen_dump(jaen, dest + ".jaen", source)
