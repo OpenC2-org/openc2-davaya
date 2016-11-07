@@ -6,7 +6,7 @@ import re
 import pasn_parse
 from copy import deepcopy
 from datetime import datetime
-from codec import parse_type_opts, parse_field_opts
+from codec import opts_s2d, opts_d2s
 from textwrap import fill, shorten
 
 class Pasntype():
@@ -35,20 +35,12 @@ class Pasntype():
         t = pt.lower()
         return self._jtype[t] if t in self._jtype else pt
 
-#def _pasntype(t):
-#    tl = t.lower()
-#    atype = {
-#        "attribute": "ATTRIBUTE", "array": "ARRAY", "map": "MAP", "record": "RECORD",
-#        "choice": "CHOICE", "enumerated": "ENUMERATED",
-#        "boolean": "BOOLEAN", "integer": "INTEGER", "number": "REAL", "string": "UTF8String"}
-#    return atype[tl] if tl in atype else t
-
 
 def _parse_import(import_str):
     id, ns, uid = re.match("(\d+),\s*(\w+),\s*(.+)$", import_str).groups()
     return [int(id), ns, uid]
 
-def _nstr(v):
+def _nstr(v):       # Return empty string if None
     return v if v else ""
 
 def _topts(v):
@@ -132,7 +124,7 @@ def pasn_dumps(jaen):
     pt = Pasntype()
     for td in jaen["types"]:
         tname, ttype = td[0:2]
-        topts = parse_type_opts(td[2])
+        topts = opts_s2d(td[2])
         tdesc = "    # " + shorten(td[3], width=40) if td[3] else ""
         tostr = '(PATTERN "' + topts["pattern"] + '")' if "pattern" in topts else ""
         pasn += "\n" + tname + " ::= " + ttype + tostr
@@ -153,7 +145,7 @@ def pasn_dumps(jaen):
                 items = []
                 for i in titems:
                     ostr = ""
-                    opts = parse_field_opts(i[3])
+                    opts = opts_s2d(i[3])
                     if "atfield" in opts:
                         ostr += ".&" + opts["atfield"]
                         del opts["atfield"]

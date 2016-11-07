@@ -23,7 +23,7 @@ from functools import reduce
 
 # TOTO: replace static classes with dynamically loaded JASN schemas
 # TODO: replace error messages with ValidationError exceptions
-# TODO: parse field options at initialization
+# TODO: translate field options at initialization
 
 # Dict conversion utilities
 
@@ -64,49 +64,47 @@ def flatten(cmd, path="", fc={}, sep="."):
         fcmd[path] = ('"' + cmd + '"' if isinstance(cmd, str) else str(cmd))
     return (fcmd)
 
-def parse_type_opts(olist):
+def opts_s2d(ostr):
     """
     Parse options included in type definitions
 
-    Type definitions consist of 1) type name, 2) parent type, 3) options string, 4) list of fields/items
-    Returns a dict of options:
-    String   Dict key   Dict val  Option
-    ------   --------   -------  ------------
-    ">*"     "pattern"  string   regular expression to match against String value
-    """
-    assert isinstance(olist, (list, tuple)), "%r is not a list" % olist
-    opts = {}
-    for ostr in olist:
-        if ostr[:1] == ">":
-            opts["pattern"] = ostr[1:]
-        elif ostr:
-            print("Unknown type option", ostr)
-    return opts
-
-def parse_field_opts(olist):
-    """
-    Parse options included in field definitions
-
-    Field definitions consist of 1) field name, 2) datatype class, and 3) options string
-    Ostring contains a comma separated list of values.  Return a dict of options, including:
+    Ostr is a list of option strings.  Return a dict of options, including:
     String   Dict key   Dict val  Option
     ------   --------   -------  ------------
     "?"      "optional" Boolean  Field is optional, equivalent to [0:1]
-    "{key}"  "atfield"  String   Field name of type of an Attribute field
-    "[n:m]"  "range"    Tuple    Min and max lengths for arrays and strings
+    "{key"   "atfield"  String   Field name of type of an Attribute field
+    "[n:m"   "range"    Tuple    Min and max lengths for arrays and strings
+    ">*"     "pattern"  String   Regular expression to match against String value
     """
-    assert isinstance(olist, (list, tuple)), "%r is not a list" % olist
+    assert isinstance(ostr, (list, tuple)), "%r is not a list" % olist
     opts = {"optional": False}
-    for o in olist:
-        if o == "?":
+    for o in ostr:
+        if o[0] == "?":
             opts["optional"] = True
-        elif o:
-            m = re.match("{(\w+)}$", o)
-            if m:
-                opts["atfield"] = m.group(1)
-            else:
-                print("Unknown field option '", o, "'")
+        elif o[0] == "{":
+            opts["atfield"] = o[1:]
+        elif o[0] == "[":
+            opts["range"] = (0,0)
+        elif o[0] == ">":
+            opts["pattern"] = o[1:]
+        else:
+            print("Unknown option '", o, "'")
     return opts
+
+def opts_d2s(opts):
+    ostr = []
+    for k, v in opts.items():
+        if k == "optional" and v:
+            ostr.append("?")
+        elif k == "atfield":
+            ostr.append("{" + v)
+        elif k == "range":
+            ostr.append("[" + str(v[0]) + ":" + str(v[1]))
+        elif k == "pattern":
+            ostr.append(">" + v)
+        else:
+            print("Unknown option '", o, "'")
+    return ostr
 
 class Codec:
 
@@ -244,7 +242,7 @@ class Map(Codec):           # TODO: handle Choice fields?  Which key?
         nfields = self.normalize_fields(vtree)
         map = {}
         for n, f in enumerate(self.vals):
-            opts = parse_field_opts(f[2])
+            opts = opts_s2d(f[2])
             x = f[0]
             if x in vtree:
                 field = f[1]()
@@ -266,7 +264,7 @@ class Record(Codec):
         self.check_fields(nfields)
         rec = {}
         for n, f in enumerate(self.vals):
-            fopts = parse_field_opts(f[2])
+            fopts = opts_s2d(f[2])
             field = f[1]()
             x = self._fields[n] if self.verbose_record else n
             if isinstance(field, Choice):
