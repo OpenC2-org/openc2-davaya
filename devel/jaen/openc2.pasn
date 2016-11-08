@@ -187,7 +187,7 @@ ActuatorObject ::= ATTRIBUTE {
 }
 
 Actuator ::= RECORD {
-    type         UTF8String,
+    type         ActuatorType,
     specifiers   ActuatorObject.&type OPTIONAL
 }
 
@@ -251,7 +251,7 @@ Modifiers ::= MAP {
     response     [5] ResponseValue OPTIONAL,
     method       [6] MethodValue OPTIONAL,
     where        [7] WhereValue OPTIONAL,
-    id           [8] CommandId OPTIONAL,
+    id           [8] CommandID OPTIONAL,
     command-ref  [9] CommandID OPTIONAL,
     context_ref  [10] INTEGER OPTIONAL
 }
@@ -264,7 +264,7 @@ OpenC2Command ::= RECORD {
 }
 
 OpenC2Response ::= RECORD {
-    cmdref      UTF8String,      -- or UUID?
+    cmdref      CommandID,
     results     UTF8String
 }
 

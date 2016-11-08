@@ -44,10 +44,24 @@ def _nstr(v):       # Return empty string if None
     return v if v else ""
 
 def _topts(v):
-    return []
+    print("Type option:", v)
+    opts = {}
+#    for o in v if v else []:
+    return opts_d2s(opts)
 
 def _fopts(v):
-    return []
+    opts = {}
+    for o in v if v else []:
+        if isinstance(o, str) and o.lower() == "optional":
+            opts.update({"optional": True})
+        elif isinstance(o, list) and o[0] == ".&":
+            opts.update({"atfield": o[1]})
+        elif isinstance(o, list) and o[0].lower() == "pattern":
+            opts.update({"pattern": "".join(o[1])})
+            print("Options: pattern", opts["pattern"])
+        else:
+            print("Unknown field option", o, v)
+    return opts_d2s(opts)
 
 def pasn_loads(pasn_str):
     """
@@ -70,7 +84,7 @@ def pasn_loads(pasn_str):
     for t in ast["types"]:
         fields = []
         tdesc = t["td1"] if t["td1"] else t["td2"]
-        tdef = [t["name"], pt.jtype(t["type"]), _topts(t["topts"]), _nstr(tdesc)]
+        tdef = [t["name"], pt.jtype(t["type"]), _fopts(t["topts"]), _nstr(tdesc)]
         if t["f"]:
             for n, f in enumerate(t["f"]["fields"]):
                 fdesc = f["fd2"]

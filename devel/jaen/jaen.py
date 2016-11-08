@@ -10,6 +10,7 @@ import json, jsonschema
 from datetime import datetime
 from tr_pasn import pasn_load, pasn_dump
 from tr_pyclass import pyclass_load, pyclass_dump
+from codec import opts_s2d
 
 # TODO: Establish CTI/JSON namespace conventions, merge "module" (name) and "namespace" (module unique id) properties
 # TODO: Update JAEN file to be array of namespaces ( {meta, types} pairs )
@@ -90,16 +91,22 @@ def jaen_check(jaen):
     for t in jaen["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-description, 4-item list
         if t[1].lower() in ("string", "integer", "number", "boolean") and len(t) != 4:    # TODO: trace back to base type
             print("Type format error:", t[0], "- primitive type", t[1], "cannot have items")
+        for o, v in opts_s2d(t[2]).items():
+            if o not in ["pattern"] and o == "optional" and v:
+                print("Invalid typedef option:", t[0], o)
         if len(t) > 4:
             n = 3 if t[1].lower() == "enumerated" else 5
             tags = set()
             record = t[1].lower() == "record"
-            for k, i in enumerate(t[4]):          # item definition: 0-tag, 1-name, 2-type, 3-options, 4-description
-                tags.update(set([i[0]]))
+            for k, i in enumerate(t[4]):        # item definition: 0-tag, 1-name, 2-type, 3-options, 4-description
+                tags.update(set([i[0]]))        # or (enumerated): 0-tag, 1-name, 2-description
                 if record and i[0] != k + 1 and i[0] != 0:
                     print("Item tag error:", t[1], i[0], i[1], "should be", k)
                 if len(i) != n:
                     print("Item format error:", t[0], t[1], i[1], "-", len(i), "!=", n)
+                for o in opts_s2d(i[3]) if n > 3 else []:
+                    if o not in ["atfield", "optional", "range"]:
+                        print("Invalid field option:", t[0], i[1], o)
             if len(t[4]) != len(tags):
                 print("Tag collision", t[0], len(t[3]), "items,", len(tags), "unique tags")
     return jaen
