@@ -1,15 +1,15 @@
 """
-Translate JAEN to and from Pseudo-ASN
+Translate JAEN to and from Abstract Syntax Pseudocode
 """
 
 import re
-import pasn_parse
+import jas_parse
 from copy import deepcopy
 from datetime import datetime
 from codec import opts_s2d, opts_d2s
 from textwrap import fill, shorten
 
-class Pasntype():
+class Jastype():
 
     def __init__(self):
         types = [
@@ -43,13 +43,7 @@ def _parse_import(import_str):
 def _nstr(v):       # Return empty string if None
     return v if v else ""
 
-def _topts(v):
-    print("Type option:", v)
-    opts = {}
-#    for o in v if v else []:
-    return opts_d2s(opts)
-
-def _fopts(v):
+def _fopts(v):      # TODO: process min/max/range option
     opts = {}
     for o in v if v else []:
         if isinstance(o, str) and o.lower() == "optional":
@@ -58,19 +52,18 @@ def _fopts(v):
             opts.update({"atfield": o[1]})
         elif isinstance(o, list) and o[0].lower() == "pattern":
             opts.update({"pattern": "".join(o[1])})
-            print("Options: pattern", opts["pattern"])
         else:
             print("Unknown field option", o, v)
     return opts_d2s(opts)
 
-def pasn_loads(pasn_str):
+def jas_loads(jas_str):
     """
     Load abstract syntax from Pseudo_ASN file
     """
 
-    parser = pasn_parse.pasnParser(parseinfo=True, )
+    parser = jas_parse.jasParser(parseinfo=True, )
 
-    ast = parser.parse(pasn_str, 'pasn', trace=False)
+    ast = parser.parse(jas_str, 'jas', trace=False)
     meta = {}
     for m in ast["metas"]:
         k = m["key"]
@@ -79,7 +72,7 @@ def pasn_loads(pasn_str):
         else:
             meta[k] = " ".join(m["val"])
 
-    pt = Pasntype()
+    pt = Jastype()
     types = []
     for t in ast["types"]:
         fields = []
@@ -104,11 +97,11 @@ def pasn_loads(pasn_str):
     jaen = {"meta": meta, "types": types}
     return jaen
 
-def pasn_load(fname):
+def jas_load(fname):
     with open(fname) as f:
-        return pasn_loads(f.read())
+        return jas_loads(f.read())
 
-def pasn_dumps(jaen):
+def jas_dumps(jaen):
     """
     Produce Pseudo-ASN.1 module from Abstract Syntax structure
 
@@ -119,39 +112,39 @@ def pasn_dumps(jaen):
     JSON objects, Map and Attribute first-class types are arguably easier to use.
     """
 
-    pasn = "/*\n"
+    jas = "/*\n"
     hdrs = jaen["meta"]
     hdr_list = ["module", "title", "version", "description", "namespace", "root", "import"]
     for h in hdr_list + list(set(hdrs) - set(hdr_list)):
         if h in hdrs:
             if h == "description":
-                pasn += fill(hdrs[h], width=80, initial_indent="{0:14} ".format(h + ":"), subsequent_indent=15*" ") + "\n"
+                jas += fill(hdrs[h], width=80, initial_indent="{0:14} ".format(h + ":"), subsequent_indent=15*" ") + "\n"
             elif h == "import":
                 hh = "{:14} ".format(h + ":")
                 for imp in hdrs[h]:
-                    pasn += hh + "{0:d}, {1}, {2}\n".format(*imp)
+                    jas += hh + "{0:d}, {1}, {2}\n".format(*imp)
                     hh = 15*" "
             else:
-                pasn += "{0:14} {1:}\n".format(h + ":", hdrs[h])
-    pasn += "*/\n"
+                jas += "{0:14} {1:}\n".format(h + ":", hdrs[h])
+    jas += "*/\n"
 
-    pt = Pasntype()
+    pt = Jastype()
     for td in jaen["types"]:
         tname, ttype = td[0:2]
         topts = opts_s2d(td[2])
         tdesc = "    # " + shorten(td[3], width=40) if td[3] else ""
         tostr = '(PATTERN "' + topts["pattern"] + '")' if "pattern" in topts else ""
-        pasn += "\n" + tname + " ::= " + ttype + tostr
+        jas += "\n" + tname + " ::= " + pt.ptype(ttype) + tostr + tdesc
         if len(td) > 4:
             titems = deepcopy(td[4])
             for i in titems:
                 if len(i) > 3:
                     i[2] = pt.ptype(i[2])
             flen = min(32, max(12, max([len(i[1]) for i in titems]) + 1 if titems else 0))
-            pasn += " {\n"
+            jas += " {\n"
             if ttype.lower() == "enumerated":
                 fmt = "    {1:" + str(flen) + "} ({0:d})"
-                pasn += ",\n".join([fmt.format(*i) for i in titems])
+                jas += ",\n".join([fmt.format(*i) for i in titems])
             else:
                 fmt = "    {1:" + str(flen) + "} [{0:d}] {2}{3}"
                 if ttype.lower() == 'record':
@@ -167,18 +160,18 @@ def pasn_dumps(jaen):
                         ostr += " OPTIONAL"
                     del opts["optional"]
                     items += [fmt.format(i[0], i[1], i[2], ostr) + (" ***" + str(opts) if opts else "")]
-                pasn += ",\n".join(items)
-            pasn += "\n}\n" if titems else "}\n"
+                jas += ",\n".join(items)
+            jas += "\n}\n" if titems else "}\n"
         else:
-            pasn += "\n"
-    return pasn
+            jas += "\n"
+    return jas
 
-def pasn_dump(jaen, fname, source=""):
+def jas_dump(jaen, fname, source=""):
     with open(fname, "w") as f:
         if source:
             f.write("-- Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\n\n")
-        f.write(pasn_dumps(jaen))
+        f.write(jas_dumps(jaen))
 
 if __name__ == "__main__":
-    fname = "openc2.pasn"
-    p = pasn_load(fname)
+    fname = "openc2.jas"
+    p = jas_load(fname)

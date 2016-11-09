@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 import json, jsonschema
 from datetime import datetime
-from tr_pasn import pasn_load, pasn_dump
+from tr_jas import jas_load, jas_dump
 from tr_pyclass import pyclass_load, pyclass_dump
 from codec import opts_s2d
 
@@ -158,7 +158,7 @@ if __name__ == "__main__":
         jaen = jaen_load(source)
         jaen_dump(jaen, dest + ".jaen", source)
         pyclass_dump(jaen, dest + ".py", source)
-        pasn_dump(jaen, dest + ".pasn", source)
+        jas_dump(jaen, dest + ".jas", source)
 
     # Convert Python classes to JAEN
 
@@ -168,10 +168,10 @@ if __name__ == "__main__":
         jaen_check(jaen)
         jaen_dump(jaen, dest + ".jaen", source)
 
-    # Convert PASN to JAEN
+    # Convert JAS to JAEN
 
-        source = fname + ".pasn"
+        source = fname + ".jas"
         dest = fname + "_gena"
-        jaen = pasn_load(source)
+        jaen = jas_load(source)
         jaen_check(jaen)
         jaen_dump(jaen, dest + ".jaen", source)

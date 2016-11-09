@@ -1,7 +1,7 @@
 /*
 module:        openc2
 title:         OpenC2 Command Definitions
-version:       0.1
+version:       0.2
 description:   Datatypes that define the content of OpenC2 commands.  These
                types are used with an Encoder/Decoder (codec) to serialize and
                deserialize commands for transmission in a format such as JSON,
@@ -215,25 +215,25 @@ PauseMethod ::= ENUMERATED {
 }
 
 ScanMethod ::= ENUMERATED {
-    authenticated     (1),
-    non-authenticated (2)
+    authenticated      (1),
+    non-authenticated  (2)
 }
 
 StartMethod ::= ENUMERATED {
-    spawn       (1)
+    spawn        (1)
 }
 
 StopMethod ::= ENUMERATED {
-    graceful    (1),
-    immediate   (2)
+    graceful     (1),
+    immediate    (2)
 }
 
 MethodValue ::= CHOICE {
-    deny     [1] DenyMethod,
-    pause    [2] PauseMethod,
-    scan     [3] ScanMethod,
-    start    [4] StartMethod,
-    stop     [5] StopMethod
+    deny         [1] DenyMethod,
+    pause        [2] PauseMethod,
+    scan         [3] ScanMethod,
+    start        [4] StartMethod,
+    stop         [5] StopMethod
 }
 
 WhereValue ::= ENUMERATED {
@@ -241,7 +241,7 @@ WhereValue ::= ENUMERATED {
     perimeter    (2)
 }
 
-CommandID ::= String
+CommandID ::= UTF8String
 
 Modifiers ::= MAP {
     delay        [1] Duration OPTIONAL,
@@ -251,29 +251,28 @@ Modifiers ::= MAP {
     response     [5] ResponseValue OPTIONAL,
     method       [6] MethodValue OPTIONAL,
     where        [7] WhereValue OPTIONAL,
-    id           [8] CommandID OPTIONAL,
-    command-ref  [9] CommandID OPTIONAL,
-    context_ref  [10] INTEGER OPTIONAL
+    context_ref  [8] INTEGER OPTIONAL,
+    id           [9] CommandID OPTIONAL
 }
 
 OpenC2Command ::= RECORD {
-    action      Action,
-    target      Target,
-    actuator    Actuator OPTIONAL,
-    modifiers   Modifiers OPTIONAL
+    action       Action,
+    target       Target,
+    actuator     Actuator OPTIONAL,
+    modifiers    Modifiers OPTIONAL
 }
 
 OpenC2Response ::= RECORD {
-    cmdref      CommandID,
-    results     UTF8String
+    cmdref       CommandID,
+    results      UTF8String
 }
 
 OpenC2Alert ::= RECORD {
-    message     UTF8String
+    message      UTF8String
 }
 
 OpenC2Object ::= CHOICE {
-    command     [1] OpenC2Command,
-    response    [2] OpenC2Response,
-    alert       [3] OpenC2Alert
+    command      [1] OpenC2Command,
+    response     [2] OpenC2Response,
+    alert        [3] OpenC2Alert
 }

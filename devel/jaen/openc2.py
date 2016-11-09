@@ -6,7 +6,7 @@ an Encoder/Decoder (codec) to serialize and deserialize commands for transmissio
 in a format such as JSON, XML, or CBOR, or to generate format-specific message schemas.
 """
 
-__version__ = "0.1"
+__version__ = "0.2"
 __meta__ = {
     "namespace":"http://openc2.org/objects",
     "root": "OpenC2Command",
@@ -145,7 +145,7 @@ class Target(Record):
     ns = "openc2"
     vals = [
         ("type", TargetType, [], ""),
-        ("specifiers", cybox.CyboxObject, ["?","{type}"], "")]
+        ("specifiers", cybox.CyboxObject, ["?","{type"], "")]
 
 class ActuatorSpecifiers(Record):
     ns = "openc2"
@@ -207,19 +207,48 @@ class Actuator(Record):
     ns = "openc2"
     vals = [
         ("type", ActuatorType, [], ""),
-        ("specifiers", ActuatorObject, ["?","{type}"], "")]
+        ("specifiers", ActuatorObject, ["?","{type"], "")]
 
 class ResponseValue(Enumerated):
     ns = "openc2"
     vals = ["ack", "status"]
 
-class MethodValue(Enumerated):
+class DenyMethod(Enumerated):
     ns = "openc2"
     vals = ["acl", "blackhole", "sinkhole", "blacklist", "whitelist"]
+
+class PauseMethod(Enumerated):
+    ns = "openc2"
+    vals = ["hibernate", "sleep", "suspend"]
+
+class ScanMethod(Enumerated):
+    ns = "openc2"
+    vals = ["authenticated", "non-authenticated"]
+
+class StartMethod(Enumerated):
+    ns = "openc2"
+    vals = ["spawn"]
+
+class StopMethod(Enumerated):
+    ns = "openc2"
+    vals = ["graceful", "immediate"]
+
+class MethodValue(Choice):
+    ns = "openc2"
+    vals = [
+        ("deny", DenyMethod, [], ""),
+        ("pause", PauseMethod, [], ""),
+        ("scan", ScanMethod, [], ""),
+        ("start", StartMethod, [], ""),
+        ("stop", StopMethod, [], "")
+    ]
 
 class WhereValue(Enumerated):
     ns = "openc2"
     vals = ["internal", "perimeter"]
+
+class CommandID(String):
+    pass
 
 class Duration(String):
     pattern = "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$"
@@ -233,11 +262,12 @@ class Modifiers(Map):
         ("delay", Duration, ["?"], ""),
         ("duration", Duration, ["?"], ""),
         ("frequency", Duration, ["?"], ""),
-        ("time", DateTime, ["?"], ""),
+        ("datetime", DateTime, ["?"], ""),
         ("response", ResponseValue, ["?"], ""),
         ("method", MethodValue, ["?"], ""),
         ("where", WhereValue, ["?"], ""),
-        ("context_ref", Integer, ["?"], "")]
+        ("context_ref", Integer, ["?"], ""),
+        ("id", CommandID, ["?"], "")]
 
 class OpenC2Command(Record):
     ns = "openc2"
@@ -246,3 +276,24 @@ class OpenC2Command(Record):
         ("target", Target, [], ""),
         ("actuator", Actuator, ["?"], ""),
         ("modifiers", Modifiers, ["?"], "")]
+
+class OpenC2Response(Record):
+    ns = "openc2"
+    vals = [
+        ("cmdref", CommandID, [], ""),
+        ("results", String, [], "")
+    ]
+
+class OpenC2Alert(Record):
+    ns = "openc2"
+    vals = [
+        ("message", String, [], "")
+    ]
+
+class OpenC2Object(Choice):
+    ns = "openc2"
+    vals = [
+        ("command", OpenC2Command, [], ""),
+        ("response", OpenC2Response, [], ""),
+        ("alert", OpenC2Alert, [], "")
+    ]

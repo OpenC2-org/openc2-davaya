@@ -1,16 +1,16 @@
-# EBNF Grammar for Pseudo-ASN files
-# Compile grammar into parser using:  $ python -m grako pasn.ebnf -o pasn_parse.py
+# EBNF Grammar for JAEN Abstract Syntax (JAS) files
+# Compile grammar into parser using:  $ python -m grako jas.ebnf -o jas_parse.py
 
-@@grammar :: pasn
+@@grammar :: jas
 
-pasn = head:{!(name define) !begin any}   # Ignore anything before meta
+jas = head:{!(name define) !begin any}   # Ignore anything before meta
     metas:[meta]                          # Administrative information - key:value pairs
     types:{type}+ $                       # Datatype definitions
     ;
 meta = begin {!end [[WS] NL] @:KVal} end ;
 begin = "/*" ;
 end = "*/" ;
-KVal = key:name ":" val:{Val}+ ;          # Don't skip whitespace
+KVal = key:name ":" val:{Val}+ ;          # Whitespace is meaningful within meta definitions
 Val = WS @:/.*/ NL ;
 WS = /\s+/ ;
 NL = /(\n|\r)+/ ;
@@ -29,9 +29,10 @@ field = ( [fd1:cmt] name:qname tag:etag [fd2:cmt] )                             
       ;
 etag = "(" @:int ")" ;
 ftag = "[" @:int "]" ;
-topts = { "(" @:("PATTERN" str) ")"       # Datatype options
+pattern = "(" @:("PATTERN" str) ")" ;
+topts = { pattern                # Datatype options
       }+ ;
-fopts = { "OPTIONAL"                      # Field options
+fopts = { "OPTIONAL"             # Field options
       | "MIN" int
       | "MAX" int
       | ".&" name

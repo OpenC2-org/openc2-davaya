@@ -89,7 +89,7 @@ class NetworkSubnetObject(Record):
 class PortObject(Record):
     ns = "PortObj"
     vals = [
-        ("Port_Value", Integer, ["?","[1:]"], ""),
+        ("Port_Value", Integer, ["?"], ""),
         ("Layer4_Protocol", Layer4ProtocolType, ["?"], "")]
 
 class ProcessObject(Record):
@@ -126,7 +126,7 @@ class SystemObject(Record):
 
 class URITypeEnum(Enumerated):
     ns = "cybox"
-    vals = ["URL", "General URN", "Domain Name"]
+    vals = ["URL", "General_URN", "Domain_Name"]
 
 class URIObject(Record):
     ns = "URIObj"

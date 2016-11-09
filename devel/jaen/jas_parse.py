@@ -19,15 +19,15 @@ from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
 __all__ = [
-    'pasnParser',
-    'pasnSemantics',
+    'jasParser',
+    'jasSemantics',
     'main'
 ]
 
 KEYWORDS = set([])
 
 
-class pasnBuffer(Buffer):
+class jasBuffer(Buffer):
     def __init__(
         self,
         text,
@@ -39,7 +39,7 @@ class pasnBuffer(Buffer):
         namechars='',
         **kwargs
     ):
-        super(pasnBuffer, self).__init__(
+        super(jasBuffer, self).__init__(
             text,
             whitespace=whitespace,
             nameguard=nameguard,
@@ -51,7 +51,7 @@ class pasnBuffer(Buffer):
         )
 
 
-class pasnParser(Parser):
+class jasParser(Parser):
     def __init__(
         self,
         whitespace=None,
@@ -63,12 +63,12 @@ class pasnParser(Parser):
         parseinfo=True,
         keywords=None,
         namechars='',
-        buffer_class=pasnBuffer,
+        buffer_class=jasBuffer,
         **kwargs
     ):
         if keywords is None:
             keywords = KEYWORDS
-        super(pasnParser, self).__init__(
+        super(jasParser, self).__init__(
             whitespace=whitespace,
             nameguard=nameguard,
             comments_re=comments_re,
@@ -83,7 +83,7 @@ class pasnParser(Parser):
         )
 
     @graken()
-    def _pasn_(self):
+    def _jas_(self):
 
         def block1():
             with self._ifnot():
@@ -302,15 +302,19 @@ class pasnParser(Parser):
         self._token(']')
 
     @graken()
+    def _pattern_(self):
+        self._token('(')
+        with self._group():
+            self._token('PATTERN')
+            self._str_()
+        self.name_last_node('@')
+        self._token(')')
+
+    @graken()
     def _topts_(self):
 
         def block0():
-            self._token('(')
-            with self._group():
-                self._token('PATTERN')
-                self._str_()
-            self.name_last_node('@')
-            self._token(')')
+            self._pattern_()
         self._positive_closure(block0)
 
     @graken()
@@ -333,8 +337,8 @@ class pasnParser(Parser):
         self._positive_closure(block0)
 
 
-class pasnSemantics(object):
-    def pasn(self, ast):
+class jasSemantics(object):
+    def jas(self, ast):
         return ast
 
     def meta(self, ast):
@@ -394,6 +398,9 @@ class pasnSemantics(object):
     def ftag(self, ast):
         return ast
 
+    def pattern(self, ast):
+        return ast
+
     def topts(self, ast):
         return ast
 
@@ -404,12 +411,12 @@ class pasnSemantics(object):
 def main(filename, startrule, **kwargs):
     with open(filename) as f:
         text = f.read()
-    parser = pasnParser(parseinfo=False)
+    parser = jasParser(parseinfo=False)
     return parser.parse(text, startrule, filename=filename, **kwargs)
 
 if __name__ == '__main__':
     import json
-    ast = generic_main(main, pasnParser, name='pasn')
+    ast = generic_main(main, jasParser, name='jas')
     print('AST:')
     print(ast)
     print()
