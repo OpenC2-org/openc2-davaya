@@ -1,12 +1,7 @@
 """
 Abstract Object Encoder/Decoder
 
-Classes used to define Datatypes using an abstract syntax, and
-encode/decode instances of those types using a concrete message format.
-
-Datatypes are specified in JSON Abstract Syntax Notation (JASN) schemas,
-or Python classes, or "Pseudo ASN" documemnts, all of which represent and can
-be generated from the same abstract schema.
+Object schema is specified in JSON Abstract Encoding Notation (JAEN) format.
 
 Currently supports three JSON-based concrete message formats (verbose, concise,
 and minimized) but can be extended to support XML-based and binary formats.
@@ -16,16 +11,17 @@ Licensed under the Apache License, Version 2.0
 http://www.apache.org/licenses/LICENSE-2.0
 """
 
-__version__ = "0.1"
-
 import json, re
 from functools import reduce
+
+__version__ = "0.1"
 
 # TOTO: replace static classes with dynamically loaded JASN schemas
 # TODO: replace error messages with ValidationError exceptions
 # TODO: translate field options at initialization
 
 # Dict conversion utilities
+
 
 def _dmerge(x, y):
     k, v = next(iter(y.items()))
@@ -35,11 +31,13 @@ def _dmerge(x, y):
         x[k] = v
     return x
 
+
 def hdict(keys, value, sep="."):
     """
     Convert a hierarchical-key value pair to a nested dict
     """
     return reduce(lambda v, k: {k: v}, reversed(keys.split(sep)), value)
+
 
 def fluff(src, sep="."):
     """
@@ -50,6 +48,7 @@ def fluff(src, sep="."):
     :return: nested dict - e.g., {"a": {"b": {"c": 1, "d": 2}}}
     """
     return reduce(lambda x, y: _dmerge(x, y), [hdict(k, v, sep) for k, v in src.items()], {})
+
 
 def flatten(cmd, path="", fc={}, sep="."):
     """
@@ -63,6 +62,7 @@ def flatten(cmd, path="", fc={}, sep="."):
     else:
         fcmd[path] = ('"' + cmd + '"' if isinstance(cmd, str) else str(cmd))
     return (fcmd)
+
 
 def opts_s2d(ostr):
     """
@@ -91,6 +91,7 @@ def opts_s2d(ostr):
             print("Unknown option '", o, "'")
     return opts
 
+
 def opts_d2s(opts):
     ostr = []
     for k, v in opts.items():
@@ -105,6 +106,7 @@ def opts_d2s(opts):
         else:
             print("Unknown option '", o, "'")
     return ostr
+
 
 class Codec:
 

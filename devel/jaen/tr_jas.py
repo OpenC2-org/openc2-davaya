@@ -1,5 +1,5 @@
 """
-Translate JAEN to and from Abstract Syntax Pseudocode
+Translate JAEN to and from JAS (JAEN Abstract Syntax)
 """
 
 import re
@@ -9,7 +9,8 @@ from datetime import datetime
 from codec import opts_s2d, opts_d2s
 from textwrap import fill, shorten
 
-class Jastype():
+
+class Jastype:
 
     def __init__(self):
         types = [
@@ -24,8 +25,8 @@ class Jastype():
             ("Number", "REAL"),
             ("String", "UTF8String")
         ]
-        self._ptype = {t[0].lower():t[1] for t in types}
-        self._jtype = {t[1].lower():t[0] for t in types}
+        self._ptype = {t[0].lower(): t[1] for t in types}
+        self._jtype = {t[1].lower(): t[0] for t in types}
 
     def ptype(self, jt):
         t = jt.lower()
@@ -37,11 +38,13 @@ class Jastype():
 
 
 def _parse_import(import_str):
-    id, ns, uid = re.match("(\d+),\s*(\w+),\s*(.+)$", import_str).groups()
-    return [int(id), ns, uid]
+    tag, ns, uid = re.match("(\d+),\s*(\w+),\s*(.+)$", import_str).groups()
+    return [int(tag), ns, uid]
+
 
 def _nstr(v):       # Return empty string if None
     return v if v else ""
+
 
 def _fopts(v):      # TODO: process min/max/range option
     opts = {}
@@ -56,6 +59,7 @@ def _fopts(v):      # TODO: process min/max/range option
             print("Unknown field option", o, v)
     return opts_d2s(opts)
 
+
 def jas_loads(jas_str):
     """
     Load abstract syntax from Pseudo_ASN file
@@ -68,7 +72,7 @@ def jas_loads(jas_str):
     for m in ast["metas"]:
         k = m["key"]
         if k.lower() == "import":
-            meta[k] = [[int(x), y.strip(), z.strip()] for x,y,z in (s.split(",") for s in m["val"])]
+            meta[k] = [[int(x), y.strip(), z.strip()] for x, y, z in (s.split(",") for s in m["val"])]
         else:
             meta[k] = " ".join(m["val"])
 
@@ -97,9 +101,11 @@ def jas_loads(jas_str):
     jaen = {"meta": meta, "types": types}
     return jaen
 
+
 def jas_load(fname):
     with open(fname) as f:
         return jas_loads(f.read())
+
 
 def jas_dumps(jaen):
     """
@@ -118,14 +124,14 @@ def jas_dumps(jaen):
     for h in hdr_list + list(set(hdrs) - set(hdr_list)):
         if h in hdrs:
             if h == "description":
-                jas += fill(hdrs[h], width=80, initial_indent="{0:14} ".format(h + ":"), subsequent_indent=15*" ") + "\n"
+                jas += fill(hdrs[h], width=80, initial_indent="{0:14} ".format(h+":"), subsequent_indent=15*" ") + "\n"
             elif h == "import":
-                hh = "{:14} ".format(h + ":")
+                hh = "{:14} ".format(h+":")
                 for imp in hdrs[h]:
                     jas += hh + "{0:d}, {1}, {2}\n".format(*imp)
                     hh = 15*" "
             else:
-                jas += "{0:14} {1:}\n".format(h + ":", hdrs[h])
+                jas += "{0:14} {1:}\n".format(h+":", hdrs[h])
     jas += "*/\n"
 
     pt = Jastype()
@@ -166,12 +172,9 @@ def jas_dumps(jaen):
             jas += "\n"
     return jas
 
+
 def jas_dump(jaen, fname, source=""):
     with open(fname, "w") as f:
         if source:
             f.write("-- Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\n\n")
         f.write(jas_dumps(jaen))
-
-if __name__ == "__main__":
-    fname = "openc2.jas"
-    p = jas_load(fname)

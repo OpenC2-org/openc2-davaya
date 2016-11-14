@@ -11,14 +11,6 @@ __meta__ = {
 
 from codec import Attribute, Choice, Enumerated, Map, Record, Boolean, Integer, String
 
-class Layer3ProtocolType(Enumerated):      # Network_Connection_Object.xsd
-    ns = "cybox"
-    vals = ["IPv4", "IPv6", "ICMP", "IGMP", "IGRP", "CLNP",
-            "EGP", "EIGRP", "IPSec", "IPX", "Routed-SMLT", "SCCP"]
-
-class Layer4ProtocolType(Enumerated):       # Cybox_common.xsd
-    ns = "cybox"
-    vals = ["TCP", "UDP", "AH", "ESP", "GRE", "IL", "SCTP", "Sinec_H1", "SPX", "DCCP"]
 
 class AddressObject(Record):
     ns = "AddressObj"
@@ -74,37 +66,26 @@ class MemoryObject(Record):
     ns = "MemoryObj"
     vals = []                          # TODO: fill in
 
-class NetworkFlowObject(Record):
-    ns = "NetworkFlowObj"
-    vals = []                          # TODO: fill in
+class Layer3ProtocolType(Enumerated):      # Network_Connection_Object.xsd
+    ns = "cybox"
+    vals = ["IPv4", "IPv6", "ICMP", "IGMP", "IGRP", "CLNP",
+            "EGP", "EIGRP", "IPSec", "IPX", "Routed-SMLT", "SCCP"]
 
-class NetworkPacketObject(Record):
-    ns = "NetworkPacketObj"
-    vals = []                          # TODO: fill in
-
-class NetworkSubnetObject(Record):
-    ns = "NetworkSubnetObj"
-    vals = []                          # TODO: fill in
-
-class PortObject(Record):
-    ns = "PortObj"
-    vals = [
-        ("Port_Value", Integer, ["?"], ""),
-        ("Layer4_Protocol", Layer4ProtocolType, ["?"], "")]
-
-class ProcessObject(Record):
-    ns = "ProcessObj"
-    vals = []                          # TODO: fill in
-
-class ProductObject(Record):
-    ns = "ProductObj"
-    vals = []                          # TODO: fill in
+class Layer4ProtocolType(Enumerated):       # Cybox_common.xsd
+    ns = "cybox"
+    vals = ["TCP", "UDP", "AH", "ESP", "GRE", "IL", "SCTP", "Sinec_H1", "SPX", "DCCP"]
 
 class SocketAddressChoice(Choice):
     ns = "SocketAddressObj"
     vals = [
         ("IP_Address", AddressObject, [], ""),
         ("Hostname", HostnameObject, [], "")]
+
+class PortObject(Record):
+    ns = "PortObj"
+    vals = [
+        ("Port_Value", Integer, ["?"], ""),
+        ("Layer4_Protocol", Layer4ProtocolType, ["?"], "")]
 
 class SocketAddressObject(Record):
     ns = "SocketAddressObj"
@@ -119,6 +100,26 @@ class NetworkConnectionObject(Record):      # Network_Connection_Object.xsd
         ("Layer4Protocol", Layer4ProtocolType, ["?"], ""),
         ("SourceSocketAddress", SocketAddressObject, ["?"], ""),
         ("DestinationSocketAddress", SocketAddressObject, ["?"], "")]
+
+class NetworkFlowObject(Record):
+    ns = "NetworkFlowObj"
+    vals = []                          # TODO: fill in
+
+class NetworkPacketObject(Record):
+    ns = "NetworkPacketObj"
+    vals = []                          # TODO: fill in
+
+class NetworkSubnetObject(Record):
+    ns = "NetworkSubnetObj"
+    vals = []                          # TODO: fill in
+
+class ProcessObject(Record):
+    ns = "ProcessObj"
+    vals = []                          # TODO: fill in
+
+class ProductObject(Record):
+    ns = "ProductObj"
+    vals = []                          # TODO: fill in
 
 class SystemObject(Record):
     ns = "SystemObj"

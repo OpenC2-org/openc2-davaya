@@ -91,6 +91,12 @@ class TargetType(Enumerated):
         "cybox3"                  #  2
     ]
 
+class Target(Record):
+    ns = "openc2"
+    vals = [
+        ("type", TargetType, [], ""),
+        ("specifiers", cybox.CyboxObject, ["?","{type"], "")]
+
 class ActuatorType(Enumerated):
     ns = "openc2"       # Temporary types until an authoritative vocabulary is identified
     vals = [
@@ -140,12 +146,6 @@ class ActuatorType(Enumerated):
         "process-virtualization-service",   # 44
         "process-vulnerability-scanner",    # 45
     ]
-
-class Target(Record):
-    ns = "openc2"
-    vals = [
-        ("type", TargetType, [], ""),
-        ("specifiers", cybox.CyboxObject, ["?","{type"], "")]
 
 class ActuatorSpecifiers(Record):
     ns = "openc2"
@@ -209,6 +209,12 @@ class Actuator(Record):
         ("type", ActuatorType, [], ""),
         ("specifiers", ActuatorObject, ["?","{type"], "")]
 
+class Duration(String):
+    pattern = "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$"
+
+class DateTime(String):
+    pattern = "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$"
+
 class ResponseValue(Enumerated):
     ns = "openc2"
     vals = ["ack", "status"]
@@ -250,12 +256,6 @@ class WhereValue(Enumerated):
 class CommandID(String):
     pass
 
-class Duration(String):
-    pattern = "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$"
-
-class DateTime(String):
-    pattern = "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$"
-
 class Modifiers(Map):
     ns = "openc2"
     vals = [
@@ -281,19 +281,16 @@ class OpenC2Response(Record):
     ns = "openc2"
     vals = [
         ("cmdref", CommandID, [], ""),
-        ("results", String, [], "")
-    ]
+        ("results", String, [], "")]
 
 class OpenC2Alert(Record):
     ns = "openc2"
     vals = [
-        ("message", String, [], "")
-    ]
+        ("message", String, [], "")]
 
 class OpenC2Object(Choice):
     ns = "openc2"
     vals = [
         ("command", OpenC2Command, [], ""),
         ("response", OpenC2Response, [], ""),
-        ("alert", OpenC2Alert, [], "")
-    ]
+        ("alert", OpenC2Alert, [], "")]

@@ -7,13 +7,13 @@ description:   Selected CybOX 2.1 objects used by OpenC2.  Abstract syntax
 namespace:     http://cybox.mitre.org/common-2
 */
 
-AddressObject ::= Record {
+AddressObject ::= RECORD {
     Address_Value  UTF8String OPTIONAL,
     VLAN_Name      UTF8String OPTIONAL,
     VLAN_Num       INTEGER OPTIONAL
 }
 
-DeviceObject ::= Map {
+DeviceObject ::= MAP {
     Description       [1] UTF8String OPTIONAL,
     Device_Type       [2] UTF8String OPTIONAL,
     Manufacturer      [3] UTF8String OPTIONAL,
@@ -23,37 +23,37 @@ DeviceObject ::= Map {
     System_Details    [7] UTF8String OPTIONAL
 }
 
-DiskObject ::= Record {
+DiskObject ::= RECORD {
 }
 
-DiskPartitionObject ::= Record {
+DiskPartitionObject ::= RECORD {
 }
 
-DomainNameTypeEnum ::= Enumerated {
+DomainNameTypeEnum ::= ENUMERATED {
     FQDN         (1),
     TLD          (2)
 }
 
-DomainNameObject ::= Record {
+DomainNameObject ::= RECORD {
     type         DomainNameTypeEnum,
     Value        UTF8String
 }
 
-EmailMessageObject ::= Record {
+EmailMessageObject ::= RECORD {
 }
 
-FileObject ::= Record {
+FileObject ::= RECORD {
 }
 
-HostnameObject ::= Record {
+HostnameObject ::= RECORD {
     Hostname_Value  UTF8String,
     Naming_System   UTF8String OPTIONAL
 }
 
-MemoryObject ::= Record {
+MemoryObject ::= RECORD {
 }
 
-Layer3ProtocolType ::= Enumerated {
+Layer3ProtocolType ::= ENUMERATED {
     IPv4         (1),
     IPv6         (2),
     ICMP         (3),
@@ -68,7 +68,7 @@ Layer3ProtocolType ::= Enumerated {
     SCCP         (12)
 }
 
-Layer4ProtocolType ::= Enumerated {
+Layer4ProtocolType ::= ENUMERATED {
     TCP          (1),
     UDP          (2),
     AH           (3),
@@ -81,61 +81,61 @@ Layer4ProtocolType ::= Enumerated {
     DCCP         (10)
 }
 
-SocketAddressChoice ::= Choice {
+SocketAddressChoice ::= CHOICE {
     IP_Address   [1] AddressObject,
     Hostname     [2] HostnameObject
 }
 
-PortObject ::= Record {
+PortObject ::= RECORD {
     Port_Value       INTEGER OPTIONAL,
     Layer4_Protocol  Layer4ProtocolType OPTIONAL
 }
 
-SocketAddressObject ::= Record {
+SocketAddressObject ::= RECORD {
     *            SocketAddressChoice,
     Port         PortObject OPTIONAL
 }
 
-NetworkConnectionObject ::= Record {
+NetworkConnectionObject ::= RECORD {
     Layer3Protocol            Layer3ProtocolType OPTIONAL,
     Layer4Protocol            Layer4ProtocolType OPTIONAL,
     SourceSocketAddress       SocketAddressObject OPTIONAL,
     DestinationSocketAddress  SocketAddressObject OPTIONAL
 }
 
-NetworkFlowObject ::= Record {
+NetworkFlowObject ::= RECORD {
 }
 
-NetworkPacketObject ::= Record {
+NetworkPacketObject ::= RECORD {
 }
 
-NetworkSubnetObject ::= Record {
+NetworkSubnetObject ::= RECORD {
 }
 
-ProcessObject ::= Record {
+ProcessObject ::= RECORD {
 }
 
-ProductObject ::= Record {
+ProductObject ::= RECORD {
 }
 
-SystemObject ::= Record {
+SystemObject ::= RECORD {
 }
 
-URITypeEnum ::= Enumerated {
+URITypeEnum ::= ENUMERATED {
     URL          (1),
     General_URN  (2),
     Domain_Name  (3)
 }
 
-URIObject ::= Record {
+URIObject ::= RECORD {
     type         URITypeEnum,
     Value        UTF8String
 }
 
-UserAccountObject ::= Record {
+UserAccountObject ::= RECORD {
 }
 
-UserSessionObject ::= Record {
+UserSessionObject ::= RECORD {
     Effective_Group     UTF8String OPTIONAL,
     Effective_Group_ID  UTF8String OPTIONAL,
     Effective_User      UTF8String OPTIONAL,
@@ -144,22 +144,22 @@ UserSessionObject ::= Record {
     Logout_Time         UTF8String OPTIONAL
 }
 
-VolumeObject ::= Record {
+VolumeObject ::= RECORD {
 }
 
-WindowsRegistryKeyObject ::= Record {
+WindowsRegistryKeyObject ::= RECORD {
 }
 
-WindowsServiceObject ::= Record {
+WindowsServiceObject ::= RECORD {
 }
 
-X509CertificateObject ::= Enumerated {
+X509CertificateObject ::= ENUMERATED {
     Certificate           (1),
     RawCertificate        (2),
     CertificateSignature  (3)
 }
 
-CyboxObject ::= Attribute {
+CyboxObject ::= ATTRIBUTE {
     Address               [1] AddressObject,
     Device                [2] DeviceObject,
     Disk                  [3] DiskObject,

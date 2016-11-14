@@ -1,19 +1,11 @@
 """
-Translate JSON Abstract Encoding Notation (JAEN) files
-
-Copyright 2016 David Kemp
-Licensed under the Apache License, Version 2.0
-http://www.apache.org/licenses/LICENSE-2.0
+Load, validate, prettyprint, and dump JSON Abstract Encoding Notation (JAEN) schemas
 """
 
-import json, jsonschema
+import json
+import jsonschema
 from datetime import datetime
-from tr_jas import jas_load, jas_dump
-from tr_pyclass import pyclass_load, pyclass_dump
 from codec import opts_s2d
-
-# TODO: Establish CTI/JSON namespace conventions, merge "module" (name) and "namespace" (module unique id) properties
-# TODO: Update JAEN file to be array of namespaces ( {meta, types} pairs )
 
 jaen_schema = {
     "type": "object",
@@ -53,13 +45,13 @@ jaen_schema = {
                 "minItems": 4,
                 "maxItems": 5,
                 "items": [
-                    {   "type": "string"},
-                    {   "type": "string"},
-                    {   "type": "array",
+                    {"type": "string"},
+                    {"type": "string"},
+                    {"type": "array",
                         "items": {"type": "string"}
                     },
-                    {   "type": "string"},
-                    {   "type": "array",
+                    {"type": "string"},
+                    {"type": "array",
                         "items": {
                             "type": "array",
                             "minItems": 3,
@@ -81,6 +73,7 @@ jaen_schema = {
     }
 }
 
+
 def jaen_check(jaen):
     """
     Check JAEN structure against schema, then perform additional checks on type definitions
@@ -92,7 +85,7 @@ def jaen_check(jaen):
         if t[1].lower() in ("string", "integer", "number", "boolean") and len(t) != 4:    # TODO: trace back to base type
             print("Type format error:", t[0], "- primitive type", t[1], "cannot have items")
         for o, v in opts_s2d(t[2]).items():
-            if o not in ["pattern"] and o == "optional" and v:
+            if o not in ["pattern"] and o == "optional" and v:      # "optional" not present when value = False
                 print("Invalid typedef option:", t[0], o)
         if len(t) > 4:
             n = 3 if t[1].lower() == "enumerated" else 5
@@ -108,14 +101,16 @@ def jaen_check(jaen):
                     if o not in ["atfield", "optional", "range"]:
                         print("Invalid field option:", t[0], i[1], o)
             if len(t[4]) != len(tags):
-                print("Tag collision", t[0], len(t[3]), "items,", len(tags), "unique tags")
+                print("Tag collision", t[0], len(t[4]), "items,", len(tags), "unique tags")
     return jaen
+
 
 def jaen_load(fname):
     with open(fname) as f:
         jaen = json.load(f)
     jaen_check(jaen)
     return jaen
+
 
 def jaen_dumps(jaen, level=0, indent=1):
     sp = level * indent * " "
@@ -142,36 +137,9 @@ def jaen_dumps(jaen, level=0, indent=1):
         return json.dumps(jaen)
     return "???"
 
+
 def jaen_dump(jaen, fname, source=""):
     with open(fname, "w") as f:
         if source:
             f.write("\"Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\"\n\n")
         f.write(jaen_dumps(jaen))
-
-if __name__ == "__main__":
-    for fname in ("cybox", "openc2"):
-
-    # Convert JAEN to all formats
-
-        source = fname + ".jaen"
-        dest = fname + "_genj"
-        jaen = jaen_load(source)
-        jaen_dump(jaen, dest + ".jaen", source)
-        pyclass_dump(jaen, dest + ".py", source)
-        jas_dump(jaen, dest + ".jas", source)
-
-    # Convert Python classes to JAEN
-
-        source = fname + ".py"
-        dest = fname + "_genp"
-        jaen = pyclass_load(fname)
-        jaen_check(jaen)
-        jaen_dump(jaen, dest + ".jaen", source)
-
-    # Convert JAS to JAEN
-
-        source = fname + ".jas"
-        dest = fname + "_gena"
-        jaen = jas_load(source)
-        jaen_check(jaen)
-        jaen_dump(jaen, dest + ".jaen", source)
