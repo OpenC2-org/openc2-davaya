@@ -19,9 +19,9 @@ __version__ = "0.1"
 # TOTO: replace static classes with dynamically loaded JASN schemas
 # TODO: replace error messages with ValidationError exceptions
 # TODO: translate field options at initialization
+# TODO: add DEFAULT
 
 # Dict conversion utilities
-
 
 def _dmerge(x, y):
     k, v = next(iter(y.items()))
@@ -64,18 +64,20 @@ def flatten(cmd, path="", fc={}, sep="."):
     return (fcmd)
 
 
+# Option conversions
+
 def opts_s2d(ostr):
     """
-    Parse options included in type definitions
+    Convert list of type definition option strings to options dictionary
 
-    Ostr is a list of option strings.  Return a dict of options, including:
     String   Dict key   Dict val  Option
     ------   --------   -------  ------------
-    "?"      "optional" Boolean  Field is optional, equivalent to [0:1]
-    "{key"   "atfield"  String   Field name of type of an Attribute field
+    "?"      "optional" Boolean  Field is optional
+    "{key"   "atfield"  String   Field name of Attribute type
     "[n:m"   "range"    Tuple    Min and max lengths for arrays and strings
     ">*"     "pattern"  String   Regular expression to match against String value
     """
+
     assert isinstance(ostr, (list, tuple)), "%r is not a list" % olist
     opts = {"optional": False}
     for o in ostr:
@@ -93,6 +95,9 @@ def opts_s2d(ostr):
 
 
 def opts_d2s(opts):
+    """
+    Convert options dictionary to list of option strings
+    """
     ostr = []
     for k, v in opts.items():
         if k == "optional" and v:

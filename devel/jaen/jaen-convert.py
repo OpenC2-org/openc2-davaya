@@ -14,7 +14,7 @@ from tr_pyclass import pyclass_load, pyclass_dump
 # TODO: Update JAEN file to be array of namespaces ( {meta, types} pairs )
 
 if __name__ == "__main__":
-    for fname in ("cybox", "openc2"):
+    for fname in ("openc2", "cybox"):
 
     # Convert JAEN to JAS, Python classes, and prettyprinted JAEN
 

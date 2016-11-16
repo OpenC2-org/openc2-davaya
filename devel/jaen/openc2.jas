@@ -228,12 +228,12 @@ StopMethod ::= ENUMERATED {
     immediate    (2)
 }
 
-MethodValue ::= CHOICE {
-    deny         [1] DenyMethod,
-    pause        [2] PauseMethod,
-    scan         [3] ScanMethod,
-    start        [4] StartMethod,
-    stop         [5] StopMethod
+MethodValue ::= CHOICE {            -- Method must agree with Action
+    deny         [1] DenyMethod,    -- Action must be "deny"
+    pause        [2] PauseMethod,   -- Action must be 'pause'
+    scan         [3] ScanMethod,    -- Action must be 'scan"
+    start        [4] StartMethod,   -- Action must be start
+    stop         [5] StopMethod     -- Action must be "stop"
 }
 
 WhereValue ::= ENUMERATED {

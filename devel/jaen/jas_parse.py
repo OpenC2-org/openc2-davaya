@@ -207,6 +207,7 @@ class jasParser(Parser):
     @graken()
     def _cmt_(self):
         self._token('--')
+        self._pattern(r'\s*')
         self._pattern(r'.*')
         self.name_last_node('@')
 

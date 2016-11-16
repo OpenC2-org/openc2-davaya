@@ -80,9 +80,12 @@ def jas_loads(jas_str):
     types = []
     for t in ast["types"]:
         fields = []
-        tdesc = t["td1"] if t["td1"] else t["td2"]
-        tdef = [t["name"], pt.jtype(t["type"]), _fopts(t["topts"]), _nstr(tdesc)]
+        tdesc = t["td1"]
         if t["f"]:
+            tdesc = t["f"]["td2"] if t["f"]["td2"] else tdesc
+            tf = t["f"]["fields"]
+            for n in range(len(tf)-1):
+                tf[n]["fd2"] = tf[n+1]["fd1"]
             for n, f in enumerate(t["f"]["fields"]):
                 fdesc = f["fd2"]
                 if t["type"].lower() == "record":
@@ -96,7 +99,7 @@ def jas_loads(jas_str):
                         fields.append([tag, f["name"], _nstr(fdesc)])
                     else:
                         fields.append([tag, f["name"], pt.jtype(f["type"]), _fopts(f["fopts"]), _nstr(fdesc)])
-            tdef.append(fields)
+        tdef = [t["name"], pt.jtype(t["type"]), _fopts(t["topts"]), _nstr(tdesc), fields]
         types.append(tdef)
     jaen = {"meta": meta, "types": types}
     return jaen

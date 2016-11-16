@@ -21,7 +21,7 @@ name = /(\w|_|-)+/ ;
 qname = /(\w+:)?(\w|_|-)+/ ;
 int = /\d+/ ;
 define = "::=" ;
-cmt = "--" @:/.*/ ;
+cmt = "--" /\s*/ @:/.*/ ;
 str = '"' @:{ !'"' /./ } '"' ;
 fields = "{" [td2:cmt] fields:",".{ field } "}" ;
 field = ( [fd1:cmt] name:qname tag:etag [fd2:cmt] )                                   # Enumeration value, or
