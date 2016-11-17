@@ -7,6 +7,9 @@ import jsonschema
 from datetime import datetime
 from codec import opts_s2d
 
+# TODO: Establish CTI/JSON namespace conventions, merge "module" (name) and "namespace" (module unique id) properties
+# TODO: Update JAEN file to be array of namespaces ( {meta, types} pairs )
+
 jaen_schema = {
     "type": "object",
     "required": ["meta", "types"],

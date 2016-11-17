@@ -6,7 +6,7 @@ import re
 import jas_parse
 from copy import deepcopy
 from datetime import datetime
-from codec import opts_s2d, opts_d2s
+from codec_utils import opts_s2d, opts_d2s
 from textwrap import fill, shorten
 
 
@@ -84,7 +84,7 @@ def jas_loads(jas_str):
         if t["f"]:
             tdesc = t["f"]["td2"] if t["f"]["td2"] else tdesc
             tf = t["f"]["fields"]
-            for n in range(len(tf)-1):
+            for n in range(len(tf)-1):          # shift field descriptions up to corresponding fields
                 tf[n]["fd2"] = tf[n+1]["fd1"]
             for n, f in enumerate(t["f"]["fields"]):
                 fdesc = f["fd2"]
@@ -99,8 +99,8 @@ def jas_loads(jas_str):
                         fields.append([tag, f["name"], _nstr(fdesc)])
                     else:
                         fields.append([tag, f["name"], pt.jtype(f["type"]), _fopts(f["fopts"]), _nstr(fdesc)])
-        tdef = [t["name"], pt.jtype(t["type"]), _fopts(t["topts"]), _nstr(tdesc), fields]
-        types.append(tdef)
+        tdef = [t["name"], pt.jtype(t["type"]), _fopts(t["topts"]), _nstr(tdesc)]
+        types.append((tdef + [fields]) if fields else tdef)
     jaen = {"meta": meta, "types": types}
     return jaen
 
@@ -141,16 +141,17 @@ def jas_dumps(jaen):
     for td in jaen["types"]:
         tname, ttype = td[0:2]
         topts = opts_s2d(td[2])
-        tdesc = "    # " + shorten(td[3], width=40) if td[3] else ""
+        tdesc = "    -- " + td[3] if td[3] else ""
         tostr = '(PATTERN "' + topts["pattern"] + '")' if "pattern" in topts else ""
-        jas += "\n" + tname + " ::= " + pt.ptype(ttype) + tostr + tdesc
+        jas += "\n" + tname + " ::= " + pt.ptype(ttype) + tostr
         if len(td) > 4:
             titems = deepcopy(td[4])
             for i in titems:
                 if len(i) > 3:
                     i[2] = pt.ptype(i[2])
             flen = min(32, max(12, max([len(i[1]) for i in titems]) + 1 if titems else 0))
-            jas += " {\n"
+            jas += " {" + tdesc + "\n"
+            sep = "," if n < len(titems) else " "
             if ttype.lower() == "enumerated":
                 fmt = "    {1:" + str(flen) + "} ({0:d})"
                 jas += ",\n".join([fmt.format(*i) for i in titems])
@@ -159,7 +160,7 @@ def jas_dumps(jaen):
                 if ttype.lower() == 'record':
                     fmt = "    {1:" + str(flen) + "} {2}{3}"
                 items = []
-                for i in titems:
+                for n, i in enumerate(titems):
                     ostr = ""
                     opts = opts_s2d(i[3])
                     if "atfield" in opts:
@@ -172,7 +173,7 @@ def jas_dumps(jaen):
                 jas += ",\n".join(items)
             jas += "\n}\n" if titems else "}\n"
         else:
-            jas += "\n"
+            jas += tdesc + "\n"
     return jas
 
 

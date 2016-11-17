@@ -1,5 +1,5 @@
 {
-"meta": {
+ "meta": {
   "module": "openc2",
   "title": "OpenC2 Command Definitions",
   "version": "0.2",
@@ -8,12 +8,10 @@
   "root": "OpenC2Command",
   "import": [
     [1, "cybox", "http://cybox.mitre.org/common-2"],
-    [2, "cybox3", "http://docs.oasis-open.org/CTI/cybox-3"]
-  ]
-},
+    [2, "cybox3", "http://docs.oasis-open.org/CTI/cybox-3"]]
+ },
 
-"types": [
-
+ "types": [
   ["Action", "Enumerated", [], "", [
     [1, "scan", ""],
     [2, "locate", ""],
@@ -49,8 +47,8 @@
     [32, "augment", ""],
     [33, "investigate", ""],
     [34, "mitigate", ""],
-    [35, "remediate", ""]
-  ]],
+    [35, "remediate", ""]]
+  ],
 
   ["TargetType", "Enumerated", [], "", [
     [1, "cybox:Address", ""],
@@ -78,14 +76,14 @@
     [23, "cybox:Windows_Registry_Key", ""],
     [24, "cybox:Windows_Service", ""],
     [25, "cybox:X509_Certificate", ""],
-    [1,  "Data", ""],
-    [2,  "cybox3", ""]
-  ]],
+    [1, "Data", ""],
+    [2, "cybox3", ""]]
+  ],
 
   ["Target", "Record", [], "", [
     [1, "type", "TargetType", [], ""],
-    [2, "specifiers", "cybox:CyboxObject", ["?","{type"], ""]
-  ]],
+    [2, "specifiers", "cybox:CyboxObject", ["?", "{type"], ""]]
+  ],
 
   ["ActuatorType", "Enumerated", [], "", [
     [1, "endpoint", ""],
@@ -132,13 +130,13 @@
     [42, "process-reputation-service", ""],
     [43, "process-sandbox", ""],
     [44, "process-virtualization-service", ""],
-    [45, "process-vulnerability-scanner", ""]
-  ]],
+    [45, "process-vulnerability-scanner", ""]]
+  ],
 
   ["ActuatorSpecifiers", "Record", [], "", [
     [1, "port", "String", ["?"], ""],
-    [2, "asset_id", "String", ["?"], ""]
-  ]],
+    [2, "asset_id", "String", ["?"], ""]]
+  ],
 
   ["ActuatorObject", "Attribute", [], "", [
     [1, "endpoint", "ActuatorSpecifiers", [], ""],
@@ -185,13 +183,13 @@
     [42, "process-reputation-service", "ActuatorSpecifiers", [], ""],
     [43, "process-sandbox", "ActuatorSpecifiers", [], ""],
     [44, "process-virtualization-service", "ActuatorSpecifiers", [], ""],
-    [45, "process-vulnerability-scanner", "ActuatorSpecifiers", [], ""]
-  ]],
+    [45, "process-vulnerability-scanner", "ActuatorSpecifiers", [], ""]]
+  ],
 
   ["Actuator", "Record", [], "", [
     [1, "type", "ActuatorType", [], ""],
-    [2, "specifiers", "ActuatorObject", ["?","{type"], ""]
-  ]],
+    [2, "specifiers", "ActuatorObject", ["?", "{type"], ""]]
+  ],
 
   ["Duration", "String", [">^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"], ""],
 
@@ -199,16 +197,16 @@
 
   ["ResponseValue", "Enumerated", [], "", [
     [1, "ack", ""],
-    [2, "status", ""]
-  ]],
+    [2, "status", ""]]
+  ],
 
   ["DenyMethod", "Enumerated", [], "", [
     [1, "acl", ""],
     [2, "blackhole", ""],
     [3, "sinkhole", ""],
     [4, "blacklist", ""],
-    [5, "whitelist", ""]
-  ]],
+    [5, "whitelist", ""]]
+  ],
 
   ["PauseMethod", "Enumerated", [], "", [
     [1, "hibernate", ""],
@@ -230,20 +228,20 @@
     [2, "immediate", ""]]
   ],
 
-  ["MethodValue", "Choice", [], "", [
-    [1, "deny", "DenyMethod", [], ""],
-    [2, "pause", "PauseMethod", [], ""],
-    [3, "scan", "ScanMethod", [], ""],
-    [4, "start", "StartMethod", [], ""],
-    [5, "stop", "StopMethod", [], ""]]
+  ["MethodValue", "Choice", [], "Method must agree with Action (test descriptions)", [
+    [1, "deny", "DenyMethod", [], "Action must be \"deny\""],
+    [2, "pause", "PauseMethod", [], "Action must be 'pause'"],
+    [3, "scan", "ScanMethod", [], "Action must be 'scan\""],
+    [4, "start", "StartMethod", [], "Action must be start"],
+    [5, "stop", "StopMethod", [], "Action must be \"stop\""]]
   ],
 
-  ["WhereValue", "Enumerated", [], "", [
-    [1, "internal", ""],
-    [2, "perimeter", ""]
-  ]],
+  ["WhereValue", "Enumerated", [], "Test typedef descriptions", [
+    [1, "internal", "First field"],
+    [2, "perimeter", "Second field !@#%$%^&*()_+=-"]]
+  ],
 
-  ["CommandID", "String", [], ""],
+  ["CommandID", "String", [], "Test typedef description without fields"],
 
   ["Modifiers", "Map", [], "", [
     [1, "delay", "Duration", ["?"], ""],
@@ -254,29 +252,29 @@
     [6, "method", "MethodValue", ["?"], ""],
     [7, "where", "WhereValue", ["?"], ""],
     [8, "context_ref", "Integer", ["?"], ""],
-    [9, "id", "CommandID", ["?"], ""]
-  ]],
+    [9, "id", "CommandID", ["?"], ""]]
+  ],
 
   ["OpenC2Command", "Record", [], "", [
     [1, "action", "Action", [], ""],
     [2, "target", "Target", [], ""],
     [3, "actuator", "Actuator", ["?"], ""],
-    [4, "modifiers", "Modifiers", ["?"], ""]
-  ]],
+    [4, "modifiers", "Modifiers", ["?"], ""]]
+  ],
 
   ["OpenC2Response", "Record", [], "", [
     [1, "cmdref", "CommandID", [], ""],
-    [2, "results", "String", [], ""]
-  ]],
+    [2, "results", "String", [], ""]]
+  ],
 
   ["OpenC2Alert", "Record", [], "", [
-    [1, "message", "String", [], ""]
-  ]],
+    [1, "message", "String", [], ""]]
+  ],
 
   ["OpenC2Object", "Choice", [], "", [
     [1, "command", "OpenC2Command", [], ""],
     [2, "response", "OpenC2Response", [], ""],
-    [3, "alert", "OpenC2Alert", [], ""]
+    [3, "alert", "OpenC2Alert", [], ""]]
   ]]
-]
+
 }

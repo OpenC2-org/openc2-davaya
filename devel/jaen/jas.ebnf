@@ -3,7 +3,7 @@
 
 @@grammar :: jas
 
-jas = head:{!(name define) !begin any}   # Ignore anything before meta
+jas = head:{!(name define) !begin any}    # Ignore anything before meta
     metas:[meta]                          # Administrative information - key:value pairs
     types:{type}+ $                       # Datatype definitions
     ;

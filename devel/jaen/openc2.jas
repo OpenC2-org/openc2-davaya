@@ -228,7 +228,7 @@ StopMethod ::= ENUMERATED {
     immediate    (2)
 }
 
-MethodValue ::= CHOICE {            -- Method must agree with Action
+MethodValue ::= CHOICE {            -- Method must agree with Action (test descriptions)
     deny         [1] DenyMethod,    -- Action must be "deny"
     pause        [2] PauseMethod,   -- Action must be 'pause'
     scan         [3] ScanMethod,    -- Action must be 'scan"
@@ -236,12 +236,12 @@ MethodValue ::= CHOICE {            -- Method must agree with Action
     stop         [5] StopMethod     -- Action must be "stop"
 }
 
-WhereValue ::= ENUMERATED {
-    internal     (1),
-    perimeter    (2)
+WhereValue ::= ENUMERATED {     -- Test typedef descriptions
+    internal     (1),           -- First field
+    perimeter    (2)            -- Second field !@#%$%^&*()_+=-
 }
 
-CommandID ::= UTF8String
+CommandID ::= UTF8String        -- Test typedef description without fields
 
 Modifiers ::= MAP {
     delay        [1] Duration OPTIONAL,
