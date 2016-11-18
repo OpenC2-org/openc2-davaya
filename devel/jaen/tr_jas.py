@@ -146,15 +146,18 @@ def jas_dumps(jaen):
         jas += "\n" + tname + " ::= " + pt.ptype(ttype) + tostr
         if len(td) > 4:
             titems = deepcopy(td[4])
-            for i in titems:
+            for n, i in enumerate(titems):
                 if len(i) > 3:
+                    desc = i[4]
                     i[2] = pt.ptype(i[2])
+                else:
+                    desc = i[2]
+                i.append("," + desc if n < len(titems) - 1 else desc)
             flen = min(32, max(12, max([len(i[1]) for i in titems]) + 1 if titems else 0))
             jas += " {" + tdesc + "\n"
-            sep = "," if n < len(titems) else " "
             if ttype.lower() == "enumerated":
-                fmt = "    {1:" + str(flen) + "} ({0:d})"
-                jas += ",\n".join([fmt.format(*i) for i in titems])
+                fmt = "    {1:" + str(flen) + "} ({0:d}){3:}  {2:}"
+                jas += "\n".join([fmt.format(*i) for i in titems])
             else:
                 fmt = "    {1:" + str(flen) + "} [{0:d}] {2}{3}"
                 if ttype.lower() == 'record':

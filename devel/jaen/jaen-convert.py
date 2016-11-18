@@ -5,6 +5,7 @@ Translate JSON Abstract Encoding Notation (JAEN) files
 from jaen import jaen_load, jaen_dump, jaen_check
 from tr_jas import jas_load, jas_dump
 from tr_pyclass import pyclass_load, pyclass_dump
+from tr_tables import table_dump
 
 if __name__ == "__main__":
     for fname in ("openc2", "cybox"):
@@ -25,7 +26,7 @@ if __name__ == "__main__":
         jaen_check(jaen)
         jaen_dump(jaen, dest + ".jaen", source)
 
-        # Convert JAEN to JAS, Python classes, and prettyprinted JAEN
+        # Convert JAEN to JAS, Python classes, prettyprinted JAEN, and property tables
 
         source = fname + ".jaen"
         dest = fname + "_genj"
@@ -33,3 +34,4 @@ if __name__ == "__main__":
         jas_dump(jaen, dest + ".jas", source)
         jaen_dump(jaen, dest + ".jaen", source)
         pyclass_dump(jaen, dest + ".py", source)
+        table_dump(jaen, dest + ".xlsx", source)
