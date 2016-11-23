@@ -62,7 +62,7 @@ def _fopts(v):      # TODO: process min/max/range option
 
 def jas_loads(jas_str):
     """
-    Load abstract syntax from Pseudo_ASN file
+    Load abstract syntax from JAS file
     """
 
     parser = jas_parse.jasParser(parseinfo=True, )
@@ -100,7 +100,7 @@ def jas_loads(jas_str):
                     else:
                         fields.append([tag, f["name"], pt.jtype(f["type"]), _fopts(f["fopts"]), _nstr(fdesc)])
         tdef = [t["name"], pt.jtype(t["type"]), _fopts(t["topts"]), _nstr(tdesc)]
-        types.append((tdef + [fields]) if fields else tdef)
+        types.append(tdef + [fields] if tdef[1] not in ["String", "Integer", "Number", "Boolean"] else tdef)
     jaen = {"meta": meta, "types": types}
     return jaen
 
@@ -112,13 +112,13 @@ def jas_load(fname):
 
 def jas_dumps(jaen):
     """
-    Produce Pseudo-ASN.1 module from Abstract Syntax structure
+    Produce JAS module from JAEN structure
 
-    Pseudo-ASN.1 represents features available in both jaen and ASN.1 using ASN.1 syntax, but creates
-    extended datatypes (Record, Map, Attribute) for jaen types not directly representable in ASN.1.
+    JAS represents features available in both jaen and ASN.1 using ASN.1 syntax, but creates
+    extended datatypes (Record, Map, Attribute) for JAEN types not directly representable in ASN.1.
     With appropriate encoding rules (which do not yet exist), SEQUENCE could replace Record.  Map and
     Attribute could be implemented using ASN.1 table constraints, but for the purpose of representing
-    JSON objects, Map and Attribute first-class types are arguably easier to use.
+    JSON objects, the Map and Attribute first-class types in JAS are easier to use.
     """
 
     jas = "/*\n"
@@ -138,30 +138,31 @@ def jas_dumps(jaen):
     jas += "*/\n"
 
     pt = Jastype()
-    for td in jaen["types"]:
+    for td in jaen["types"]:                    # 0:name, 1:type, 2:topts, 3:tdesc, 4:fields
         tname, ttype = td[0:2]
         topts = opts_s2d(td[2])
-        tdesc = "    -- " + td[3] if td[3] else ""
         tostr = '(PATTERN "' + topts["pattern"] + '")' if "pattern" in topts else ""
+        tdesc = "    -- " + td[3] if td[3] else ""
         jas += "\n" + tname + " ::= " + pt.ptype(ttype) + tostr
         if len(td) > 4:
             titems = deepcopy(td[4])
-            for n, i in enumerate(titems):
-                if len(i) > 3:
+            for n, i in enumerate(titems):      # 0:id, 1:name, 2:fdesc  (enumerated), or
+                if len(i) > 3:                  # 0:id, 1:name, 2:type, 3: fopts, 4:fdesc
                     desc = i[4]
                     i[2] = pt.ptype(i[2])
                 else:
                     desc = i[2]
-                i.append("," + desc if n < len(titems) - 1 else desc)
+                desc = "    -- " + desc if desc else ""
+                i.append("," + desc if n < len(titems) - 1 else (" " + desc if desc else ""))
             flen = min(32, max(12, max([len(i[1]) for i in titems]) + 1 if titems else 0))
             jas += " {" + tdesc + "\n"
             if ttype.lower() == "enumerated":
-                fmt = "    {1:" + str(flen) + "} ({0:d}){3:}  {2:}"
+                fmt = "    {1:" + str(flen) + "} ({0:d}){3}"
                 jas += "\n".join([fmt.format(*i) for i in titems])
             else:
-                fmt = "    {1:" + str(flen) + "} [{0:d}] {2}{3}"
+                fmt = "    {1:" + str(flen) + "} [{0:d}] {2}{3}{4}"
                 if ttype.lower() == 'record':
-                    fmt = "    {1:" + str(flen) + "} {2}{3}"
+                    fmt = "    {1:" + str(flen) + "} {2}{3}{4}"
                 items = []
                 for n, i in enumerate(titems):
                     ostr = ""
@@ -172,8 +173,8 @@ def jas_dumps(jaen):
                     if opts["optional"]:
                         ostr += " OPTIONAL"
                     del opts["optional"]
-                    items += [fmt.format(i[0], i[1], i[2], ostr) + (" ***" + str(opts) if opts else "")]
-                jas += ",\n".join(items)
+                    items += [fmt.format(i[0], i[1], i[2], ostr, i[5]) + (" ***" + str(opts) if opts else "")]
+                jas += "\n".join(items)
             jas += "\n}\n" if titems else "}\n"
         else:
             jas += tdesc + "\n"

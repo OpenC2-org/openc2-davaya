@@ -5,7 +5,7 @@ Load, validate, prettyprint, and dump JSON Abstract Encoding Notation (JAEN) sch
 import json
 import jsonschema
 from datetime import datetime
-from codec import opts_s2d
+from codec_utils import opts_s2d
 
 # TODO: Establish CTI/JSON namespace conventions, merge "module" (name) and "namespace" (module unique id) properties
 # TODO: Update JAEN file to be array of namespaces ( {meta, types} pairs )
@@ -85,8 +85,12 @@ def jaen_check(jaen):
     jsonschema.Draft4Validator(jaen_schema).validate(jaen)
 
     for t in jaen["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-description, 4-item list
-        if t[1].lower() in ("string", "integer", "number", "boolean") and len(t) != 4:    # TODO: trace back to base type
-            print("Type format error:", t[0], "- primitive type", t[1], "cannot have items")
+        if t[1] in ("String", "Integer", "Number", "Boolean"):
+            if len(t) != 4:    # TODO: trace back to base type
+                print("Type format error:", t[0], "- primitive type", t[1], "cannot have items")
+        else:
+            if len(t) != 5:
+                print("Type format error:", t[0], "- missing items from compound type", t[1])
         for o, v in opts_s2d(t[2]).items():
             if o not in ["pattern"] and o == "optional" and v:      # "optional" not present when value = False
                 print("Invalid typedef option:", t[0], o)
@@ -145,4 +149,4 @@ def jaen_dump(jaen, fname, source=""):
     with open(fname, "w") as f:
         if source:
             f.write("\"Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\"\n\n")
-        f.write(jaen_dumps(jaen))
+        f.write(jaen_dumps(jaen) + "\n")

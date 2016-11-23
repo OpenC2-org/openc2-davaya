@@ -24,7 +24,7 @@ define = "::=" ;
 cmt = "--" /\s*/ @:/.*/ ;
 str = '"' @:{ !'"' /./ } '"' ;
 fields = "{" [td2:cmt] fields:",".{ field } "}" ;
-field = ( [fd1:cmt] name:qname tag:etag [fd2:cmt] )                                   # Enumeration value, or
+field = ( [fd1:cmt] name:qname tag:etag [fd2:cmt] )                                   # Enumerated value, or
       | ( [fd1:cmt] name:(qname|"*") [tag:ftag] type:qname [fopts:fopts] [fd2:cmt] )  #  structured datatype field
       ;
 etag = "(" @:int ")" ;
