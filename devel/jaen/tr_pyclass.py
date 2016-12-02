@@ -5,7 +5,7 @@ import importlib, inspect
 from datetime import datetime
 from textwrap import fill, shorten
 from pprint import pformat
-from codec import opts_s2d
+from codec_utils import opts_s2d
 
 def topo_sort(items):
     """
@@ -113,7 +113,7 @@ def pyclass_dumps(jaen):
         tname, ttype = td[0:2]
         topts = opts_s2d(td[2])
         tdesc = "    # " + shorten(td[3], width=40) if td[3] else ""
-        pstr += "\nclass " + td[0] + "(" + td[1] + "):" + tdesc + "\n"
+        pstr += "\nclass " + tname + "(" + ttype + "):" + tdesc + "\n"
         pstr += '  pattern = "' + topts["pattern"] + '"\n' if "pattern" in topts else ""
         if len(td) > 4:
             pstr += "  vals = [\n"

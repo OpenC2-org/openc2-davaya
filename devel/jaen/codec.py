@@ -14,245 +14,172 @@ http://www.apache.org/licenses/LICENSE-2.0
 import json
 from codec_utils import opts_s2d
 
-__version__ = "0.1"
+__version__ = "0.2"
 
-# TOTO: replace static classes with dynamically loaded JASN schemas
 # TODO: replace error messages with ValidationError exceptions
 # TODO: translate field options at initialization
 # TODO: add DEFAULT
 
+# JAEN Type Definition columns
+TNAME = 0       # Datatype name
+TTYPE = 1       # Base type
+TOPTS = 2       # Type options
+TDESC = 3       # Type description
+FIELDS = 4      # List of fields
+# JAEN Field Definition columns
+TAG = 0         # Element ID
+NAME = 1        # Element name
+EDESC = 2       # Description (for enumerated types)
+FTYPE = 2       # Datatype of field
+FOPTS = 3       # Field options
+FDESC = 4       # Field Description
+
 
 class Codec:
+    def __init__(self, fname, verbose_rec=False, verbose_str=False):
 
-# Class attributes for settings
-    verbose_record = False  # Record values serialized with string field names if True, else as arrays
-    verbose_enum = True     # Enumerated values serialized as name strings.
-    case_match = False      # Case-sensitive string matching for field names and enums if True
-    _case_produce = "upper" # Field names and enums capitalization (pass/lower/upper/proper)
-    debug = False           # Print debugging info if True
+        def sym(t):
+            symval = {
+                "TDEF": t,
+                "DECODE": enctab[t[TTYPE]][0],
+                "ENCODE": enctab[t[TTYPE]][1],
+                "ATYPE": enctab[t[TTYPE]][2],       # API Structure Type
+                "STYPE": enctab[t[TTYPE]][3],       # Transfer-encoded Structure Type
+                "NTYPE": enctab[t[TTYPE]][4],       # Transfer-encoded Name Type
+                "TOPTS": opts_s2d(t[TOPTS]),
+                "DFIELD": {f[NAME]: f[NAME] for f in t[FIELDS]} if len(t) > FIELDS else {},
+                "EFIELD": {f[NAME]: f[NAME] for f in t[FIELDS]} if len(t) > FIELDS else {}
+            }
+            if verbose_rec and t[TTYPE] == "Record":
+                symval["STYPE"] = object
+                symval["DFIELD"] = {f[NAME]: f[NAME] for f in t[FIELDS]}
+                symval["EFIELD"] = {f[NAME]: f[NAME] for f in t[FIELDS]}
+            if verbose_str and t[TTYPE] in ["Attribute", "Choice", "Enumerated", "Map"]:
+                symval["NTYPE"] = int
+                symval["DFIELD"] = {f[NAME]: f[NAME] for f in t[FIELDS]}
+                symval["EFIELD"] = {f[NAME]: f[NAME] for f in t[FIELDS]}
+            return symval
 
-    def __init__(self, debug=None, verbose_record=None, verbose_enum=None, case_match=None, case_produce=None):
-        self.vtree = None
-        if debug is not None:
-            Codec.debug = debug
-        if verbose_record is not None:
-            Codec.verbose_record = verbose_record
-        if verbose_enum is not None:
-            Codec.verbose_enum = verbose_enum
-        if case_match is not None:
-            Codec.case_match = case_match
-        if case_produce is not None:
-            Codec.case_produce = case_produce
-        if hasattr(self, "ns"):
-            self._ns = self.ns if Codec.case_match else self.ns.lower()
-        if hasattr(self, "vals") and self.vals:
-            assert(isinstance(self.vals, list) and isinstance(self.vals[0], (tuple, str)))
-            ns = self._ns + ":" if hasattr(self, "_ns") else ""
-            if isinstance(self.vals[0], tuple):
-                self._fields = [f[0] if ":" in f[0] else ns + f[0] for f in self.vals]
-            else:
-                self._fields = [f if ":" in f else ns + f for f in self.vals]
-            if not Codec.case_match:
-                self._fields = [f.lower() for f in self._fields]
-            self._fx = {v:n for n, v in enumerate(self._fields)}
-            self.dlog("init: %s %d %s" % (type(self).__name__, len(self.vals), self._fx))
-        else:
-            self.dlog("init: %s" % (type(self).__name__))
+        with open(fname) as fn:
+            jaen = json.load(fn)
+        self.symtab = {t[TNAME]: sym(t) for t in jaen["types"]}
 
-    def from_json(self, valstr, auto_verbose=True):
-        self.vtree = json.loads(valstr)
-        if auto_verbose:
-            Codec.verbose_record = isinstance(self.vtree, dict)
-        return self.decode(self.vtree, "")
+    def decode(self, datatype, mstr):
+        ts = self.symtab[datatype]
+        check_type(ts, mstr, ts["STYPE"])
+        return ts["DECODE"](ts, mstr)
 
-    def dlog(self, *args, **kwargs):
-        if self.debug:
-            print(*args, **kwargs)
-
-# Validating property setter for case_produce options
-    @property
-    def case_produce(self):
-        return self._case_produce
-
-    @case_produce.setter
-    def case_produce(self, value):
-        options = ("pass", "lower", "upper", "proper")
-        if value.lower() in options:
-            self._case_produce = value.lower()
-        else:
-            raise ValueError("case_produce must be one of: " + str(options))
-
-    def norm(self, v):
-        fv = v if self.case_match else v.lower()
-        return fv if ":" in fv else self._ns + ":" + fv
-
-    def normalize_fields(self, vtree):
-        """
-        Normalize field names to lower case and explicit namespace
-
-        :return: dict mapping normalized value to original value
-        """
-        nfields = {}
-        if isinstance(vtree, dict):
-            nfields = {self.norm(k):k for k in vtree}
-        elif isinstance(vtree, str):
-            nfields = {self.norm(vtree):vtree}
-        return nfields
-
-    def check_fields(self, nfields):
-        """
-        Check decoded normalized field names against class fields
-        """
-        if isinstance(nfields, dict):
-            nf = set(nfields)
-            cf = set(self._fields)
-            if nf - cf:                     # TODO: don't flag wildcard as mismatch for Choice objects
-                print("ValidationError: %s: Unrecognized var %s, should be in %s" % (type(self).__name__, nf - cf, cf))
+    def encode(self, datatype, message):
+        ts = self.symtab[datatype]
+        check_type(ts, message, ts["ATYPE"])
+        return ts["ENCODE"](ts, message)
 
 
-class Boolean(Codec):
-    def decode(self, val, opts):
-        if not isinstance(val, bool):
-            print("ValidationError: %r is not boolean" % val)
-        return val
+def die(ts, val, error):
+    errmsg = {
+        "E_NOTFOUND": "Unknown value",
+    }
+    td = ts["TDEF"]
+    print(errmsg[error], "%s(%s): %r" % (td[TNAME], td[TTYPE], val))
 
-    def encode(self):
-        pass
 
-class Integer(Codec):
-    def decode(self, val, opts):
-        if not isinstance(val, int):
-            print("ValidationError: %r is not int" % val)
-        return val
+def check_type(ts, val, vtype):
+    td = ts["TDEF"]
+    assert isinstance(val, vtype), "%s(%s): %r is not %s" % (td[TNAME], td[TTYPE], val, vtype)
 
-    def encode(self):
-        pass
 
-class String(Codec):
-    def decode(self, val, opts):
-        if not isinstance(val, str):
-            print("ValidationError: %r is not a string" % val)
-        return val
+def _decode_array(ts, val):
+    pass
 
-    def encode(self):
-        pass
 
-class Enumerated(Codec):
-    def decode(self, val, opts):
-        assert isinstance(val, str), "%r is not a string" % val
-        ns = self.__module__
-        v = val if ":" in val else self._ns + ":" + val
-        v = v if self.case_match else v.lower()
-        assert v in self._fields, "%s: %s not in %s" % (type(self).__name__, v, self._fields)
-        return val
+def _encode_array(ts, val):
+    pass
 
-    def encode(self):
-        pass
 
-class Map(Codec):           # TODO: handle Choice fields?  Which key?
-    def decode(self, vtree, opts):
-        if not isinstance(vtree, dict):
-            print("Map: Expected dict, got %s (%r)" % (type(self.vtree), str(self.vtree)[:20]+"..."))
-            return
+def _decode_attribute(ts, val):
+    pass
 
-        nfields = self.normalize_fields(vtree)
-        map = {}
-        for n, f in enumerate(self.vals):
-            opts = opts_s2d(f[2])
-            x = f[0]
-            if x in vtree:
-                field = f[1]()
-                self.dlog("  Map field#", x, type(field).__name__, vtree[x], opts)
-                map[x] = field.decode(vtree[x], opts)
-            else:
-                if not opts["optional"]:
-                    print("ValidationError: %s: missing Map element '%s' %s" % (type(self).__name__, x, opts))
-        return map
 
-    def encode(self):
-        pass
+def _encode_attribute(ts, val):
+    pass
 
-class Record(Codec):
-    def decode(self, vtree, opts):
-        if not isinstance(vtree, dict if self.verbose_record else list):
-            print("%r is not a %s" % (str(vtree)[:20]+"...", "dict" if self.verbose_record else "list"))
-        nfields = self.normalize_fields(vtree)
-        self.check_fields(nfields)
-        rec = {}
-        for n, f in enumerate(self.vals):
-            fopts = opts_s2d(f[2])
-            field = f[1]()
-            x = self._fields[n] if self.verbose_record else n
-            if isinstance(field, Choice):
-                if self.verbose_record:
-                    rec.update(field.decode(vtree, fopts))  # Unordered - search all fields for matching key
-                else:
-                    rec.update(field.decode(vtree[x], fopts))
-            else:
-                if x in nfields if self.verbose_record else n < len(vtree) and vtree[n] is not None:    # Exists
-                    if "atfield" in fopts:
-                        fopts["atype"] = rec[fopts["atfield"]]
-                    vx = nfields[x] if self.verbose_record else x
-                    rec[f[0]] = field.decode(vtree[vx], fopts)
-                else:
-                    if not fopts["optional"]:
-                        print("ValidationError: %s: missing Record element '%s' %r" % (type(self).__name__, f[0], opts))
-        return rec
 
-    def encode(self):
-        pass
+def _decode_boolean(ts, val):
+    return val
 
-class Choice(Codec):
-    def decode(self, vtree, opts):
-        if not isinstance(vtree, dict if self.verbose_record else list):
-            print("ValidationError: %r is not a %s" % (str(vtree)[:20] + "...", "dict" if self.verbose_record else "list"))
-        if self.verbose_record:
-            nfields = self.normalize_fields(vtree)
-            nf = set(self._fields) & set(nfields)
-            if len(nf) > 1:
-                print("ValidationError: %s Choice matches more than one element: %s" % (type(self).__name__, nf))
-                return {"***": "Choice Error"}
-            elif len(nf) < 1:
-                print("ValidationError: %s Choice - no match for %s in %s" % (type(self).__name__, set(nfields), self._fields))
-                return {"***": "Choice Error"}
-            nf = next(iter(nf))
-            val = vtree[nfields[nf]]
-        elif len(vtree) == 2:
-            nf = next(iter(self.normalize_fields(vtree[0])))
-            val = vtree[1]
-        else:
-            print("ValidationError: %s: bad choice %s: %s" % (type(self).__name__, type(vtree), vtree))
-            return
-        self.dlog("Choice:", nf + "[" + str(self._fx[nf]+1) + "]", val)
-        return {nf: self.vals[self._fx[nf]][1]().decode(val, "")}
 
-    def encode(self):
-        pass
+def _encode_boolean(ts, val):
+    return val
 
-class Attribute(Codec):
-    """
-    Attribute value with external type selector
-    """
-    def decode(self, vtree, opts):
-        self.dlog("Attribute#", type(self).__name__, vtree, opts)
-        atype = next(iter(self.normalize_fields(opts["atype"])))
-        if atype in self._fields:
-            field, cls, copts = self.vals[self._fx[atype]]
-            self.field = cls()
-            self.dlog("Attribute:", self, cls, vtree, copts, opts["atype"])
-            return self.field.decode(vtree, copts)
-        else:
-            print("ValidationError: %s: attribute '%s' not in %s" % (type(self).__name__, atype, self._fields))
 
-    def encode(self):
-        pass
+def _decode_choice(ts, val):
+    pass
 
-class Array(Codec):
-    """
-    List of values of same datatype (SEQUENCE OF)
-    """
-    def decode(self, vtree, opts):      # TODO: write array codec
-        pass
 
-    def encode(self):
-        pass
+def _encode_choice(ts, val):
+    pass
+
+
+def _decode_enumerated(ts, val):
+    if val in ts["DFIELD"]:
+        return ts["DFIELD"][val]
+    else:
+        die(ts, val, "E_NOTFOUND")
+
+
+def _encode_enumerated(ts, val):
+    if val in ts["EFIELD"]:
+        return ts["EFIELD"][val]
+    else:
+        die(ts, val, "E_NOTFOUND")
+
+
+def _decode_integer(ts, val):
+    return val
+
+def _encode_integer(ts, val):
+    return val
+
+
+def _decode_map(ts, val):
+    pass
+
+
+def _encode_map(ts, val):
+    pass
+
+
+def _decode_record(ts, val):
+    pass
+
+
+def _encode_record(ts, val):
+    pass
+
+
+def _decode_string(ts, val):
+    pass
+
+
+def _encode_string(ts, val):
+    pass
+
+
+enctab = {
+    "Boolean": [_decode_boolean, _encode_boolean, bool, bool, None],
+    "Integer": [_decode_integer, _encode_integer, int, int, None],
+    "String": [_decode_string, _encode_string, str, str, None],
+    "Array": [_decode_array, _encode_array, list, list, None],
+    "Attribute": [_decode_attribute, _encode_attribute, list, list, int],
+    "Choice": [_decode_choice, _encode_choice, object, object, int],
+    "Enumerated": [_decode_enumerated, _encode_enumerated, int, str, None],
+    "Map": [_decode_map, _encode_map, object, object, int],
+    "Record": [_decode_record, _encode_record, list, object, int],
+}
+
+if __name__ == "__main__":
+    cmd = Codec("openc2.jaen")
+    print(cmd.decode("Action", "query"))
+    print(cmd.decode("Action", "foo"))
+    print(cmd.decode("Action", 39))
+    print(cmd.decode("Action", ["scan", 1]))

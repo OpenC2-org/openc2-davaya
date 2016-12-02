@@ -111,6 +111,11 @@ def jaen_check(jaen):
                 print("Tag collision", t[0], len(t[4]), "items,", len(tags), "unique tags")
     return jaen
 
+def jaen_loads(jaen_str):
+    jaen = json.loads(jaen_str)
+    jaen_check(jaen)
+    return jaen
+
 
 def jaen_load(fname):
     with open(fname) as f:
