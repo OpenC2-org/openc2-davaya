@@ -13,6 +13,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 import json
 from codec_utils import opts_s2d
+from jaen import jaen_load
 
 __version__ = "0.2"
 
@@ -36,37 +37,13 @@ FDESC = 4       # Field Description
 
 
 class Codec:
-    def __init__(self, fname, verbose_rec=False, verbose_str=False):
-
-        def sym(t):
-            symval = {
-                "TDEF": t,
-                "DECODE": enctab[t[TTYPE]][0],
-                "ENCODE": enctab[t[TTYPE]][1],
-                "ATYPE": enctab[t[TTYPE]][2],       # API Structure Type
-                "STYPE": enctab[t[TTYPE]][3],       # Transfer-encoded Structure Type
-                "NTYPE": enctab[t[TTYPE]][4],       # Transfer-encoded Name Type
-                "TOPTS": opts_s2d(t[TOPTS]),
-                "DFIELD": {f[NAME]: f[NAME] for f in t[FIELDS]} if len(t) > FIELDS else {},
-                "EFIELD": {f[NAME]: f[NAME] for f in t[FIELDS]} if len(t) > FIELDS else {}
-            }
-            if verbose_rec and t[TTYPE] == "Record":
-                symval["STYPE"] = object
-                symval["DFIELD"] = {f[NAME]: f[NAME] for f in t[FIELDS]}
-                symval["EFIELD"] = {f[NAME]: f[NAME] for f in t[FIELDS]}
-            if verbose_str and t[TTYPE] in ["Attribute", "Choice", "Enumerated", "Map"]:
-                symval["NTYPE"] = int
-                symval["DFIELD"] = {f[NAME]: f[NAME] for f in t[FIELDS]}
-                symval["EFIELD"] = {f[NAME]: f[NAME] for f in t[FIELDS]}
-            return symval
-
-        with open(fname) as fn:
-            jaen = json.load(fn)
-        self.symtab = {t[TNAME]: sym(t) for t in jaen["types"]}
+    def __init__(self, jaen, verbose_rec=False, verbose_str=False):
+        self.jaen = jaen
+        self.set_mode(verbose_rec, verbose_str)
 
     def decode(self, datatype, mstr):
         ts = self.symtab[datatype]
-        check_type(ts, mstr, ts["STYPE"])
+        check_type(ts, mstr, ts["ETYPE"])
         return ts["DECODE"](ts, mstr)
 
     def encode(self, datatype, message):
@@ -74,18 +51,35 @@ class Codec:
         check_type(ts, message, ts["ATYPE"])
         return ts["ENCODE"](ts, message)
 
+    def set_mode(self, verbose_rec=False, verbose_str=False):
+        def sym(t):
+            symval = {
+                "TDEF": t,
+                "DECODE": enctab[t[TTYPE]][0],
+                "ENCODE": enctab[t[TTYPE]][1],
+                "ATYPE": enctab[t[TTYPE]][2],       # API (unencoded) Type
+                "ETYPE": enctab[t[TTYPE]][3],       # Transfer-encoded Type
+                "TOPTS": opts_s2d(t[TOPTS]),
+            }
+            FX = TAG
+            if verbose_rec and t[TTYPE] == "Record":
+                FX = NAME
+                symval["ETYPE"] = object
+            if verbose_str and t[TTYPE] in ["Attribute", "Choice", "Enumerated", "Map"]:
+                FX = NAME
+                symval["ETYPE"] = str
 
-def die(ts, val, error):
-    errmsg = {
-        "E_NOTFOUND": "Unknown value",
-    }
-    td = ts["TDEF"]
-    print(errmsg[error], "%s(%s): %r" % (td[TNAME], td[TTYPE], val))
+            symval["DFIELD"] = {f[FX]: f[NAME] for f in t[FIELDS]} if len(t) > FIELDS else {}
+            symval["EFIELD"] = {f[NAME]: f[FX] for f in t[FIELDS]} if len(t) > FIELDS else {}
+            return symval
 
+        self.symtab = {t[TNAME]: sym(t) for t in self.jaen["types"]}
 
 def check_type(ts, val, vtype):
     td = ts["TDEF"]
-    assert isinstance(val, vtype), "%s(%s): %r is not %s" % (td[TNAME], td[TTYPE], val, vtype)
+    if vtype is not None:
+        if type(val) != vtype:
+            raise TypeError("%s(%s): %r is not %s" % (td[TNAME], td[TTYPE], val, vtype))
 
 
 def _decode_array(ts, val):
@@ -124,14 +118,16 @@ def _decode_enumerated(ts, val):
     if val in ts["DFIELD"]:
         return ts["DFIELD"][val]
     else:
-        die(ts, val, "E_NOTFOUND")
+        td = ts["TDEF"]
+        raise ValueError("%s(%s): %r" % (td[TNAME], td[TTYPE], val))
 
 
 def _encode_enumerated(ts, val):
     if val in ts["EFIELD"]:
         return ts["EFIELD"][val]
     else:
-        die(ts, val, "E_NOTFOUND")
+        td = ts["TDEF"]
+        raise ValueError("%s(%s): %r" % (td[TNAME], td[TTYPE], val))
 
 
 def _decode_integer(ts, val):
@@ -158,27 +154,27 @@ def _encode_record(ts, val):
 
 
 def _decode_string(ts, val):
-    pass
+    return val
 
 
 def _encode_string(ts, val):
-    pass
+    return val
 
 
 enctab = {
-    "Boolean": [_decode_boolean, _encode_boolean, bool, bool, None],
-    "Integer": [_decode_integer, _encode_integer, int, int, None],
-    "String": [_decode_string, _encode_string, str, str, None],
-    "Array": [_decode_array, _encode_array, list, list, None],
-    "Attribute": [_decode_attribute, _encode_attribute, list, list, int],
-    "Choice": [_decode_choice, _encode_choice, object, object, int],
-    "Enumerated": [_decode_enumerated, _encode_enumerated, int, str, None],
-    "Map": [_decode_map, _encode_map, object, object, int],
-    "Record": [_decode_record, _encode_record, list, object, int],
+    "Boolean": [_decode_boolean, _encode_boolean, bool, bool],
+    "Integer": [_decode_integer, _encode_integer, int, int],
+    "String": [_decode_string, _encode_string, str, str],
+    "Array": [_decode_array, _encode_array, list, list],
+    "Attribute": [_decode_attribute, _encode_attribute, list, list],
+    "Choice": [_decode_choice, _encode_choice, object, object],
+    "Enumerated": [_decode_enumerated, _encode_enumerated, str, int],
+    "Map": [_decode_map, _encode_map, object, object],
+    "Record": [_decode_record, _encode_record, list, object, list],
 }
 
 if __name__ == "__main__":
-    cmd = Codec("openc2.jaen")
+    cmd = Codec(jaen_load("openc2.jaen"), True, True)
     print(cmd.decode("Action", "query"))
     print(cmd.decode("Action", "foo"))
     print(cmd.decode("Action", 39))

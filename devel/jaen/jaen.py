@@ -100,8 +100,9 @@ def jaen_check(jaen):
             record = t[1].lower() == "record"
             for k, i in enumerate(t[4]):        # item definition: 0-tag, 1-name, 2-type, 3-options, 4-description
                 tags.update(set([i[0]]))        # or (enumerated): 0-tag, 1-name, 2-description
-                if record and i[0] != k + 1 and i[0] != 0:
-                    print("Item tag error:", t[1], i[0], i[1], "should be", k)
+#                if record and i[0] != k + 1 and i[0] != 0:
+                if record and i[0] != k + 1:
+                    print("Item tag error:", t[1], i[1], i[0], "should be", k + 1)
                 if len(i) != n:
                     print("Item format error:", t[0], t[1], i[1], "-", len(i), "!=", n)
                 for o in opts_s2d(i[3]) if n > 3 else []:
