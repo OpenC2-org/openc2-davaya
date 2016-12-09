@@ -37,6 +37,19 @@ FDESC = 4       # Field Description
 
 
 class Codec:
+    """
+    Serialize (encode) and De-serialize (decode) values based on JAEN syntax.
+
+    verbose_rec - True: Record types encoded as JSON objects
+                 False: Record types encoded as JSON arrays
+    verbose_str - True: Identifiers encoded as JSON strings
+                 False: Identifiers encoded as JSON integers (tags)
+
+    Encoding modes: rec,  str
+        "Verbose" = True, True
+        "Concise" = False, True
+      "Minimized" = False, False
+    """
     def __init__(self, jaen, verbose_rec=False, verbose_str=False):
         self.jaen = jaen
         self.set_mode(verbose_rec, verbose_str)
@@ -64,7 +77,7 @@ class Codec:
             FX = TAG
             if verbose_rec and t[TTYPE] == "Record":
                 FX = NAME
-                symval["ETYPE"] = object
+                symval["ETYPE"] = dict
             if verbose_str and t[TTYPE] in ["Attribute", "Choice", "Enumerated", "Map"]:
                 FX = NAME
                 symval["ETYPE"] = str
@@ -75,6 +88,7 @@ class Codec:
 
         self.symtab = {t[TNAME]: sym(t) for t in self.jaen["types"]}
 
+
 def check_type(ts, val, vtype):
     td = ts["TDEF"]
     if vtype is not None:
@@ -83,19 +97,19 @@ def check_type(ts, val, vtype):
 
 
 def _decode_array(ts, val):
-    pass
+    return val
 
 
 def _encode_array(ts, val):
-    pass
+    return val
 
 
 def _decode_attribute(ts, val):
-    pass
+    return val
 
 
 def _encode_attribute(ts, val):
-    pass
+    return val
 
 
 def _decode_boolean(ts, val):
@@ -107,11 +121,11 @@ def _encode_boolean(ts, val):
 
 
 def _decode_choice(ts, val):
-    pass
+    return val
 
 
 def _encode_choice(ts, val):
-    pass
+    return val
 
 
 def _decode_enumerated(ts, val):
@@ -138,19 +152,21 @@ def _encode_integer(ts, val):
 
 
 def _decode_map(ts, val):
-    pass
+    return val
 
 
 def _encode_map(ts, val):
-    pass
+    return val
 
 
 def _decode_record(ts, val):
-    pass
+    for f in ts["DFIELD"]:
+        pass
+    return val
 
 
 def _encode_record(ts, val):
-    pass
+    return val
 
 
 def _decode_string(ts, val):
@@ -161,16 +177,16 @@ def _encode_string(ts, val):
     return val
 
 
-enctab = {
+enctab = {      # decode, encode, API type, min encoded type
     "Boolean": [_decode_boolean, _encode_boolean, bool, bool],
     "Integer": [_decode_integer, _encode_integer, int, int],
     "String": [_decode_string, _encode_string, str, str],
     "Array": [_decode_array, _encode_array, list, list],
     "Attribute": [_decode_attribute, _encode_attribute, list, list],
-    "Choice": [_decode_choice, _encode_choice, object, object],
+    "Choice": [_decode_choice, _encode_choice, dict, dict],
     "Enumerated": [_decode_enumerated, _encode_enumerated, str, int],
-    "Map": [_decode_map, _encode_map, object, object],
-    "Record": [_decode_record, _encode_record, list, object, list],
+    "Map": [_decode_map, _encode_map, dict, dict],
+    "Record": [_decode_record, _encode_record, dict, list],
 }
 
 if __name__ == "__main__":

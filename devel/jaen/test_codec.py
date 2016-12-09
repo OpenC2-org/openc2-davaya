@@ -3,7 +3,7 @@ import codec
 from jaen import jaen_check
 
 jaen = {
-    "meta": {"module": "unittests"},
+    "meta": {"module": "unittests-BasicTypes"},
     "types": [
         ["t_bool", "Boolean", [], ""],
         ["t_int", "Integer", [], ""],
@@ -44,23 +44,41 @@ class BasicTypes(unittest.TestCase):
         jaen_check(jaen)
         self.test_codec = codec.Codec(jaen)
 
-    def test_primitive(self):
+    def test_primitive(self):   # Non-composed types (bool, int, str)
         self.assertEqual(self.test_codec.decode("t_bool", True), True)
+        self.assertEqual(self.test_codec.encode("t_bool", True), True)
         self.assertEqual(self.test_codec.decode("t_bool", False), False)
+        self.assertEqual(self.test_codec.encode("t_bool", False), False)
         with self.assertRaises(TypeError):
             self.test_codec.decode("t_bool", "True")
         with self.assertRaises(TypeError):
+            self.test_codec.encode("t_bool", "True")
+        with self.assertRaises(TypeError):
             self.test_codec.decode("t_bool", 1)
+        with self.assertRaises(TypeError):
+            self.test_codec.encode("t_bool", 1)
+
         self.assertEqual(self.test_codec.decode("t_int", 35), 35)
+        self.assertEqual(self.test_codec.encode("t_int", 35), 35)
         with self.assertRaises(TypeError):
             self.test_codec.decode("t_int", True)
         with self.assertRaises(TypeError):
+            self.test_codec.encode("t_int", True)
+        with self.assertRaises(TypeError):
             self.test_codec.decode("t_int", "hello")
+            with self.assertRaises(TypeError):
+                self.test_codec.encode("t_int", "hello")
+
         self.assertEqual(self.test_codec.decode("t_str", "parrot"), "parrot")
+        self.assertEqual(self.test_codec.encode("t_str", "parrot"), "parrot")
         with self.assertRaises(TypeError):
             self.test_codec.decode("t_str", True)
         with self.assertRaises(TypeError):
+            self.test_codec.encode("t_str", True)
+        with self.assertRaises(TypeError):
             self.test_codec.decode("t_str", 1)
+        with self.assertRaises(TypeError):
+            self.test_codec.encode("t_str", 1)
 
     def test_array(self):
         pass
@@ -102,16 +120,39 @@ class BasicTypes(unittest.TestCase):
     def test_map_verbose(self):
         pass
 
-    def test_record_min(self):
-        pass
+    RGB = {"red": 24, "green": 120, "blue": 240}    # API (decoded) values
+    RGBA = {"red": 9, "green": 80, "blue": 96, "alpha": 128}
+    RGBc = [24, 120, 240]                           # Corresponding Encoded values
+    RGBAc = [9, 80, 96, 128]
+    RGB_bad1c = [24, 120]
+    RGBA_bad2c = [9, 80, 96, 128, 42]
+    RGB_bad3c = ["four", 120, 240]
 
     def test_record_concise(self):
         self.test_codec.set_mode(True, False)
-        pass
+        self.assertDictEqual(self.test_codec.decode("t_rec", self.RGBc), self.RGB)
+        self.assertDictEqual(self.test_codec.decode("t_rec", self.RGBAc), self.RGBA)
+        with self.assertRaises(ValueError):
+            self.test_codec.decode("t_rec", self.RGB_bad1c)
+        with self.assertRaises(ValueError):
+            self.test_codec.decode("t_rec", self.RGBA_bad2c)
+        with self.assertRaises(TypeError):
+            self.test_codec.decode("t_rec", self.RGB_bad3c)
+
+    RGB_bad1v = {"red": 24, "green": "120", "blue": 240}
+    RGB_bad2v = {"red": 24, "green": 120, "bleu": 240}
+    RGBA_bad3v = {"red": 9, "green": 80, "blue": 96, "beta": 128}
 
     def test_record_verbose(self):
         self.test_codec.set_mode(True, True)
-        pass
+        self.assertDictEqual(self.test_codec.decode("t_rec", self.RGB), self.RGB)
+        self.assertDictEqual(self.test_codec.decode("t_rec", self.RGBA), self.RGBA)
+        with self.assertRaises(TypeError):
+            self.test_codec.decode("t_rec", self.RGB_bad1v)
+        with self.assertRaises(ValueError):
+            self.test_codec.decode("t_rec", self.RGB_bad2v)
+        with self.assertRaises(ValueError):
+            self.test_codec.decode("t_rec", self.RGBA_bad3v)
 
 if __name__ == "__main__":
     unittest.main()

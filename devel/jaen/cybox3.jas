@@ -1,0 +1,49 @@
+/*
+module:        cybox3
+title:         Cyber Observable Expression v3 definitions
+version:       0.1
+description:   OpenC2 Cyber Observable datatypes based on objects
+               defined in STIX v2 Part 4.
+namespace:     http://openc2.org/observables
+*/
+
+artifact-content ::= CHOICE {
+    payload_bin  OCTET STRING,
+    url          UTF8String
+}
+
+artifact ::= RECORD {
+    mime_type    UTF8String OPTIONAL,
+    content      artifact-content OPTIONAL,
+    hashes       hashes-type OPTIONAL
+}
+
+autonomous-system ::= RECORD {
+    number      INTEGER,                -- Number assigned to the AS
+    name        UTF8String OPTIONAL,    -- Name of the AS
+    rir         UTF8String OPTIONAL     -- Name of the Regional Internet Registry (RIR) that assigned the number to the AS.
+}
+
+directory ::= MAP {
+}
+
+dnvalue ::= CHOICE {
+    v4      ipv4-addr,
+    v6      ipv6-addr,
+    name    domain-name
+}
+
+dnvalues ::= Array {
+    dnvalue
+}
+
+domain-name ::= RECORD {
+    value       UTF8String              -- Value of the domain name
+    resolves-to dnvalues                -- list of IP addresses or domain names
+}
+
+email-addr ::= RECORD {
+    value           UTF8String,
+    display_name    UTF8String OPTIONAL,
+    belongs_to      UTF8String OPTIONAL
+}
