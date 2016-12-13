@@ -49,6 +49,7 @@ class Codec:
         "Verbose" = True, True
         "Concise" = False, True
       "Minimized" = False, False
+          not used: True, False
     """
     def __init__(self, jaen, verbose_rec=False, verbose_str=False):
         self.jaen = jaen
@@ -56,23 +57,21 @@ class Codec:
 
     def decode(self, datatype, mstr):
         ts = self.symtab[datatype]
-        check_type(ts, mstr, ts["ETYPE"])
         return ts["DECODE"](ts, mstr)
 
     def encode(self, datatype, message):
         ts = self.symtab[datatype]
-        check_type(ts, message, ts["ATYPE"])
         return ts["ENCODE"](ts, message)
 
     def set_mode(self, verbose_rec=False, verbose_str=False):
         def sym(t):
             symval = {
-                "TDEF": t,
-                "DECODE": enctab[t[TTYPE]][0],
-                "ENCODE": enctab[t[TTYPE]][1],
+                "TDEF": t,                          # JAEN type definition
+                "DECODE": enctab[t[TTYPE]][0],      # decode function
+                "ENCODE": enctab[t[TTYPE]][1],      # encode function
                 "ATYPE": enctab[t[TTYPE]][2],       # API (unencoded) Type
                 "ETYPE": enctab[t[TTYPE]][3],       # Transfer-encoded Type
-                "TOPTS": opts_s2d(t[TOPTS]),
+                "TOPTS": opts_s2d(t[TOPTS]),        # Type Options (dict)
             }
             FX = TAG
             if verbose_rec and t[TTYPE] == "Record":
@@ -88,98 +87,108 @@ class Codec:
 
         self.symtab = {t[TNAME]: sym(t) for t in self.jaen["types"]}
 
-
 def check_type(ts, val, vtype):
     td = ts["TDEF"]
     if vtype is not None:
         if type(val) != vtype:
             raise TypeError("%s(%s): %r is not %s" % (td[TNAME], td[TTYPE], val, vtype))
 
-
 def _decode_array(ts, val):
+    check_type(ts, val, ts["ETYPE"])
     return val
-
 
 def _encode_array(ts, val):
+    check_type(ts, val, ts["ATYPE"])
     return val
-
 
 def _decode_attribute(ts, val):
+    check_type(ts, val, ts["ETYPE"])
     return val
-
 
 def _encode_attribute(ts, val):
+    check_type(ts, val, ts["ATYPE"])
     return val
-
 
 def _decode_boolean(ts, val):
+    check_type(ts, val, ts["ETYPE"])
     return val
-
 
 def _encode_boolean(ts, val):
+    check_type(ts, val, ts["ATYPE"])
     return val
-
 
 def _decode_choice(ts, val):
+    check_type(ts, val, ts["ETYPE"])
     return val
-
 
 def _encode_choice(ts, val):
+    check_type(ts, val, ts["ATYPE"])
     return val
 
-
 def _decode_enumerated(ts, val):
+    check_type(ts, val, ts["ETYPE"])
     if val in ts["DFIELD"]:
         return ts["DFIELD"][val]
     else:
         td = ts["TDEF"]
         raise ValueError("%s(%s): %r" % (td[TNAME], td[TTYPE], val))
 
-
 def _encode_enumerated(ts, val):
+    check_type(ts, val, ts["ATYPE"])
     if val in ts["EFIELD"]:
         return ts["EFIELD"][val]
     else:
         td = ts["TDEF"]
         raise ValueError("%s(%s): %r" % (td[TNAME], td[TTYPE], val))
 
-
 def _decode_integer(ts, val):
+    check_type(ts, val, ts["ETYPE"])
     return val
 
 def _encode_integer(ts, val):
+    check_type(ts, val, ts["ATYPE"])
     return val
 
+def _decode_number(ts, val):
+    val = float(val) if type(val) == int else val
+    check_type(ts, val, ts["ETYPE"])
+    return val
+
+def _encode_number(ts, val):
+    val = float(val) if type(val) == int else val
+    check_type(ts, val, ts["ATYPE"])
+    return val
 
 def _decode_map(ts, val):
+    check_type(ts, val, ts["ETYPE"])
     return val
-
 
 def _encode_map(ts, val):
+    check_type(ts, val, ts["ATYPE"])
     return val
 
-
 def _decode_record(ts, val):
+    check_type(ts, val, ts["ETYPE"])
     for f in ts["DFIELD"]:
         pass
     return val
 
-
 def _encode_record(ts, val):
+    check_type(ts, val, ts["ATYPE"])
     return val
-
 
 def _decode_string(ts, val):
+    check_type(ts, val, ts["ETYPE"])
     return val
-
 
 def _encode_string(ts, val):
+    check_type(ts, val, ts["ATYPE"])
     return val
-
 
 enctab = {      # decode, encode, API type, min encoded type
     "Boolean": [_decode_boolean, _encode_boolean, bool, bool],
     "Integer": [_decode_integer, _encode_integer, int, int],
+    "Number": [_decode_number, _encode_number, float, float],
     "String": [_decode_string, _encode_string, str, str],
     "Array": [_decode_array, _encode_array, list, list],
     "Attribute": [_decode_attribute, _encode_attribute, list, list],
