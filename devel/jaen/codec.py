@@ -131,7 +131,7 @@ def _decode_enumerated(ts, val):
         return ts["DFIELD"][val]
     else:
         td = ts["TDEF"]
-        raise ValueError("%s(%s): %r" % (td[TNAME], td[TTYPE], val))
+        raise ValueError("%s: %r is not a valid %s" % (td[TTYPE], val, td[TNAME]))
 
 def _encode_enumerated(ts, val):
     check_type(ts, val, ts["ATYPE"])
@@ -139,7 +139,7 @@ def _encode_enumerated(ts, val):
         return ts["EFIELD"][val]
     else:
         td = ts["TDEF"]
-        raise ValueError("%s(%s): %r" % (td[TNAME], td[TTYPE], val))
+        raise ValueError("%s: %r is not a valid %s" % (td[TTYPE], val, td[TNAME]))
 
 def _decode_integer(ts, val):
     check_type(ts, val, ts["ETYPE"])
