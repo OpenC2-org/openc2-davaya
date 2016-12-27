@@ -82,6 +82,8 @@ def jaen_check(jaen):
     Check JAEN structure against schema, then perform additional checks on type definitions
     """
 
+# TODO: convert prints to ValidationError exception
+
     jsonschema.Draft4Validator(jaen_schema).validate(jaen)
 
     for t in jaen["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-description, 4-item list
@@ -98,13 +100,11 @@ def jaen_check(jaen):
             if o not in ["pattern"] and o == "optional" and v:      # "optional" not present when value = False
                 print("Invalid typedef option:", t[0], o)
         if len(t) > 4:
-            n = 3 if t[1].lower() == "enumerated" else 5
+            n = 3 if t[1] == "Enumerated" else 5
             tags = set()
-            record = t[1].lower() == "record"
             for k, i in enumerate(t[4]):        # item definition: 0-tag, 1-name, 2-type, 3-options, 4-description
                 tags.update(set([i[0]]))        # or (enumerated): 0-tag, 1-name, 2-description
-#                if record and i[0] != k + 1 and i[0] != 0:
-                if record and i[0] != k + 1:
+                if t[1] == "Record" and i[0] != k + 1:
                     print("Item tag error:", t[1], i[1], i[0], "should be", k + 1)
                 if len(i) != n:
                     print("Item format error:", t[0], t[1], i[1], "-", len(i), "!=", n)

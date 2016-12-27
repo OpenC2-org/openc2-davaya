@@ -38,6 +38,16 @@ ENC = 1         # Encode function
 ATYPE = 2       # API type
 ETYPE = 3       # Encoded type
 
+# Symbol Table fields
+S_DEF = 0        # JAEN type definition
+S_CODEC = 1      # CODEC table entry for this type
+S_TOPT = 2       # Type Options (dict format)
+S_FLD = 3        # Field definitions
+S_FMAP = 4       # Field ID to Name index
+
+# Field Definition fields
+S_FDEF = 0       # JAEN field definition
+S_FOPT = 1       # Field Options (dict format)
 
 class Codec:
     """
@@ -62,170 +72,168 @@ class Codec:
 
     def decode(self, datatype, mstr):
         ts = self.symtab[datatype]
-        return ts["DECODE"](ts, mstr)
+        return ts[S_CODEC][DEC](ts, mstr)
 
     def encode(self, datatype, message):
         ts = self.symtab[datatype]
-        return ts["ENCODE"](ts, message)
+        return ts[S_CODEC][ENC](ts, message)
 
     def set_mode(self, verbose_rec=False, verbose_str=False):
-        def symf(f):                                # Pre-compute field entries
-            fs = {"f": f,                           # JAEN field definition
-                  "dec": enctab[f[FTYPE]][DEC],     # Field decode function
-                  "enc": enctab[f[FTYPE]][ENC],     # Field encode function
-                  "opts": opts_s2d(f[FOPTS])}       # Field options (dict)
+        def symf(f):        # Field entries
+            fs = [
+                f,                     # S_FDEF:  JAEN field definition
+                opts_s2d(f[S_FOPT])    # FOPTS: Field options (dict)
+            ]
             return fs
 
         def sym(t):         # Build symbol table based on encoding modes
-            symval = {
-                "TDEF": t,                          # JAEN type definition
-                "DECODE": enctab[t[TTYPE]][DEC],    # Type decode function
-                "ENCODE": enctab[t[TTYPE]][ENC],    # Type encode function
-                "ATYPE": enctab[t[TTYPE]][ATYPE],   # API (unencoded) Type
-                "ETYPE": enctab[t[TTYPE]][ETYPE],   # Transfer-encoded Type
-                "TOPTS": opts_s2d(t[TOPTS])         # Type Options (dict)
-            }
+            symval = [
+                t,                     # S_DEF:   JAEN type definition
+                enctab[t[TTYPE]],      # S_CODEC:  Type decode function
+                opts_s2d(t[TOPTS]),    # S_TOPT:  Type Options (dict)
+                {},                    # S_FLD:  Field list
+                {}                     # S_FMAP:   Field ID to Name
+            ]
             fx = TAG
             if verbose_rec and t[TTYPE] == "Record":
                 fx = NAME
-                symval["ETYPE"] = dict
+                symval[ETYPE] = dict
             if verbose_str and t[TTYPE] in ["Attribute", "Choice", "Enumerated", "Map"]:
                 fx = NAME
-                symval["ETYPE"] = str
+                symval[ETYPE] = str
 
-            if t[TTYPE] == "Enumerated":            # Direct translation
-                symval["DFIELD"] = {f[fx]: f[NAME] for f in t[FIELDS]} if len(t) > FIELDS else {}
-                symval["EFIELD"] = {f[NAME]: f[fx] for f in t[FIELDS]} if len(t) > FIELDS else {}
-            elif t[TTYPE] in ["Attribute", "Choice", "Map", "Record"]:      # Compound types
-                symval["FIELDS"] = {f[NAME]: symf(f) for f in t[FIELDS]} if len(t) > FIELDS else {}
+            if t[TTYPE] in ["Attribute", "Choice", "Enumerated", "Map", "Record"]:
+                symval[S_FLD] = {f[NAME]: symf(f) for f in t[FIELDS]}
+                symval[S_FMAP] =  {f[fx]: f[NAME] for f in t[FIELDS]}
             return symval
 
         return {t[TNAME]: sym(t) for t in self.jaen["types"]}
 
 
 def _check_type(ts, val, vtype):
-    td = ts["TDEF"]
+    td = ts[S_DEF]
     if vtype is not None:
         if type(val) != vtype:
             raise TypeError("%s(%s): %r is not %s" % (td[TNAME], td[TTYPE], val, vtype))
 
 
 def _decode_array(ts, val):
-    _check_type(ts, val, ts["ETYPE"])
+    _check_type(ts, val, ts[ETYPE])
     return val
 
 
 def _encode_array(ts, val):
-    _check_type(ts, val, ts["ATYPE"])
+    _check_type(ts, val, ts[ATYPE])
     return val
 
 
 def _decode_attribute(ts, val):
-    _check_type(ts, val, ts["ETYPE"])
+    _check_type(ts, val, ts[ETYPE])
     return val
 
 
 def _encode_attribute(ts, val):
-    _check_type(ts, val, ts["ATYPE"])
+    _check_type(ts, val, ts[ATYPE])
     return val
 
 
 def _decode_boolean(ts, val):
-    _check_type(ts, val, ts["ETYPE"])
+    _check_type(ts, val, ts[ETYPE])
     return val
 
 
 def _encode_boolean(ts, val):
-    _check_type(ts, val, ts["ATYPE"])
+    _check_type(ts, val, ts[ATYPE])
     return val
 
 
 def _decode_choice(ts, val):
-    _check_type(ts, val, ts["ETYPE"])
+    _check_type(ts, val, ts[ETYPE])
     return val
 
 
 def _encode_choice(ts, val):
-    _check_type(ts, val, ts["ATYPE"])
+    _check_type(ts, val, ts[ATYPE])
     return val
 
 
 def _decode_enumerated(ts, val):
-    _check_type(ts, val, ts["ETYPE"])
-    if val in ts["DFIELD"]:
-        return ts["DFIELD"][val]
+    _check_type(ts, val, ts[ETYPE])
+    if val in ts[S_FMAP]:
+        fx = ts[S_FMAP][val]
+        return ts[S_FLD][fx]
     else:
-        td = ts["TDEF"]
+        td = ts[S_DEF]
         raise ValueError("%s: %r is not a valid %s" % (td[TTYPE], val, td[TNAME]))
 
 
 def _encode_enumerated(ts, val):
-    _check_type(ts, val, ts["ATYPE"])
+    _check_type(ts, val, ts[ATYPE])
     if val in ts["EFIELD"]:
         return ts["EFIELD"][val]
     else:
-        td = ts["TDEF"]
+        td = ts[S_DEF]
         raise ValueError("%s: %r is not a valid %s" % (td[TTYPE], val, td[TNAME]))
 
 
 def _decode_integer(ts, val):
-    _check_type(ts, val, ts["ETYPE"])
+    _check_type(ts, val, ts[ETYPE])
     return val
 
 
 def _encode_integer(ts, val):
-    _check_type(ts, val, ts["ATYPE"])
+    _check_type(ts, val, ts[ATYPE])
     return val
 
 
 def _decode_number(ts, val):
     val = float(val) if type(val) == int else val
-    _check_type(ts, val, ts["ETYPE"])
+    _check_type(ts, val, ts[ETYPE])
     return val
 
 
 def _encode_number(ts, val):
     val = float(val) if type(val) == int else val
-    _check_type(ts, val, ts["ATYPE"])
+    _check_type(ts, val, ts[ATYPE])
     return val
 
 
 def _decode_map(ts, val):
-    _check_type(ts, val, ts["ETYPE"])
+    _check_type(ts, val, ts[ETYPE])
     return val
 
 
 def _encode_map(ts, val):
-    _check_type(ts, val, ts["ATYPE"])
+    _check_type(ts, val, ts[ATYPE])
     return val
 
 
 def _decode_record(ts, val):
-    _check_type(ts, val, ts["ETYPE"])
-    aval = ts["ATYPE"]()
+    _check_type(ts, val, ts[ETYPE])
+    aval = ts[ATYPE]()
     for n, fx in enumerate(val):
         if isinstance(val, list):
-            f = ts["TDEF"][FIELDS][n]
+            f = ts[S_DEF][FIELDS][n]
             fval = 0
         else:
             f = ts["FIELDS"][fx]["f"]
             fval = 0
-        aval[f[NAME]] = ts["DECODE"](fval)
+        aval[f[NAME]] = ts["DECODE"](fval)      # Decode field value
     return aval
 
 
 def _encode_record(ts, val):
-    _check_type(ts, val, ts["ATYPE"])
+    _check_type(ts, val, ts[ATYPE])
     return val
 
 
 def _decode_string(ts, val):
-    _check_type(ts, val, ts["ETYPE"])
+    _check_type(ts, val, ts[ETYPE])
     return val
 
 
 def _encode_string(ts, val):
-    _check_type(ts, val, ts["ATYPE"])
+    _check_type(ts, val, ts[ATYPE])
     return val
 
 

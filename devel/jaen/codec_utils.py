@@ -63,7 +63,7 @@ def opts_s2d(ostr):
     ">*"     "pattern"  String   Regular expression to match against String value
     """
 
-    assert isinstance(ostr, (list, tuple)), "%r is not a list" % olist
+    assert isinstance(ostr, (list, tuple)), "%r is not a list" % ostr
     opts = {"optional": False}
     for o in ostr:
         if o[0] == "?":
