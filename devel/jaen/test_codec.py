@@ -41,112 +41,112 @@ class BasicTypes(unittest.TestCase):
 
     def setUp(self):
         jaen_check(jaen)
-        self.tcodec = codec.Codec(jaen)
+        self.tc = codec.Codec(jaen)
 
     def test_primitive(self):   # Non-composed types (bool, int, num, str)
-        self.assertEqual(self.tcodec.decode("t_bool", True), True)
-        self.assertEqual(self.tcodec.decode("t_bool", False), False)
-        self.assertEqual(self.tcodec.encode("t_bool", True), True)
-        self.assertEqual(self.tcodec.encode("t_bool", False), False)
+        self.assertEqual(self.tc.decode("t_bool", True), True)
+        self.assertEqual(self.tc.decode("t_bool", False), False)
+        self.assertEqual(self.tc.encode("t_bool", True), True)
+        self.assertEqual(self.tc.encode("t_bool", False), False)
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_bool", "True")
+            self.tc.decode("t_bool", "True")
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_bool", 1)
+            self.tc.decode("t_bool", 1)
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_bool", "True")
+            self.tc.encode("t_bool", "True")
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_bool", 1)
+            self.tc.encode("t_bool", 1)
 
-        self.assertEqual(self.tcodec.decode("t_int", 35), 35)
-        self.assertEqual(self.tcodec.encode("t_int", 35), 35)
+        self.assertEqual(self.tc.decode("t_int", 35), 35)
+        self.assertEqual(self.tc.encode("t_int", 35), 35)
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_int", 35.4)
+            self.tc.decode("t_int", 35.4)
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_int", True)
+            self.tc.decode("t_int", True)
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_int", "hello")
+            self.tc.decode("t_int", "hello")
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_int", 35.4)
+            self.tc.encode("t_int", 35.4)
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_int", True)
+            self.tc.encode("t_int", True)
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_int", "hello")
+            self.tc.encode("t_int", "hello")
 
-        self.assertEqual(self.tcodec.decode("t_num", 25.96), 25.96)
-        self.assertEqual(self.tcodec.decode("t_num", 25), 25)
-        self.assertEqual(self.tcodec.encode("t_num", 25.96), 25.96)
-        self.assertEqual(self.tcodec.encode("t_num", 25), 25)
+        self.assertEqual(self.tc.decode("t_num", 25.96), 25.96)
+        self.assertEqual(self.tc.decode("t_num", 25), 25)
+        self.assertEqual(self.tc.encode("t_num", 25.96), 25.96)
+        self.assertEqual(self.tc.encode("t_num", 25), 25)
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_num", True)
+            self.tc.decode("t_num", True)
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_num", "hello")
+            self.tc.decode("t_num", "hello")
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_num", True)
+            self.tc.encode("t_num", True)
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_num", "hello")
+            self.tc.encode("t_num", "hello")
 
-        self.assertEqual(self.tcodec.decode("t_str", "parrot"), "parrot")
-        self.assertEqual(self.tcodec.encode("t_str", "parrot"), "parrot")
+        self.assertEqual(self.tc.decode("t_str", "parrot"), "parrot")
+        self.assertEqual(self.tc.encode("t_str", "parrot"), "parrot")
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_str", True)
+            self.tc.decode("t_str", True)
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_str", 1)
+            self.tc.decode("t_str", 1)
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_str", True)
+            self.tc.encode("t_str", True)
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_str", 1)
+            self.tc.encode("t_str", 1)
 
     def test_array(self):
-        self.assertEqual(self.tcodec.decode("t_array", [1, 4, 9, 16]), [1, 4, 9, 16])
-        self.assertEqual(self.tcodec.encode("t_array", [1, 4, 9, 16]), [1, 4, 9, 16])
+        self.assertEqual(self.tc.decode("t_array", [1, 4, 9, 16]), [1, 4, 9, 16])
+        self.assertEqual(self.tc.encode("t_array", [1, 4, 9, 16]), [1, 4, 9, 16])
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_array", [1, "4", 9, 16])
+            self.tc.decode("t_array", [1, "4", 9, 16])
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_array", 9)
+            self.tc.decode("t_array", 9)
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_array", [1, "4", 9, 16])
+            self.tc.encode("t_array", [1, "4", 9, 16])
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_array", 9)
+            self.tc.decode("t_array", 9)
 
     def test_choice_min(self):
         pass
 
     def test_choice_verbose(self):
-        self.tcodec.set_mode(True, True)
+        self.tc.set_mode(True, True)
         pass
 
     def test_enumerated_min(self):
-        self.assertEqual(self.tcodec.decode("t_enum", 15), "extra")
-        self.assertEqual(self.tcodec.encode("t_enum", "extra"), 15)
+        self.assertEqual(self.tc.decode("t_enum", 15), "extra")
+        self.assertEqual(self.tc.encode("t_enum", "extra"), 15)
         with self.assertRaises(ValueError):
-            self.tcodec.decode("t_enum", 13)
+            self.tc.decode("t_enum", 13)
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_enum", "extra")
+            self.tc.decode("t_enum", "extra")
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_enum", ["first"])
+            self.tc.decode("t_enum", ["first"])
         with self.assertRaises(ValueError):
-            self.tcodec.encode("t_enum", "foo")
+            self.tc.encode("t_enum", "foo")
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_enum", 15)
+            self.tc.encode("t_enum", 15)
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_enum", [1])
+            self.tc.encode("t_enum", [1])
 
     def test_enumerated_verbose(self):
-        self.tcodec.set_mode(True, True)
-        self.assertEqual(self.tcodec.decode("t_enum", "extra"), "extra")
-        self.assertEqual(self.tcodec.encode("t_enum", "extra"), "extra")
+        self.tc.set_mode(True, True)
+        self.assertEqual(self.tc.decode("t_enum", "extra"), "extra")
+        self.assertEqual(self.tc.encode("t_enum", "extra"), "extra")
         with self.assertRaises(ValueError):
-            self.tcodec.decode("t_enum", "foo")
+            self.tc.decode("t_enum", "foo")
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_enum", 42)
+            self.tc.decode("t_enum", 42)
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_enum", ["first"])
+            self.tc.decode("t_enum", ["first"])
         with self.assertRaises(ValueError):
-            self.tcodec.encode("t_enum", "foo")
+            self.tc.encode("t_enum", "foo")
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_enum", 42)
+            self.tc.encode("t_enum", 42)
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_enum", ["first"])
+            self.tc.encode("t_enum", ["first"])
 
     RGB = {"red": 24, "green": 120, "blue": 240}    # API (decoded) values
     RGBA = {"red": 9, "green": 80, "blue": 96, "alpha": 128}
@@ -161,56 +161,6 @@ class BasicTypes(unittest.TestCase):
     RGBA_bad2m = {2: 9, 4: 80, 6: 96, 9: 128, 12: 42}
     RGB_bad3m = {2: "four", 4: 120, 6: 240}
     RGB_bad4m = {"2": 24, 4: 120, 6: 240}
-    RGB_bad1v = {"red": 24, "green": "120", "blue": 240}
-    RGB_bad2v = {"red": 24, "green": 120, "bleu": 240}
-    RGBA_bad3v = {"red": 9, "green": 80, "blue": 96, "beta": 128}
-    RGB_bad4v = {2: 24, "green": 120, "blue": 240}
-
-    def test_map_min(self):
-        self.tcodec.set_mode(False, False)
-        self.assertDictEqual(self.tcodec.decode("t_map", self.RGBm), self.RGB)
-        self.assertDictEqual(self.tcodec.decode("t_map", self.RGBAm), self.RGBA)
-        self.assertDictEqual(self.tcodec.encode("t_map", self.RGB), self.RGBm)
-        self.assertDictEqual(self.tcodec.encode("t_map", self.RGBA), self.RGBAm)
-        with self.assertRaises(ValueError):
-            self.tcodec.decode("t_map", self.RGB_bad1m)
-        with self.assertRaises(ValueError):
-            self.tcodec.decode("t_map", self.RGBA_bad2m)
-        with self.assertRaises(TypeError):
-            self.tcodec.decode("t_map", self.RGB_bad3m)
-        with self.assertRaises(TypeError):
-            self.tcodec.decode("t_map", self.RGB_bad4m)
-        with self.assertRaises(ValueError):
-            self.tcodec.encode("t_map", self.RGB_bad1a)
-        with self.assertRaises(ValueError):
-            self.tcodec.encode("t_map", self.RGBA_bad2a)
-        with self.assertRaises(TypeError):
-            self.tcodec.encode("t_map", self.RGB_bad3a)
-        with self.assertRaises(TypeError):
-            self.tcodec.encode("t_map", self.RGB_bad4a)
-
-    def test_map_verbose(self):     # Encoding identical to record_verbose
-        self.tcodec.set_mode(True, True)
-        self.assertDictEqual(self.tcodec.decode("t_map", self.RGB), self.RGB)
-        self.assertDictEqual(self.tcodec.decode("t_map", self.RGBA), self.RGBA)
-        self.assertDictEqual(self.tcodec.encode("t_map", self.RGB), self.RGB)
-        self.assertDictEqual(self.tcodec.encode("t_map", self.RGBA), self.RGBA)
-        with self.assertRaises(TypeError):
-            self.tcodec.decode("t_map", self.RGB_bad1v)
-        with self.assertRaises(ValueError):
-            self.tcodec.decode("t_map", self.RGB_bad2v)
-        with self.assertRaises(ValueError):
-            self.tcodec.decode("t_map", self.RGBA_bad3v)
-        with self.assertRaises(TypeError):
-            self.tcodec.decode("t_map", self.RGB_bad4v)
-        with self.assertRaises(ValueError):
-            self.tcodec.encode("t_map", self.RGB_bad1a)
-        with self.assertRaises(ValueError):
-            self.tcodec.encode("t_map", self.RGBA_bad2a)
-        with self.assertRaises(TypeError):
-            self.tcodec.encode("t_map", self.RGB_bad3a)
-        with self.assertRaises(TypeError):
-            self.tcodec.encode("t_map", self.RGB_bad4a)
 
     RGBc = [24, 120, 240]                           # Encoded values (concise)
     RGBAc = [9, 80, 96, 128]
@@ -218,49 +168,99 @@ class BasicTypes(unittest.TestCase):
     RGBA_bad2c = [9, 80, 96, 128, 42]
     RGB_bad3c = ["four", 120, 240]
 
+    RGB_bad1v = {"red": 24, "green": "120", "blue": 240}    # Encoded values (verbose)
+    RGB_bad2v = {"red": 24, "green": 120, "bleu": 240}
+    RGB_bad3v = {2: 24, "green": 120, "blue": 240}
+    RGBA_bad4v = {"red": 9, "green": 80, "blue": 96, "beta": 128}
+
+    def test_map_min(self):
+        self.assertDictEqual(self.tc.decode("t_map", self.RGBm), self.RGB)
+        self.assertDictEqual(self.tc.decode("t_map", self.RGBAm), self.RGBA)
+        self.assertDictEqual(self.tc.encode("t_map", self.RGB), self.RGBm)
+        self.assertDictEqual(self.tc.encode("t_map", self.RGBA), self.RGBAm)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGB_bad1m)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGBA_bad2m)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_map", self.RGB_bad3m)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_map", self.RGB_bad4m)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad1a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGBA_bad2a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad3a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad4a)
+
+    def test_map_verbose(self):     # Encoding identical to record_verbose
+        self.tc.set_mode(True, True)
+        self.assertDictEqual(self.tc.decode("t_map", self.RGB), self.RGB)
+        self.assertDictEqual(self.tc.decode("t_map", self.RGBA), self.RGBA)
+        self.assertDictEqual(self.tc.encode("t_map", self.RGB), self.RGB)
+        self.assertDictEqual(self.tc.encode("t_map", self.RGBA), self.RGBA)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_map", self.RGB_bad1v)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGB_bad2v)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_map", self.RGB_bad3v)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGBA_bad4v)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad1a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGBA_bad2a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad3a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad4a)
+
     def test_record_concise(self):
-        self.tcodec.set_mode(True, False)
-        self.assertDictEqual(self.tcodec.decode("t_rec", self.RGBc), self.RGB)
-        self.assertDictEqual(self.tcodec.decode("t_rec", self.RGBAc), self.RGBA)
-        self.assertDictEqual(self.tcodec.encode("t_rec", self.RGB), self.RGBc)
-        self.assertDictEqual(self.tcodec.encode("t_rec", self.RGBA), self.RGBAc)
+        self.tc.set_mode(False, True)
+        self.assertDictEqual(self.tc.decode("t_rec", self.RGBc), self.RGB)
+        self.assertDictEqual(self.tc.decode("t_rec", self.RGBAc), self.RGBA)
+        self.assertDictEqual(self.tc.encode("t_rec", self.RGB), self.RGBc)
+        self.assertDictEqual(self.tc.encode("t_rec", self.RGBA), self.RGBAc)
         with self.assertRaises(ValueError):
-            self.tcodec.decode("t_rec", self.RGB_bad1c)
+            self.tc.decode("t_rec", self.RGB_bad1c)
         with self.assertRaises(ValueError):
-            self.tcodec.decode("t_rec", self.RGBA_bad2c)
+            self.tc.decode("t_rec", self.RGBA_bad2c)
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_rec", self.RGB_bad3c)
+            self.tc.decode("t_rec", self.RGB_bad3c)
         with self.assertRaises(ValueError):
-            self.tcodec.encode("t_rec", self.RGB_bad1a)
+            self.tc.encode("t_rec", self.RGB_bad1a)
         with self.assertRaises(ValueError):
-            self.tcodec.encode("t_rec", self.RGBA_bad2a)
+            self.tc.encode("t_rec", self.RGBA_bad2a)
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_rec", self.RGB_bad3a)
+            self.tc.encode("t_rec", self.RGB_bad3a)
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_rec", self.RGB_bad4a)
+            self.tc.encode("t_rec", self.RGB_bad4a)
 
     def test_record_verbose(self):
-        self.tcodec.set_mode(True, True)
-        self.assertDictEqual(self.tcodec.decode("t_rec", self.RGB), self.RGB)
-        self.assertDictEqual(self.tcodec.decode("t_rec", self.RGBA), self.RGBA)
-        self.assertDictEqual(self.tcodec.encode("t_rec", self.RGB), self.RGB)
-        self.assertDictEqual(self.tcodec.encode("t_rec", self.RGBA), self.RGBA)
+        self.tc.set_mode(True, True)
+        self.assertDictEqual(self.tc.decode("t_rec", self.RGB), self.RGB)
+        self.assertDictEqual(self.tc.decode("t_rec", self.RGBA), self.RGBA)
+        self.assertDictEqual(self.tc.encode("t_rec", self.RGB), self.RGB)
+        self.assertDictEqual(self.tc.encode("t_rec", self.RGBA), self.RGBA)
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_rec", self.RGB_bad1v)
+            self.tc.decode("t_rec", self.RGB_bad1v)
         with self.assertRaises(ValueError):
-            self.tcodec.decode("t_rec", self.RGB_bad2v)
-        with self.assertRaises(ValueError):
-            self.tcodec.decode("t_rec", self.RGBA_bad3v)
+            self.tc.decode("t_rec", self.RGB_bad2v)
         with self.assertRaises(TypeError):
-            self.tcodec.decode("t_rec", self.RGB_bad4v)
+            self.tc.decode("t_rec", self.RGB_bad3v)
         with self.assertRaises(ValueError):
-            self.tcodec.encode("t_rec", self.RGB_bad1a)
+            self.tc.decode("t_rec", self.RGBA_bad4v)
         with self.assertRaises(ValueError):
-            self.tcodec.encode("t_rec", self.RGBA_bad2a)
+            self.tc.encode("t_rec", self.RGB_bad1a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_rec", self.RGBA_bad2a)
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_rec", self.RGB_bad3a)
+            self.tc.encode("t_rec", self.RGB_bad3a)
         with self.assertRaises(TypeError):
-            self.tcodec.encode("t_rec", self.RGB_bad4a)
+            self.tc.encode("t_rec", self.RGB_bad4a)
 
 if __name__ == "__main__":
     unittest.main()
