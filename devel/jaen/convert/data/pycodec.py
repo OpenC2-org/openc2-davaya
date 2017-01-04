@@ -1,25 +1,110 @@
+import json, re
+from functools import reduce
+
 """
 Abstract Object Encoder/Decoder
 
-Object schema is specified in JSON Abstract Encoding Notation (JAEN) format.
+Classes used to define Datatypes using an abstract syntax, and
+encode/decode instances of those types using a concrete message format.
 
-Currently supports three JSON-based concrete message formats (verbose, concise,
-and minimized) but can be extended to support XML-based and binary formats.
+Datatypes are specified in JSON Abstract Syntax Notation (JASN) schemas,
+or Python classes, or "Pseudo ASN" documemnts, all of which represent and can
+be generated from the same abstract schema.
+
+Currently supports three JSON-based concrete message sound (verbose, concise,
+and minimized) but can be extended to support XML-based and binary sound.
 
 Copyright 2016 David Kemp
 Licensed under the Apache License, Version 2.0
 http://www.apache.org/licenses/LICENSE-2.0
 """
 
-import json
-from codec_utils import opts_s2d
-
-__version__ = "0.1"
-
+# TOTO: replace static classes with dynamically loaded JASN schemas
 # TODO: replace error messages with ValidationError exceptions
-# TODO: translate field options at initialization
-# TODO: add DEFAULT
+# TODO: parse field options at initialization
 
+# Dict conversion utilities
+
+def _dmerge(x, y):
+    k, v = next(iter(y.items()))
+    if k in x:
+        _dmerge(x[k], v)
+    else:
+        x[k] = v
+    return x
+
+def hdict(keys, value, sep="."):
+    """
+    Convert a hierarchical-key value pair to a nested dict
+    """
+    return reduce(lambda v, k: {k: v}, reversed(keys.split(sep)), value)
+
+def fluff(src, sep="."):
+    """
+    Convert a flat dict with hierarchical keys to a nested dict
+
+    :param src: flat dict - e.g., {"a.b.c": 1, "a.b.d": 2}
+    :param sep: separator character for keys
+    :return: nested dict - e.g., {"a": {"b": {"c": 1, "d": 2}}}
+    """
+    return reduce(lambda x, y: _dmerge(x, y), [hdict(k, v, sep) for k, v in src.items()], {})
+
+def flatten(cmd, path="", fc={}, sep="."):
+    """
+    Convert a nested dict to a flat dict with hierarchical keys
+    """
+    fcmd = fc.copy()
+    if isinstance(cmd, dict):
+        for k, v in cmd.items():
+            k = k.split(":")[1] if ":" in k else k
+            fcmd = flatten(v, sep.join((path, k)) if path else k, fcmd)
+    else:
+        fcmd[path] = ('"' + cmd + '"' if isinstance(cmd, str) else str(cmd))
+    return (fcmd)
+
+def parse_type_opts(olist):
+    """
+    Parse options included in type definitions
+
+    Type definitions consist of 1) type name, 2) parent type, 3) options string, 4) list of fields/items
+    Returns a dict of options:
+    String   Dict key   Dict val  Option
+    ------   --------   -------  ------------
+    ">*"     "pattern"  string   regular expression to match against String value
+    """
+    assert isinstance(olist, (list, tuple)), "%r is not a list" % olist
+    opts = {}
+    for ostr in olist:
+        if ostr[:1] == ">":
+            opts["pattern"] = ostr[1:]
+        elif ostr:
+            print("Unknown type option", ostr)
+    return opts
+
+def parse_field_opts(olist):
+    """
+    Parse options included in field definitions
+
+    Field definitions consist of 1) field name, 2) datatype class, and 3) options string
+    Ostring contains a comma separated list of values.  Return a dict of options, including:
+    String   Dict key   Dict val  Option
+    ------   --------   -------  ------------
+    "?"      "optional" Boolean  Field is optional, equivalent to [0:1]
+    "{key}"  "atfield"  String   Field name of type of an Attribute field
+    "[n:m]"  "range"    Tuple    Min and max lengths for arrays and strings
+    """
+    assert isinstance(olist, (list, tuple)), "%r is not a list" % olist
+    opts = {"optional": False}
+    for o in olist:
+        if o == "?":
+            opts["optional"] = True
+        elif o:
+            m = re.match("{(\w+)}$", o)
+            if m:
+                opts["atfield"] = m.group(1)
+            else:
+                print("Unknown field option '", o, "'")
+    return opts
 
 class Codec:
 
@@ -157,7 +242,7 @@ class Map(Codec):           # TODO: handle Choice fields?  Which key?
         nfields = self.normalize_fields(vtree)
         map = {}
         for n, f in enumerate(self.vals):
-            opts = opts_s2d(f[2])
+            opts = parse_field_opts(f[2])
             x = f[0]
             if x in vtree:
                 field = f[1]()
@@ -179,7 +264,7 @@ class Record(Codec):
         self.check_fields(nfields)
         rec = {}
         for n, f in enumerate(self.vals):
-            fopts = opts_s2d(f[2])
+            fopts = parse_field_opts(f[2])
             field = f[1]()
             x = self._fields[n] if self.verbose_record else n
             if isinstance(field, Choice):
@@ -236,10 +321,10 @@ class Attribute(Codec):
         self.dlog("Attribute#", type(self).__name__, vtree, opts)
         atype = next(iter(self.normalize_fields(opts["atype"])))
         if atype in self._fields:
-            field, cls, copts = self.vals[self._fx[atype]]
+            field, cls, fopts, fdesc  = self.vals[self._fx[atype]]
             self.field = cls()
-            self.dlog("Attribute:", self, cls, vtree, copts, opts["atype"])
-            return self.field.decode(vtree, copts)
+            self.dlog("Attribute:", self, cls, vtree, fopts, opts["atype"])
+            return self.field.decode(vtree, fopts)
         else:
             print("ValidationError: %s: attribute '%s' not in %s" % (type(self).__name__, atype, self._fields))
 

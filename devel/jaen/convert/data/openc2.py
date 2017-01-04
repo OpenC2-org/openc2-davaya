@@ -16,8 +16,8 @@ __meta__ = {
     "module": "openc2"
 }
 
-from codec import Enumerated, Map, Record, Attribute, Choice, String, Integer
-import cybox
+from .pycodec import Enumerated, Map, Record, Attribute, Choice, String, Integer
+from . import cybox
 
 class Action(Enumerated):
     ns = "openc2"

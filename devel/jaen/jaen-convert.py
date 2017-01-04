@@ -2,13 +2,16 @@
 Translate JSON Abstract Encoding Notation (JAEN) files
 """
 
-from jaen import jaen_load, jaen_dump, jaen_check
-from tr_jas import jas_load, jas_dump
-from tr_pyclass import pyclass_load, pyclass_dump
-from tr_tables import table_dump
+from codec.jaen import jaen_load, jaen_dump, jaen_check
+from convert.tr_jas import jas_load, jas_dump
+from convert.tr_pyclass import pyclass_load, pyclass_dump
+from convert.tr_tables import table_dump
+import os
 
 if __name__ == "__main__":
-    for fname in ("openc2", "cybox"):
+    ddir = os.path.join("convert", "data")
+    for fn in ("openc2", "cybox"):
+        fname = os.path.join(ddir, fn)
 
         # Convert Python classes to JAEN
 

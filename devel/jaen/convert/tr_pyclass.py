@@ -1,11 +1,11 @@
 """
 Load JAEN definitions from Python module
 """
-import importlib, inspect
+import importlib, inspect, os
 from datetime import datetime
 from textwrap import fill, shorten
 from pprint import pformat
-from codec_utils import opts_s2d
+from codec.codec_utils import opts_s2d
 
 def topo_sort(items):
     """
@@ -93,7 +93,9 @@ def pyclass_load(modname):
     """
     Load JAEN structure from a Python file
     """
-    mod = importlib.import_module(modname)
+#    modn = ".".join(os.path.split(modname))
+    modn = ".".join(modname.split(os.sep))
+    mod = importlib.import_module(modn)
     return {"meta": get_meta(mod), "types": get_types(mod)}
 
 def pyclass_dumps(jaen):

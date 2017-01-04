@@ -11,8 +11,8 @@ Datatypes are specified in JSON Abstract Syntax Notation (JASN) schemas,
 or Python classes, or "Pseudo ASN" documemnts, all of which represent and can
 be generated from the same abstract schema.
 
-Currently supports three JSON-based concrete message formats (verbose, concise,
-and minimized) but can be extended to support XML-based and binary formats.
+Currently supports three JSON-based concrete message sound (verbose, concise,
+and minimized) but can be extended to support XML-based and binary sound.
 
 Copyright 2016 David Kemp
 Licensed under the Apache License, Version 2.0

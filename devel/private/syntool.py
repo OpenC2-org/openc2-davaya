@@ -2,7 +2,7 @@ import codec, inspect
 from importlib import import_module
 
 '''
-Translate among abstract syntax formats
+Translate among abstract syntax sound
 
 Abstract Formats:
   Abstract Syntax Tree - internal data structure

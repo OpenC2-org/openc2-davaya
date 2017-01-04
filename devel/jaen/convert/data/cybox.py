@@ -9,7 +9,7 @@ __meta__ = {
     "namespace": "http://cybox.mitre.org/common-2",
 }
 
-from codec import Attribute, Choice, Enumerated, Map, Record, Boolean, Integer, String
+from .pycodec import Attribute, Choice, Enumerated, Map, Record, Boolean, Integer, String
 
 
 class AddressObject(Record):

@@ -5,7 +5,7 @@ Load, validate, prettyprint, and dump JSON Abstract Encoding Notation (JAEN) sch
 import json
 import jsonschema
 from datetime import datetime
-from codec_utils import opts_s2d
+from .codec_utils import opts_s2d
 
 # TODO: Establish CTI/JSON namespace conventions, merge "module" (name) and "namespace" (module unique id) properties
 # TODO: Update JAEN file to be array of namespaces ( {meta, types} pairs )

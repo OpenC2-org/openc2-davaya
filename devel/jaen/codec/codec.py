@@ -11,7 +11,7 @@ Licensed under the Apache License, Version 2.0
 http://www.apache.org/licenses/LICENSE-2.0
 """
 
-from codec_utils import opts_s2d
+from .codec_utils import opts_s2d
 
 __version__ = "0.2"
 

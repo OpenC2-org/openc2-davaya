@@ -3,7 +3,7 @@ Translate JAEN to property tables (xlsx format)
 """
 
 import xlsxwriter
-from codec_utils import opts_s2d
+from codec.codec_utils import opts_s2d
 from datetime import datetime
 
 

@@ -3,10 +3,10 @@ Translate JAEN to and from JAS (JAEN Abstract Syntax)
 """
 
 import re
-import jas_parse
+from .jas_parse import jasParser
+from codec.codec_utils import opts_s2d, opts_d2s
 from copy import deepcopy
 from datetime import datetime
-from codec_utils import opts_s2d, opts_d2s
 from textwrap import fill, shorten
 
 
@@ -65,7 +65,7 @@ def jas_loads(jas_str):
     Load abstract syntax from JAS file
     """
 
-    parser = jas_parse.jasParser(parseinfo=True, )
+    parser = jasParser(parseinfo=True, )
 
     ast = parser.parse(jas_str, 'jas', trace=False)
     meta = {}

@@ -1,6 +1,6 @@
 import unittest
-import codec
-from jaen import jaen_check
+from codec import codec
+from codec.jaen import jaen_check
 
 jaen = {
     "meta": {"module": "unittests-BasicTypes"},
