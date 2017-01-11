@@ -124,6 +124,12 @@ def _check_type(ts, val, vtype):
         if type(val) != vtype:
             raise TypeError("%s(%s): %r is not %s" % (td[TNAME], td[TTYPE], val, vtype))
 
+def _bad_value(ts, val, fld=None):
+    td = ts[S_TDEF]
+    if fld:
+        raise ValueError("%s(%s): bad field %s: %s" % (td[TNAME], td[TTYPE], fld[NAME], val))
+    else:
+        raise ValueError("%s(%s): bad value: %s" %td[TNAME], td[TTYPE], val)
 
 def _decode_array(ts, val, codec):
     _check_type(ts, val, ts[S_ETYPE])
@@ -208,10 +214,9 @@ def _encode_map(ts, val, codec):
 def _decode_record(ts, val, codec):
     _check_type(ts, val, ts[S_ETYPE])
     apival = ts[S_CODEC][C_ATYPE]()
-    for n, fx in enumerate(val):
-        f = ts[S_TDEF][FIELDS][n]
+    for f in ts[S_TDEF][FIELDS]:
         if ts[S_ETYPE] == list:
-            fx = n
+            fx = f[TAG] - 1
             exists = len(val) > fx
         else:
             fx = f[NAME]
@@ -224,12 +229,18 @@ def _decode_record(ts, val, codec):
 def _encode_record(ts, val, codec):
     _check_type(ts, val, ts[S_CODEC][C_ATYPE])
     encval = ts[S_ETYPE]()
-    for n, fx in enumerate(val):
-        f = ts[S_TDEF][FIELDS][n]
+    if isinstance(encval, list):
+        fmax = max([ts[S_FLD][f][S_FDEF][TAG] for f in val])
+    for f in ts[S_TDEF][FIELDS]:
+        fv = codec.encode(f[FTYPE], val[f[NAME]]) if f[NAME] in val else None
+        if fv is None and not ts[S_FLD][f[NAME]][S_FOPT]["optional"]:
+            _bad_value(ts, val, f)
         if isinstance(encval, list):
-            pass
+            if f[TAG] <= fmax:
+                encval.append(fv)
         else:
-            pass
+            if fv is not None:
+                encval[f[NAME]] = fv
     return encval
 
 

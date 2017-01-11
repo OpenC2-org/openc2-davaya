@@ -231,15 +231,15 @@ class BasicTypes(unittest.TestCase):
         self.assertEqual(self.tc.encode("t_rec", self.RGB1), self.RGB1c)
         self.assertEqual(self.tc.encode("t_rec", self.RGB2), self.RGB2c)
         self.assertEqual(self.tc.encode("t_rec", self.RGBA), self.RGBAc)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             self.tc.decode("t_rec", self.RGB1_bad1c)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             self.tc.decode("t_rec", self.RGBA_bad2c)
         with self.assertRaises(TypeError):
             self.tc.decode("t_rec", self.RGB1_bad3c)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             self.tc.encode("t_rec", self.RGB1_bad1a)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             self.tc.encode("t_rec", self.RGBA_bad2a)
         with self.assertRaises(TypeError):
             self.tc.encode("t_rec", self.RGB1_bad3a)
@@ -256,15 +256,15 @@ class BasicTypes(unittest.TestCase):
         self.assertDictEqual(self.tc.encode("t_rec", self.RGBA), self.RGBA)
         with self.assertRaises(TypeError):
             self.tc.decode("t_rec", self.RGB1_bad1v)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             self.tc.decode("t_rec", self.RGB1_bad2v)
         with self.assertRaises(TypeError):
             self.tc.decode("t_rec", self.RGB1_bad3v)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             self.tc.decode("t_rec", self.RGBA_bad4v)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             self.tc.encode("t_rec", self.RGB1_bad1a)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             self.tc.encode("t_rec", self.RGBA_bad2a)
         with self.assertRaises(TypeError):
             self.tc.encode("t_rec", self.RGB1_bad3a)
