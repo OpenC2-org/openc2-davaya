@@ -7,24 +7,30 @@ description:   OpenC2 Cyber Observable datatypes based on objects
 namespace:     http://openc2.org/observables
 */
 
-artifact-content ::= CHOICE {
-    payload_bin  OCTET STRING,
-    url          UTF8String
+hashes-type ::= MAP {
+
+}
+payload ::= CHOICE {
+    payload_bin  OCTET STRING,          -- Specifies the binary data contained in the artifact as a base64-encoded string.
+    url          UTF8String             -- MUST be a valid URL that resolves to the un-encoded content
 }
 
 artifact ::= RECORD {
-    mime_type    UTF8String OPTIONAL,
-    content      artifact-content OPTIONAL,
-    hashes       hashes-type OPTIONAL
+    type        UTF8String              -- MUST be "artifact"
+    mime_type   UTF8String OPTIONAL,    -- MUST be a valid MIME type as specified in the IANA Media Types registry
+    *           payload OPTIONAL,       -- choice of literal content or URL to obtain content
+    hashes      hashes-type OPTIONAL    -- Specifies a dictionary of hashes for the contents of the payload
 }
 
 autonomous-system ::= RECORD {
+    type        UTF8String              -- MUST be "autonomous-system"
     number      INTEGER,                -- Number assigned to the AS
     name        UTF8String OPTIONAL,    -- Name of the AS
     rir         UTF8String OPTIONAL     -- Name of the Regional Internet Registry (RIR) that assigned the number to the AS.
 }
 
 directory ::= MAP {
+    type        UTF8String              -- MUST be "directory"
 }
 
 dnvalue ::= CHOICE {
@@ -38,12 +44,73 @@ dnvalues ::= Array {
 }
 
 domain-name ::= RECORD {
+    type        UTF8String              -- MUST be "domain-name"
     value       UTF8String              -- Value of the domain name
     resolves-to dnvalues                -- list of IP addresses or domain names
 }
 
 email-addr ::= RECORD {
+    type        UTF8String              -- MUST be "email-addr"
     value           UTF8String,
     display_name    UTF8String OPTIONAL,
     belongs_to      UTF8String OPTIONAL
+}
+
+email-message ::= RECORD {
+    type        UTF8String              -- MUST be "email-message"
+}
+file ::= RECORD {
+    type        UTF8String              -- MUST be "file"
+}
+
+ipv4-addr ::= RECORD {
+    type                UTF8String          -- MUST be "ipv4-addr"
+    value               ipv4-str            -- Specifies one or more IPv4 addresses using CIDR notation
+    resolves_to_refs    mac-addrs OPTIONAL  -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
+    belongs_to_refs     asystems OPTIONAL   -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
+}
+
+ipv6-addr ::= RECORD {
+    type                UTF8String          -- MUST be "ipv6-addr"
+    value               ipv4-str            -- Specifies one or more IPv4 addresses using CIDR notation
+    resolves_to_refs    mac-addrs OPTIONAL  -- Specifies a list of references to one or more Layer 2 Media Access Control (MAC) addresses that the IPv4 address resolves to.
+    belongs_to_refs     asystems OPTIONAL   -- Specifies a reference to one or more autonomous systems (AS) that the IPv4 address belongs to.
+}
+
+mac-addr ::= RECORD {
+    type        UTF8String              -- MUST be "mac-addr"
+    value       UTF8String              -- Specifies a single MAC address.  MUST be represented as a single colon-delimited, lowercase MAC-48 address, which MUST include leading zeros for each octet.  Example: 00:00:ab:cd:ef:01
+}
+
+mutex ::= RECORD {
+    type        UTF8String              -- MUST be "mutex"
+    name        UTF8String              -- Specifies the name of the mutex object.
+}
+
+network-traffic ::= RECORD {
+    type        UTF8String              -- MUST be "artifact"
+}
+
+process ::= RECORD {
+    type        UTF8String              -- MUST be "artifact"
+}
+
+software ::= RECORD {
+    type        UTF8String              -- MUST be "artifact"
+}
+
+url ::= RECORD {
+    type        UTF8String              -- MUST be "artifact"
+}
+
+user-account ::= RECORD {
+    type        UTF8String              -- MUST be "artifact"
+}
+
+windows-registry-key ::= RECORD {
+    type        UTF8String              -- MUST be "artifact"
+}
+
+x509-certificate ::= RECORD {
+    type        UTF8String              -- MUST be "artifact"
 }
