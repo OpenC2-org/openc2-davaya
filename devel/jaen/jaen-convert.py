@@ -10,7 +10,7 @@ import os
 
 if __name__ == "__main__":
     ddir = os.path.join("convert", "data")
-    for fn in ("openc2", "cybox"):
+    for fn in ("openc2", "cybox", "cybox3"):
         fname = os.path.join(ddir, fn)
 
         # Convert Python classes to JAEN
@@ -24,7 +24,7 @@ if __name__ == "__main__":
         # Convert JAEN Abstract Syntax (JAS) to JAEN
 
         source = fname + ".jas"
-        dest = fname + "_gena"
+        dest = fname + "_gens"
         jaen = jas_load(source)
         jaen_check(jaen)
         jaen_dump(jaen, dest + ".jaen", source)

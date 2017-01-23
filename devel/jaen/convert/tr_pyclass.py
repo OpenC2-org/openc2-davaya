@@ -35,11 +35,11 @@ def get_meta(this_mod):
     meta = {"module": this_mod.__name__}
     doc = inspect.getdoc(this_mod)
     if doc:
-        title, descr = (doc.split("\n\n", maxsplit=1))
-        if title:
-            meta.update({"title": title.replace("\n", " ").replace("\r", "")})
-        if descr:
-            meta.update({"description": descr.replace("\n", " ").replace("\r", "")})
+        docs = (doc.split("\n\n", maxsplit=1))
+        if len(docs) > 0:
+            meta.update({"title": docs[0].replace("\n", " ").replace("\r", "")})
+        if len(docs) > 1:
+            meta.update({"description": docs[1].replace("\n", " ").replace("\r", "")})
     if this_mod.__version__:
         meta.update({"version": str(this_mod.__version__)})
     m = getattr(this_mod, "__meta__")

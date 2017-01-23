@@ -9,7 +9,7 @@ __meta__ = {
     "namespace": "http://cybox.mitre.org/common-2",
 }
 
-from .pycodec import Attribute, Choice, Enumerated, Map, Record, Boolean, Integer, String
+from devel.jaen.convert.pycodec import Attribute, Choice, Enumerated, Map, Record, Integer, String
 
 
 class AddressObject(Record):

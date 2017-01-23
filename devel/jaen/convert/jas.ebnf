@@ -15,7 +15,7 @@ Val = WS @:/.*/ NL ;
 WS = /\s+/ ;
 NL = /(\n|\r)+/ ;
 
-type = name:name define type:name [topts:topts] [td1:cmt] [f:fields] ;
+type = name:name define type:name [topts:topts] [td1:cmt] [f:fields] ~ ;
 any =  /(\w|_|-)+|\s+|./ ;
 name = /(\w|_|-)+/ ;
 qname = /(\w+:)?(\w|_|-)+/ ;
@@ -26,7 +26,7 @@ str = '"' @:{ !'"' /./ } '"' ;
 fields = "{" [td2:cmt] fields:",".{ field } "}" ;
 field = ( [fd1:cmt] name:qname tag:etag [fd2:cmt] )                                   # Enumerated value, or
       | ( [fd1:cmt] name:(qname|"*") [tag:ftag] type:qname [fopts:fopts] [fd2:cmt] )  #  structured datatype field
-      ;
+      ~ ;
 etag = "(" @:int ")" ;
 ftag = "[" @:int "]" ;
 pattern = "(" @:("PATTERN" str) ")" ;

@@ -1,8 +1,15 @@
-from codec import Choice, Enumerated, Map, Record, VBoolean, VInteger, VString
-
 """
 Cyber Observable Expression v3.0 (cybox) definitions used by OpenC2
 """
+
+__version__ = "0.1"
+__meta__ = {
+    "namespace": "http://openc2.org/observables",
+    "title": "Cyber Observable Expression v3 definitions",
+    "description": "OpenC2 Cyber Observable datatypes based on objects defined in STIX v2 Part 4."
+}
+
+from devel.jaen.convert.pycodec import Choice, Enumerated, Map, Record, Boolean, Integer, String
 
 # Core vocabularies
 
@@ -49,65 +56,102 @@ class EncryptionAlgorithmType(Enumerated):
 
 # Host Objects
 
+class FileExtensions(Map):
+    ns = 'cybox3'
+    vals = []
+
+class Hashes(Map):
+    ns = 'cybox3'
+    vals = []
+
+class CyboxObjectRefs(Map):
+    ns = 'cybox3'
+    vals = []
+
+class ArtifactObjectRef(Map):
+    ns = 'cybox3'
+    vals = []
+
+class ObjectRef(Map):
+    ns = 'cybox3'
+    vals = []
+
+class ObjectRefs(Map):
+    ns = 'cybox3'
+    vals = []
+
+class WindowsRegistryValueTypes(Map):
+    ns = 'cybox3'
+    vals = []
+
+class CyboxObjects(Map):
+    ns = 'cybox3'
+    vals = []
+
+class CyboxActions(Map):
+    ns = 'cybox3'
+    vals = []
+
+
 class FileObject(Map):
     ns = 'cybox3'
     vals = [
-        ('type', VString, ''),      # Must be 'file-object'
-        ('description', VString, '?'),
-        ('extended_properties', FileExtensions, '?'),
-        ('hashes', Hashes, '?'),    # Dictionary of hashes
-        ('size', VInteger, '?'),
-        ('file_name', VString, '?'),
-        ('file_name_enc', VString, '?'),
-        ('file_name_hex', VString, '?'),    # hex
-        ('magic_number', VString, '?'),     # hex
-        ('mime_type', VString, '?'),
-        ('created', VString, '?'),          # timestamp
-        ('modified', VString, '?'),         # timestamp
-        ('accessed', VString, '?'),         # timestamp
-        ('parent_directory_ref', VString, '?'), # object-ref to directory-object
-        ('is_encrypted', VBoolean, '?'),
-        ('encryption_algorithm', EncryptionAlgorithmType, '?'),     # is_encrypted MUST be True
-        ('decryption_key', VString, '?'),   # is_encrypted MUST be True
-        ('contains_refs', CyboxObjectRefs, '?'),    # list of object-ref
-        ('file_content_ref', ArtifactObjectRef, '?')    # artifact-object
+        ('type', String, [], ''),      # Must be 'file-object'
+        ('description', String, ['?'], ''),
+        ('extended_properties', FileExtensions, ['?'], ''),
+        ('hashes', Hashes, ['?'], ''),    # Dictionary of hashes
+        ('size', Integer, ['?'], ''),
+        ('file_name', String, ['?'], ''),
+        ('file_name_enc', String, ['?'], ''),
+        ('file_name_hex', String, ['?'], ''),    # hex
+        ('magic_number', String, ['?'], ''),     # hex
+        ('mime_type', String, ['?'], ''),
+        ('created', String, ['?'], ''),          # timestamp
+        ('modified', String, ['?'], ''),         # timestamp
+        ('accessed', String, ['?'], ''),         # timestamp
+        ('parent_directory_ref', String, ['?'], ''), # object-ref to directory-object
+        ('is_encrypted', Boolean, ['?'], ''),
+        ('encryption_algorithm', EncryptionAlgorithmType, ['?'], ''),     # is_encrypted MUST be True
+        ('decryption_key', String, ['?'], ''),   # is_encrypted MUST be True
+        ('contains_refs', CyboxObjectRefs, ['?'], ''),    # list of object-ref
+        ('file_content_ref', ArtifactObjectRef, ['?'], '')    # artifact-object
     ]
 
 class DirectoryObject(Map):
     ns = 'cybox3'
     vals = [
-        ('type', VString, ''),      # Must be 'directory-object'
-        ('description', VString, '?'),
-        ('extended_properties', FileExtensions, '?'),
-        ('path', VString, ''),
-        ('path_enc', VString, '?'),
-        ('path_hex', VString, '?'),         # hex
-        ('created', VString, '?'),  # timestamp
-        ('modified', VString, '?'),  # timestamp
-        ('accessed', VString, '?'),  # timestamp
-        ('contains_refs', ObjectRefs, '?'),  # list of object-ref to file-object or directory-object
+        ('type', String, [], ''),      # Must be 'directory-object'
+        ('description', String, ['?'], ''),
+        ('extended_properties', FileExtensions, ['?'], ''),
+        ('path', String, [], ''),
+        ('path_enc', String, ['?'], ''),
+        ('path_hex', String, ['?'], ''),         # hex
+        ('created', String, ['?'], ''),  # timestamp
+        ('modified', String, ['?'], ''),  # timestamp
+        ('accessed', String, ['?'], ''),  # timestamp
+        ('contains_refs', ObjectRefs, ['?'], ''),  # list of object-ref to file-object or directory-object
     ]
 
 class WindowsRegistryKeyObject(Map):
     ns = 'cybox3'
     vals = [
-        ('type', VString, ''),      # Must be 'windows-registry-key-object'
-        ('description', VString, '?'),
-        ('extended_properties', FileExtensions, '?'),
-        ('key', VString, ''),
-        ('values', WindowsRegistryValueTypes, '?'),
-        ('modified', VString, '?'),         # timestamp
-        ('creator_ref', ObjectRef, '?'),    # object-ref to user-account-object
-        ('number_of_subkeys', VInteger, '?')
+        ('type', String, [], ''),      # Must be 'windows-registry-key-object'
+        ('description', String, ['?'], ''),
+        ('extended_properties', FileExtensions, ['?'], ''),
+        ('key', String, [], ''),
+        ('values', WindowsRegistryValueTypes, ['?'], ''),
+        ('modified', String, ['?'], ''),         # timestamp
+        ('creator_ref', ObjectRef, ['?'], ''),    # object-ref to user-account-object
+        ('number_of_subkeys', Integer, ['?'], '')
     ]
 
 class MutexObject(Map):
     ns = 'cybox3'
     vals = [
-        ('type', VString, ''),      # Must be 'mutex-object'
-        ('description', VString, '?'),
-        ('extended_properties', FileExtensions, '?'),
-        ('name', VString, '')
+        ('type', String, [], ''),      # Must be 'mutex-object'
+        ('description', String, ['?'], ''),
+        ('extended_properties', FileExtensions, ['?'], ''),
+        ('name', String, [], '')
     ]
 
 #  x509-certificate-object
@@ -121,72 +165,72 @@ class MutexObject(Map):
 class IPv4AddressObject(Map):
     ns = 'cybox3'
     vals = [
-        ('type', VString, ''),                      # Must be 'ipv4-address-object'
-        ('description', VString, '?'),
-        ('extended_properties', FileExtensions, '?'),
-        ('value', VString, ''),                     # CIDR format
-        ('resolves_to_refs', ObjectRefs, '?'),      # list of object-ref to mac-address-object
-        ('belongs_to_refs', ObjectRefs, '?')        # list of object ref to as-object
+        ('type', String, [], ''),                      # Must be 'ipv4-address-object'
+        ('description', String, ['?'], ''),
+        ('extended_properties', FileExtensions, ['?'], ''),
+        ('value', String, [], ''),                     # CIDR format
+        ('resolves_to_refs', ObjectRefs, ['?'], ''),      # list of object-ref to mac-address-object
+        ('belongs_to_refs', ObjectRefs, ['?'], '')        # list of object ref to as-object
     ]
 
 class IPv6AddressObject(Map):
     ns = 'cybox3'
     vals = [
-        ('type', VString, ''),                      # Must be 'ipv6-address-object'
-        ('description', VString, '?'),
-        ('extended_properties', FileExtensions, '?'),
-        ('value', VString, ''),                     # CIDR format
-        ('resolves_to_refs', ObjectRefs, '?'),      # list of object-ref to mac-address-object
-        ('belongs_to_refs', ObjectRefs, '?')        # list of object ref to as-object
+        ('type', String, [], ''),                      # Must be 'ipv6-address-object'
+        ('description', String, ['?'], ''),
+        ('extended_properties', FileExtensions, ['?'], ''),
+        ('value', String, [], ''),                     # CIDR format
+        ('resolves_to_refs', ObjectRefs, ['?'], ''),      # list of object-ref to mac-address-object
+        ('belongs_to_refs', ObjectRefs, ['?'], '')        # list of object ref to as-object
     ]
 
 class MACAddressObject(Map):
     ns = 'cybox3'
     vals = [
-        ('type', VString, ''),              # Must be 'mac-address-object'
-        ('description', VString, '?'),
-        ('extended_properties', FileExtensions, '?'),
-        ('value', VString, ''),             # colon-delimited MAC-48 address
+        ('type', String, [], ''),              # Must be 'mac-address-object'
+        ('description', String, ['?'], ''),
+        ('extended_properties', FileExtensions, ['?'], ''),
+        ('value', String, [], ''),             # colon-delimited MAC-48 address
     ]
 
 class EmailAddressObject(Map):
     ns = 'cybox3'
     vals = [
-        ('type', VString, ''),              # Must be 'email-address-object'
-        ('description', VString, '?'),
-        ('extended_properties', FileExtensions, '?'),
-        ('value', VString, ''),             # RFC 5322 addr-spec
-        ('display_name', VString, '?')      # RFC 5322 display-name
+        ('type', String, [], ''),              # Must be 'email-address-object'
+        ('description', String, ['?'], ''),
+        ('extended_properties', FileExtensions, ['?'], ''),
+        ('value', String, [], ''),             # RFC 5322 addr-spec
+        ('display_name', String, ['?'], '')      # RFC 5322 display-name
     ]
 
 class URLObject(Map):
     ns = 'cybox3'
     vals = [
-        ('type', VString, ''),              # Must be 'url-object'
-        ('description', VString, '?'),
-        ('extended_properties', FileExtensions, '?'),
-        ('value', VString, '')
+        ('type', String, [], ''),              # Must be 'url-object'
+        ('description', String, ['?'], ''),
+        ('extended_properties', FileExtensions, ['?'], ''),
+        ('value', String, [], '')
     ]
 
 class DomainNameObject(Map):
     ns = 'cybox3'
     vals = [
-        ('type', VString, ''),              # Must be 'domain-name-object'
-        ('description', VString, '?'),
-        ('extended_properties', FileExtensions, '?'),
-        ('value', VString, ''),
-        ('resolves_to_refs', ObjectRefs, '?'),  # list of object-ref to ipv4-address-object, ipv6-address-object, domain-name-object
+        ('type', String, [], ''),              # Must be 'domain-name-object'
+        ('description', String, ['?'], ''),
+        ('extended_properties', FileExtensions, ['?'], ''),
+        ('value', String, [], ''),
+        ('resolves_to_refs', ObjectRefs, ['?'], ''),  # list of object-ref to ipv4-address-object, ipv6-address-object, domain-name-object
     ]                                           #  Typo - called resolves-to as of 8/30
 
 class ASObject(Map):
     ns = 'cybox3'
     vals = [
-        ('type', VString, ''),      # Must be 'as-object'
-        ('description', VString, '?'),
-        ('extended_properties', FileExtensions, '?'),
-        ('number', VInteger, ''),
-        ('name', VString, '?'),
-        ('regional_internet_Registry', VString, '?')
+        ('type', String, [], ''),      # Must be 'as-object'
+        ('description', String, ['?'], ''),
+        ('extended_properties', FileExtensions, ['?'], ''),
+        ('number', Integer, [], ''),
+        ('name', String, ['?'], ''),
+        ('regional_internet_Registry', String, ['?'], '')
     ]
 
 #  Network Connection Object
@@ -196,23 +240,21 @@ class ASObject(Map):
 
 class CyboxObject(Choice):
     ns = 'cybox3'
-    vals = [
-        ('')
-    ]
+    vals = []
 
 class CyboxBaseObject(Record):              # Base type for all CybOX 3 objects
     ns = 'cybox3'                           # TODO: combine vals instead of replacing in derived class
     vals = [
-        ('type', CyboxObjects, ''),
-        ('description', VString, '?'),
-        ('extended_properties', Map, '?')
+        ('type', CyboxObjects, [], ''),
+        ('description', String, ['?'], ''),
+        ('extended_properties', Map, ['?'], '')
     ]
 
 class CyboxContainer(Record):           # Collection of related CybOX 3 objects and actions
     ns = 'cybox3'
     vals = [
-        ('type', VString, ''),          # 'cybox-container'
-        ('spec_version', VString, ''),  #  e.g., '3.0'
-        ('objects', CyboxObjects, '?'), # Cybox 3.0 says 'dictionary' with list index properties, allow real list
-        ('actions', CyboxActions, '?')  # RESERVED
+        ('type', String, [], ''),          # 'cybox-container'
+        ('spec_version', String, [], ''),  #  e.g., '3.0'
+        ('objects', CyboxObjects, ['?'], ''), # Cybox 3.0 says 'dictionary' with list index properties, allow real list
+        ('actions', CyboxActions, ['?'], '')  # RESERVED
     ]

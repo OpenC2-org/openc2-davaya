@@ -24,7 +24,7 @@ __all__ = [
     'main'
 ]
 
-KEYWORDS = set([])
+KEYWORDS = {}
 
 
 class jasBuffer(Buffer):
@@ -179,6 +179,7 @@ class jasParser(Parser):
         with self._optional():
             self._fields_()
             self.name_last_node('f')
+        self._cut()
         self.ast._define(
             ['f', 'name', 'td1', 'topts', 'type'],
             []
@@ -282,6 +283,7 @@ class jasParser(Parser):
                     with self._optional():
                         self._cmt_()
                         self.name_last_node('fd2')
+                self._cut()
             self._error('no available options')
         self.ast._define(
             ['fd1', 'fd2', 'fopts', 'name', 'tag', 'type'],

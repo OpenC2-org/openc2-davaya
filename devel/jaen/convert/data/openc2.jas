@@ -241,7 +241,7 @@ WhereValue ::= ENUMERATED {     -- Test typedef descriptions
     perimeter    (2)            -- Second field !@#%$%^&*()_+=-
 }
 
-CommandID ::= UTF8String        -- Test typedef description without fields
+CommandID ::= UTF8String        -- Command unique identifier
 
 Modifiers ::= MAP {
     delay        [1] Duration OPTIONAL,
@@ -262,9 +262,24 @@ OpenC2Command ::= RECORD {
     modifiers    Modifiers OPTIONAL
 }
 
+DeviceID ::= UTF8String         -- Device Identifier of the command issuer
+
+StatusCode ::= ENUMERATED {     -- Adapted from HTTP Status Codes, RFC 7231
+    Processing              (102),      -- 1xx: Informational
+    OK                      (200),      -- 2xx: Success
+    Bad_Request             (400),      -- 3xx: Redirection
+    Unauthorized            (401),      -- 4xx: Client Error
+    Forbidden               (403),
+    Internal_Server_Error   (500),      -- 5xx: Server Error
+    Not_Implemented         (501)
+}
+
 OpenC2Response ::= RECORD {
-    cmdref       CommandID,
-    results      UTF8String
+    source      DeviceID,       -- Device Identifier of the command issuer
+    cmdref      CommandID,      -- Command unique identifier, from "id" modifier
+    status      StatusCode,     -- Adapted from HTTP Status Codes, RFC 7231
+    statusText  UTF8String,     -- Status long description
+    results     UTF8String      -- Results of executing the command
 }
 
 OpenC2Alert ::= RECORD {

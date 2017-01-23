@@ -94,8 +94,10 @@ def jaen_check(jaen):
             if len(t) != 5:
                 print("Type format error:", t[0], "- missing items from compound type", t[1])
         if t[1] == "Array":
-            if len(t[4]) != 1 or t[4][0][0] != 0:
-                print("Type format error:", t[0], "- bad array element", len(t[4]), t[4][0][0], "not 1, 0")
+            if len(t[4]) != 1:
+                print("Type format error:", t[0], "- array must have one element, not", len(t[4]))
+            if t[4][0][0] != 0:
+                print("Type format error:", t[0], "- array type must not have tag", t[4][0][0])
         for o, v in opts_s2d(t[2]).items():
             if o not in ["pattern"] and o == "optional" and v:      # "optional" not present when value = False
                 print("Invalid typedef option:", t[0], o)
