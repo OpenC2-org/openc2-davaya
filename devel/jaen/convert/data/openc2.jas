@@ -278,7 +278,7 @@ OpenC2Response ::= RECORD {
     source      DeviceID,       -- Device Identifier of the command issuer
     cmdref      CommandID,      -- Command unique identifier, from "id" modifier
     status      StatusCode,     -- Adapted from HTTP Status Codes, RFC 7231
-    statusText  UTF8String,     -- Status long description
+    statusText  UTF8String,     -- Status description
     results     UTF8String      -- Results of executing the command
 }
 

@@ -101,9 +101,9 @@ def jaen_check(jaen):
         for o, v in opts_s2d(t[2]).items():
             if o not in ["pattern"] and o == "optional" and v:      # "optional" not present when value = False
                 print("Invalid typedef option:", t[0], o)
+        tags = set()
         if len(t) > 4:
             n = 3 if t[1] == "Enumerated" else 5
-            tags = set()
             for k, i in enumerate(t[4]):        # item definition: 0-tag, 1-name, 2-type, 3-options, 4-description
                 tags.update(set([i[0]]))        # or (enumerated): 0-tag, 1-name, 2-description
                 if t[1] == "Record" and i[0] != k + 1:

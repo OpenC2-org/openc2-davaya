@@ -88,13 +88,14 @@ def jas_loads(jas_str):
                 tf[n]["fd2"] = tf[n+1]["fd1"]
             for n, f in enumerate(t["f"]["fields"]):
                 fdesc = f["fd2"]
+                tag = None
                 if t["type"].lower() == "record":
                     tag = n + 1
                 elif isinstance(f["tag"], str):
                     tag = int(f["tag"])
                 else:
                     print("Error: missing tag", t["name"], f["name"])
-                if tag:
+                if tag is not None:
                     if t["type"].lower() == "enumerated":
                         fields.append([tag, f["name"], _nstr(fdesc)])
                     else:

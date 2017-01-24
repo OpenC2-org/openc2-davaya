@@ -1,19 +1,14 @@
 {
  "meta": {
-  "description": "OpenC2 Cyber Observable datatypes based on objects defined in STIX v2 Part 4.",
   "module": "cybox3",
-  "namespace": "http://openc2.org/observables",
   "title": "Cyber Observable Expression v3 definitions",
-  "version": "0.1"
+  "version": "0.1",
+  "description": "OpenC2 Cyber Observable datatypes based on objects defined in STIX v2 Part 4.",
+  "namespace": "http://openc2.org/observables"
  },
 
  "types": [
   ["hashes-type", "Map", [], "", []],
-
-  ["payload", "Choice", [], "", [
-    [1, "payload_bin", "OCTET_STRING", [], "Specifies the binary data contained in the artifact as a base64-encoded string."],
-    [2, "url", "String", [], "MUST be a valid URL that resolvesto the un-encoded content"]]
-  ],
 
   ["AddressObject", "Record", [], "", [
     [1, "Address_Value", "String", ["?"], "blah blah"],
@@ -28,6 +23,13 @@
     [4, "rir", "String", ["?"], "Name of the Regional Internet Registry (RIR) that assigned the number to the AS."]]
   ],
 
+  ["Binary", "String", [], "Base64-encoded binary data"],
+
+  ["payload", "Choice", [], "", [
+    [1, "payload_bin", "Binary", [], "Specifies the binary data contained in the artifact as a base64-encoded string."],
+    [2, "url", "String", [], "MUST be a valid URL that resolvesto the un-encoded content"]]
+  ],
+
   ["artifact", "Record", [], "", [
     [1, "type", "String", [], "MUST be \"artifact\""],
     [2, "mime_type", "String", ["?"], "MUST be a valid MIME type as specified in the IANA Media Types registry"],
@@ -36,17 +38,17 @@
   ],
 
   ["directory", "Map", [], "", [
-    [4, "type", "String", [], "MUST be \"directory\""]]
+    [1, "type", "String", [], "MUST be \"directory\""]]
   ],
 
   ["dnvalue", "Choice", [], "", [
-    [4, "v4", "ipv4-addr", [], ""],
-    [4, "v6", "ipv6-addr", [], ""],
-    [4, "name", "domain-name", [], ""]]
+    [1, "v4", "ipv4-addr", [], ""],
+    [2, "v6", "ipv6-addr", [], ""],
+    [3, "name", "domain-name", [], ""]]
   ],
 
   ["dnvalues", "Array", [], "", [
-    [4, "dnvalue", "String", [], ""]]
+    [0, "dnvalue", "String", [], "Omitted tag should default to 0 and present"]]
   ],
 
   ["domain-name", "Record", [], "", [
