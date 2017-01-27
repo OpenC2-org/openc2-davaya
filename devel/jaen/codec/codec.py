@@ -36,17 +36,18 @@ FDESC = 4       # Field Description
 # Codec Table fields
 C_DEC = 0       # Decode function
 C_ENC = 1       # Encode function
-C_ATYPE = 2     # API type
-C_ETYPE = 3     # Encoded type (min)
+C_ETYPE = 2     # Encoded type (min)
 
 # Symbol Table fields
 S_TDEF = 0      # JAEN type definition
 S_CODEC = 1     # CODEC table entry for this type
 S_ETYPE = 2     # Encoded type (current encoding mode)
-S_TOPT = 3      # Type Options (dict format)
-S_FLD = 4       # Field definitions
-S_EMAP = 4      # Enum Name to Encoded Val
-S_DMAP = 5      # Enum Encoded Val to Name
+S_STYPE = 3     # Encoded identifier type (string or tag)
+S_TOPT = 4      # Type Options (dict format)
+S_FLD = 5       # Field definitions
+S_VSTR = 6      # Verbose_str
+S_EMAP = 5      # Enum Name to Encoded Val
+S_DMAP = 6      # Enum Encoded Val to Name
 
 
 # Symbol Table Field Definition fields
@@ -93,26 +94,28 @@ class Codec:
 
         def sym(t):         # Build symbol table based on encoding modes
             symval = [
-                t,                          # S_TDEF:  JAEN type definition
-                enctab[t[TTYPE]],           # S_CODEC: Type decode function
-                enctab[t[TTYPE]][C_ETYPE],  # S_ETYPE: Encoded type
-                opts_s2d(t[TOPTS]),         # S_TOPT:  Type Options (dict)
-                {},                         # S_FLD/S_EMAP: Field list / Enum Name to Val
-                {}                          # S_DMAP:  Enum Val to Name
+                t,                          # 0: S_TDEF:  JAEN type definition
+                enctab[t[TTYPE]],           # 1: S_CODEC: Type decode function
+                enctab[t[TTYPE]][C_ETYPE],  # 2: S_ETYPE: Encoded type
+                int,                        # 3: S_STYPE: Encoded string type (str or tag)
+                opts_s2d(t[TOPTS]),         # 4: S_TOPT:  Type Options (dict)
+                {},                         # 5: S_FLD/S_EMAP: Field list / Enum Name to Val
+                {}                          # 6: S_VSTR/S_DMAP:  Enum Val to Name
             ]
             fx = TAG
+            symval[S_VSTR] = verbose_str
             if verbose_rec and t[TTYPE] == "Record":
                 fx = NAME
                 symval[S_ETYPE] = dict
             if verbose_str and t[TTYPE] in ["Choice", "Enumerated", "Map"]:
                 fx = NAME
-                symval[S_ETYPE] = str
-
+                symval[S_STYPE] = str
             if t[TTYPE] == "Enumerated":
                 symval[S_DMAP] = {f[fx]: f[NAME] for f in t[FIELDS]}
                 symval[S_EMAP] = {f[NAME]: f[fx] for f in t[FIELDS]}
             if t[TTYPE] in ["Choice", "Map", "Record"]:
-                symval[S_FLD] = {f[NAME]: symf(f) for f in t[FIELDS]}
+                fx = NAME if verbose_str else TAG
+                symval[S_FLD] = {f[fx]: symf(f) for f in t[FIELDS]}
             return symval
         self.symtab = {t[TNAME]: sym(t) for t in self.jaen["types"]}
         self.symtab.update({t:[None, enctab[t], enctab[t][C_ETYPE]] for t in ("Boolean", "Integer", "Number", "String")})
@@ -126,10 +129,14 @@ def _check_type(ts, val, vtype):
 
 def _bad_value(ts, val, fld=None):
     td = ts[S_TDEF]
-    if fld:
-        raise ValueError("%s(%s): bad field %s: %s" % (td[TNAME], td[TTYPE], fld[NAME], val))
+    if fld is not None:
+        raise ValueError("%s(%s): missing required field '%s': %s" % (td[TNAME], td[TTYPE], fld[NAME], val))
     else:
-        raise ValueError("%s(%s): bad value: %s" %td[TNAME], td[TTYPE], val)
+        raise ValueError("%s(%s): bad value: %s" % (td[TNAME], td[TTYPE], val))
+
+def _extra_value(ts, val, fld):
+    td = ts[S_TDEF]
+    raise ValueError("%s(%s): unexpected field: %s not in %s:" % (td[TNAME], td[TTYPE], fld, val))
 
 def _decode_array(ts, val, codec):
     _check_type(ts, val, ts[S_ETYPE])
@@ -137,7 +144,7 @@ def _decode_array(ts, val, codec):
 
 
 def _encode_array(ts, val, codec):
-    _check_type(ts, val, ts[S_CODEC][C_ATYPE])
+    _check_type(ts, val, list)
     return val
 
 
@@ -147,7 +154,7 @@ def _decode_boolean(ts, val, codec):
 
 
 def _encode_boolean(ts, val, codec):
-    _check_type(ts, val, ts[S_CODEC][C_ATYPE])
+    _check_type(ts, val, bool)
     return val
 
 
@@ -157,12 +164,12 @@ def _decode_choice(ts, val, codec):
 
 
 def _encode_choice(ts, val, codec):
-    _check_type(ts, val, ts[S_CODEC][C_ATYPE])
+    _check_type(ts, val, dict)
     return val
 
 
 def _decode_enumerated(ts, val, codec):
-    _check_type(ts, val, ts[S_ETYPE])
+    _check_type(ts, val, ts[S_STYPE])
     if val in ts[S_DMAP]:
         return ts[S_DMAP][val]
     else:
@@ -171,7 +178,7 @@ def _decode_enumerated(ts, val, codec):
 
 
 def _encode_enumerated(ts, val, codec):
-    _check_type(ts, val, ts[S_CODEC][C_ATYPE])
+    _check_type(ts, val, str)
     if val in ts[S_EMAP]:
         return ts[S_EMAP][val]
     else:
@@ -185,7 +192,7 @@ def _decode_integer(ts, val, codec):
 
 
 def _encode_integer(ts, val, codec):
-    _check_type(ts, val, ts[S_CODEC][C_ATYPE])
+    _check_type(ts, val, int)
     return val
 
 
@@ -197,50 +204,55 @@ def _decode_number(ts, val, codec):
 
 def _encode_number(ts, val, codec):
     val = float(val) if type(val) == int else val
-    _check_type(ts, val, ts[S_CODEC][C_ATYPE])
+    _check_type(ts, val, float)
     return val
 
 
-def _decode_map(ts, val, codec):
+def _decode_maprec(ts, val, codec):
     _check_type(ts, val, ts[S_ETYPE])
-    return val
-
-
-def _encode_map(ts, val, codec):
-    _check_type(ts, val, ts[S_CODEC][C_ATYPE])
-    return val
-
-
-def _decode_record(ts, val, codec):
-    _check_type(ts, val, ts[S_ETYPE])
-    apival = ts[S_CODEC][C_ATYPE]()
+    apival = dict()
+    if ts[S_ETYPE] == list:
+        extra = len(val) > len(ts[S_FLD])
+    else:
+        extra = set(val) - set(ts[S_FLD])
+    if extra:
+        _extra_value(ts, val, extra)
     for f in ts[S_TDEF][FIELDS]:
-        if ts[S_ETYPE] == list:
+        if ts[S_ETYPE] == list:         # Concise Record
             fx = f[TAG] - 1
-            exists = len(val) > fx
-        else:
-            fx = f[NAME]
-            exists = fx in val
-        if exists and val[fx] is not None:
+            exists = len(val) > fx and val[fx] is not None
+        else:                           # Map or Verbose Record
+            fx = f[NAME] if ts[S_VSTR] else f[TAG]  # Verbose or Minified strings
+            exists = fx in val and val[fx] is not None
+        if exists:
             apival[f[NAME]] = codec.decode(f[FTYPE], val[fx])
+        else:
+            fs = f[NAME] if ts[S_VSTR] else f[TAG]  # Verbose or Minified strings
+            if not ts[S_FLD][fs][S_FOPT]["optional"]:
+                _bad_value(ts, val, f)
     return apival
 
 
-def _encode_record(ts, val, codec):
-    _check_type(ts, val, ts[S_CODEC][C_ATYPE])
+def _encode_maprec(ts, val, codec):
+    _check_type(ts, val, dict)
     encval = ts[S_ETYPE]()
-    if isinstance(encval, list):
+    fnames = [f[S_FDEF][NAME] for k,f in ts[S_FLD].items()]
+    extra = set(val) - set(fnames)
+    if extra:
+        _extra_value(ts, val, extra)
+    if ts[S_ETYPE] == list:
         fmax = max([ts[S_FLD][f][S_FDEF][TAG] for f in val])
+    fx = NAME if ts[S_VSTR] else TAG    # Verbose or Minified strings
     for f in ts[S_TDEF][FIELDS]:
         fv = codec.encode(f[FTYPE], val[f[NAME]]) if f[NAME] in val else None
-        if fv is None and not ts[S_FLD][f[NAME]][S_FOPT]["optional"]:
+        if fv is None and not ts[S_FLD][f[fx]][S_FOPT]["optional"]:
             _bad_value(ts, val, f)
-        if isinstance(encval, list):
+        if ts[S_ETYPE] == list:         # Concise Record
             if f[TAG] <= fmax:
                 encval.append(fv)
-        else:
+        else:                           # Map or Verbose Record
             if fv is not None:
-                encval[f[NAME]] = fv
+                encval[f[fx]] = fv
     return encval
 
 
@@ -250,18 +262,18 @@ def _decode_string(ts, val, codec):
 
 
 def _encode_string(ts, val, codec):
-    _check_type(ts, val, ts[S_CODEC][C_ATYPE])
+    _check_type(ts, val, str)
     return val
 
 
 enctab = {  # decode, encode, API type, min encoded type
-    "Boolean": [_decode_boolean, _encode_boolean, bool, bool],
-    "Integer": [_decode_integer, _encode_integer, int, int],
-    "Number": [_decode_number, _encode_number, float, float],
-    "String": [_decode_string, _encode_string, str, str],
-    "Array": [_decode_array, _encode_array, list, list],
-    "Choice": [_decode_choice, _encode_choice, dict, dict],
-    "Enumerated": [_decode_enumerated, _encode_enumerated, str, int],
-    "Map": [_decode_map, _encode_map, dict, dict],
-    "Record": [_decode_record, _encode_record, dict, list],
+    "Boolean": [_decode_boolean, _encode_boolean, bool],
+    "Integer": [_decode_integer, _encode_integer, int],
+    "Number": [_decode_number, _encode_number, float],
+    "String": [_decode_string, _encode_string, str],
+    "Array": [_decode_array, _encode_array, list],
+    "Choice": [_decode_choice, _encode_choice, dict],
+    "Enumerated": [_decode_enumerated, _encode_enumerated, int],
+    "Map": [_decode_maprec, _encode_maprec, dict],
+    "Record": [_decode_maprec, _encode_maprec, list],
 }

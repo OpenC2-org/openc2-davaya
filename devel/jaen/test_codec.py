@@ -189,7 +189,7 @@ class BasicTypes(unittest.TestCase):
             self.tc.decode("t_map", self.RGBA_bad2m)
         with self.assertRaises(TypeError):
             self.tc.decode("t_map", self.RGB1_bad3m)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.decode("t_map", self.RGB1_bad4m)
         with self.assertRaises(ValueError):
             self.tc.encode("t_map", self.RGB1_bad1a)
@@ -197,7 +197,7 @@ class BasicTypes(unittest.TestCase):
             self.tc.encode("t_map", self.RGBA_bad2a)
         with self.assertRaises(TypeError):
             self.tc.encode("t_map", self.RGB1_bad3a)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.encode("t_map", self.RGB1_bad4a)
 
     def test_map_verbose(self):     # Encoding identical to record_verbose
@@ -210,7 +210,7 @@ class BasicTypes(unittest.TestCase):
             self.tc.decode("t_map", self.RGB1_bad1v)
         with self.assertRaises(ValueError):
             self.tc.decode("t_map", self.RGB1_bad2v)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.decode("t_map", self.RGB1_bad3v)
         with self.assertRaises(ValueError):
             self.tc.decode("t_map", self.RGBA_bad4v)
@@ -220,7 +220,7 @@ class BasicTypes(unittest.TestCase):
             self.tc.encode("t_map", self.RGBA_bad2a)
         with self.assertRaises(TypeError):
             self.tc.encode("t_map", self.RGB1_bad3a)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.encode("t_map", self.RGB1_bad4a)
 
     def test_record_concise(self):
@@ -231,19 +231,19 @@ class BasicTypes(unittest.TestCase):
         self.assertEqual(self.tc.encode("t_rec", self.RGB1), self.RGB1c)
         self.assertEqual(self.tc.encode("t_rec", self.RGB2), self.RGB2c)
         self.assertEqual(self.tc.encode("t_rec", self.RGBA), self.RGBAc)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.decode("t_rec", self.RGB1_bad1c)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.decode("t_rec", self.RGBA_bad2c)
         with self.assertRaises(TypeError):
             self.tc.decode("t_rec", self.RGB1_bad3c)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.encode("t_rec", self.RGB1_bad1a)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.encode("t_rec", self.RGBA_bad2a)
         with self.assertRaises(TypeError):
             self.tc.encode("t_rec", self.RGB1_bad3a)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.encode("t_rec", self.RGB1_bad4a)
 
     def test_record_verbose(self):
@@ -256,19 +256,19 @@ class BasicTypes(unittest.TestCase):
         self.assertDictEqual(self.tc.encode("t_rec", self.RGBA), self.RGBA)
         with self.assertRaises(TypeError):
             self.tc.decode("t_rec", self.RGB1_bad1v)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.decode("t_rec", self.RGB1_bad2v)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.decode("t_rec", self.RGB1_bad3v)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.decode("t_rec", self.RGBA_bad4v)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.encode("t_rec", self.RGB1_bad1a)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.encode("t_rec", self.RGBA_bad2a)
         with self.assertRaises(TypeError):
             self.tc.encode("t_rec", self.RGB1_bad3a)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.tc.encode("t_rec", self.RGB1_bad4a)
 
 if __name__ == "__main__":
