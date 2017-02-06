@@ -14,16 +14,17 @@ class Jastype:
 
     def __init__(self):
         types = [
-            ("Attribute", "ATTRIBUTE"),
-            ("Array", "ARRAY"),
-            ("Choice", "CHOICE"),
-            ("Enumerated", "ENUMERATED"),
-            ("Map", "MAP"),
-            ("Record", "RECORD"),
-            ("Boolean", "BOOLEAN"),
-            ("Integer", "INTEGER"),
-            ("Number", "REAL"),
-            ("String", "UTF8String")
+            ("Attribute", "ATTRIBUTE"),         # (AttributeValueAssertion structure)
+            ("Array", "ARRAY"),                 # SEQUENCE OF
+            ("Choice", "CHOICE"),               # CHOICE
+            ("Enumerated", "ENUMERATED"),       # ENUMERATED
+            ("Map", "MAP"),                     # SET
+            ("Record", "RECORD"),               # SEQUENCE
+            ("Binary", "BINARY"),               # OCTET STRING
+            ("Boolean", "BOOLEAN"),             # BOOLEAN
+            ("Integer", "INTEGER"),             # INTEGER
+            ("Number", "REAL"),                 # REAL
+            ("String", "STRING")                # UTF8String
         ]
         self._ptype = {t[0].lower(): t[1] for t in types}
         self._jtype = {t[1].lower(): t[0] for t in types}

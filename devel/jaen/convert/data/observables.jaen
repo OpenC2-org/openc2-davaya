@@ -1,33 +1,39 @@
 {
  "meta": {
-  "module": "cybox3",
-  "title": "Cyber Observable Expression v3 definitions",
-  "version": "0.1",
   "description": "OpenC2 Cyber Observable datatypes based on objects defined in STIX v2 Part 4.",
-  "namespace": "http://openc2.org/observables"
+  "module": "cybox3",
+  "namespace": "http://openc2.org/observables",
+  "title": "Cyber Observable Expression v3 definitions",
+  "version": "0.1"
  },
 
  "types": [
-  ["hashes-type", "Map", [], "", []],
+  ["Base64", "String", [], "A sequence of octets encoded as a Base64 string"],
 
-  ["AddressObject", "Record", [], "", [
-    [1, "Address_Value", "String", ["?"], "blah blah"],
-    [2, "VLAN_Name", "String", ["?"], "More blah blah blah"],
-    [3, "VLAN_Num", "Integer", ["?"], ""]]
+  ["Hex", "String", [], "A sequence of octets encoded as a hexadecimal string"],
+
+  ["Timestamp", "String", [], "A timestamp"],
+
+  ["hashes-type", "Map", [], "", [
+    [1, "MD5", "Hex", [], "MD5 message digest as defined in RFC3121"],
+    [2, "MD6", "Hex", [], "MD6 message digest as defined in MD6 proposal"],
+    [3, "RIPEMD-160", "Hex", [], "RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification"],
+    [4, "SHA-1", "Hex", [], "Secure Hash Algorithm (SHA)-1 as defined in RFC3174"],
+    [5, "SHA-224", "Hex", [], "SHA-224 as defined in RFC6234 (US Secure Hash Algorithms)"],
+    [6, "SHA-256", "Hex", [], "SHA-256 as defined in RFC6234"],
+    [7, "SHA-384", "Hex", [], "SHA-384 as defined in RFC6234"],
+    [8, "SHA-512", "Hex", [], "SHA-512 as defined in RFC6234"],
+    [9, "SHA3-224", "Hex", [], "SHA3-224 as defined in FIPS PUP 202"],
+    [10, "SHA3-256", "Hex", [], "SHA3-256 as defined in FIPS PUP 202"],
+    [11, "SHA3-384", "Hex", [], "SHA3-384 as defined in FIPS PUP 202"],
+    [12, "SHA3-512", "Hex", [], "SHA3-512 as defined in FIPS PUP 202"],
+    [13, "ssdeep", "Hex", [], "ssdeep fuzzy hashing algorithm as defined in the SSDEEP specification"],
+    [14, "WHIRLPOOL", "Hex", [], "whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004"]]
   ],
-
-  ["autonomous-system", "Record", [], "", [
-    [1, "type", "String", [], "MUST be \"autonomous-system\""],
-    [2, "number", "Integer", [], "Number assigned to the AS"],
-    [3, "name", "String", ["?"], "Name of the AS"],
-    [4, "rir", "String", ["?"], "Name of the Regional Internet Registry (RIR) that assigned the number to the AS."]]
-  ],
-
-  ["Binary", "String", [], "Base64-encoded binary data"],
 
   ["payload", "Choice", [], "", [
-    [1, "payload_bin", "Binary", [], "Specifies the binary data contained in the artifact as a base64-encoded string."],
-    [2, "url", "String", [], "MUST be a valid URL that resolvesto the un-encoded content"]]
+    [1, "payload_bin", "Base64", [], "Specifies the binary data contained in the artifact as a base64-encoded string."],
+    [2, "url", "String", [], "MUST be a valid URL that resolves to the un-encoded content"]]
   ],
 
   ["artifact", "Record", [], "", [
@@ -35,6 +41,13 @@
     [2, "mime_type", "String", ["?"], "MUST be a valid MIME type as specified in the IANA Media Types registry"],
     [3, "*", "payload", ["?"], "choice of literal content or URL to obtain content"],
     [4, "hashes", "hashes-type", ["?"], "Specifies a dictionary of hashes for the contents of the payload"]]
+  ],
+
+  ["autonomous-system", "Record", [], "", [
+    [1, "type", "String", [], "MUST be \"autonomous-system\""],
+    [2, "number", "Integer", [], "Number assigned to the AS"],
+    [3, "name", "String", ["?"], "Name of the AS"],
+    [4, "rir", "String", ["?"], "Name of the Regional Internet Registry (RIR) that assigned the number to the AS."]]
   ],
 
   ["directory", "Map", [], "", [

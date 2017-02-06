@@ -8,19 +8,19 @@ namespace:     http://cybox.mitre.org/common-2
 */
 
 AddressObject ::= RECORD {
-    Address_Value  UTF8String OPTIONAL,
-    VLAN_Name      UTF8String OPTIONAL,
+    Address_Value  STRING OPTIONAL,
+    VLAN_Name      STRING OPTIONAL,
     VLAN_Num       INTEGER OPTIONAL
 }
 
 DeviceObject ::= MAP {
-    Description       [1] UTF8String OPTIONAL,
-    Device_Type       [2] UTF8String OPTIONAL,
-    Manufacturer      [3] UTF8String OPTIONAL,
-    Model             [4] UTF8String OPTIONAL,
-    Serial_Number     [5] UTF8String OPTIONAL,
-    Firmware_Version  [6] UTF8String OPTIONAL,
-    System_Details    [7] UTF8String OPTIONAL
+    Description       [1] STRING OPTIONAL,
+    Device_Type       [2] STRING OPTIONAL,
+    Manufacturer      [3] STRING OPTIONAL,
+    Model             [4] STRING OPTIONAL,
+    Serial_Number     [5] STRING OPTIONAL,
+    Firmware_Version  [6] STRING OPTIONAL,
+    System_Details    [7] STRING OPTIONAL
 }
 
 DiskObject ::= RECORD {
@@ -36,7 +36,7 @@ DomainNameTypeEnum ::= ENUMERATED {
 
 DomainNameObject ::= RECORD {
     type         DomainNameTypeEnum,
-    Value        UTF8String
+    Value        STRING
 }
 
 EmailMessageObject ::= RECORD {
@@ -46,8 +46,8 @@ FileObject ::= RECORD {
 }
 
 HostnameObject ::= RECORD {
-    Hostname_Value  UTF8String,
-    Naming_System   UTF8String OPTIONAL
+    Hostname_Value  STRING,
+    Naming_System   STRING OPTIONAL
 }
 
 MemoryObject ::= RECORD {
@@ -129,19 +129,19 @@ URITypeEnum ::= ENUMERATED {
 
 URIObject ::= RECORD {
     type         URITypeEnum,
-    Value        UTF8String
+    Value        STRING
 }
 
 UserAccountObject ::= RECORD {
 }
 
 UserSessionObject ::= RECORD {
-    Effective_Group     UTF8String OPTIONAL,
-    Effective_Group_ID  UTF8String OPTIONAL,
-    Effective_User      UTF8String OPTIONAL,
-    Effective_User_ID   UTF8String OPTIONAL,
-    Login_Time          UTF8String OPTIONAL,
-    Logout_Time         UTF8String OPTIONAL
+    Effective_Group     STRING OPTIONAL,
+    Effective_Group_ID  STRING OPTIONAL,
+    Effective_User      STRING OPTIONAL,
+    Effective_User_ID   STRING OPTIONAL,
+    Login_Time          STRING OPTIONAL,
+    Logout_Time         STRING OPTIONAL
 }
 
 VolumeObject ::= RECORD {

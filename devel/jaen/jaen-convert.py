@@ -10,16 +10,16 @@ import os
 
 if __name__ == "__main__":
     ddir = os.path.join("convert", "data")
-    for fn in ("openc2", "cybox", "cybox3"):
+    for fn in ("openc2", "cybox", "observables"):
         fname = os.path.join(ddir, fn)
 
         # Convert Python classes to JAEN
 
-        source = fname + ".py"
-        dest = fname + "_genp"
-        jaen = pyclass_load(fname)
-        jaen_check(jaen)
-        jaen_dump(jaen, dest + ".jaen", source)
+#        source = fname + ".py"
+#        dest = fname + "_genp"
+#        jaen = pyclass_load(fname)
+#        jaen_check(jaen)
+#        jaen_dump(jaen, dest + ".jaen", source)
 
         # Convert JAEN Abstract Syntax (JAS) to JAEN
 
@@ -36,5 +36,5 @@ if __name__ == "__main__":
         jaen = jaen_load(source)
         jas_dump(jaen, dest + ".jas", source)
         jaen_dump(jaen, dest + ".jaen", source)
-        pyclass_dump(jaen, dest + ".py", source)
+#        pyclass_dump(jaen, dest + ".py", source)
         table_dump(jaen, dest + ".xlsx", source)

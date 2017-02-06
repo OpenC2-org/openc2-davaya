@@ -49,7 +49,6 @@ S_VSTR = 6      # Verbose_str
 S_EMAP = 5      # Enum Name to Encoded Val
 S_DMAP = 6      # Enum Encoded Val to Name
 
-
 # Symbol Table Field Definition fields
 S_FDEF = 0      # JAEN field definition
 S_FOPT = 1      # Field Options (dict format)
@@ -77,12 +76,12 @@ class Codec:
         self.set_mode(verbose_rec, verbose_str)
 
     def decode(self, datatype, mstr):
-        symtab = self.symtab[datatype]
-        return symtab[S_CODEC][C_DEC](symtab, mstr, self)
+        symtype = self.symtab[datatype]
+        return symtype[S_CODEC][C_DEC](symtype, mstr, self)
 
     def encode(self, datatype, message):
-        symtab = self.symtab[datatype]
-        return symtab[S_CODEC][C_ENC](symtab, message, self)
+        symtype = self.symtab[datatype]
+        return symtype[S_CODEC][C_ENC](symtype, message, self)
 
     def set_mode(self, verbose_rec=False, verbose_str=False):
         def symf(f):        # Field entries
@@ -145,6 +144,16 @@ def _decode_array(ts, val, codec):
 
 def _encode_array(ts, val, codec):
     _check_type(ts, val, list)
+    return val
+
+
+def _decode_binary(ts, val, codec):
+    _check_type(ts, val, ts[S_ETYPE])
+    return val
+
+
+def _encode_binary(ts, val, codec):
+    _check_type(ts, val, bytes)
     return val
 
 
@@ -266,7 +275,8 @@ def _encode_string(ts, val, codec):
     return val
 
 
-enctab = {  # decode, encode, API type, min encoded type
+enctab = {  # decode, encode, min encoded type
+    "Binary": [_decode_binary, _encode_binary, str],
     "Boolean": [_decode_boolean, _encode_boolean, bool],
     "Integer": [_decode_integer, _encode_integer, int],
     "Number": [_decode_number, _encode_number, float],

@@ -108,12 +108,29 @@ class BasicTypes(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.tc.decode("t_array", 9)
 
+    C1a = {"type1": "foo"}
+    C2a = {"type2": False}
+    C3a = {"type3": 42}
+    C1m = {1: "foo"}
+    C2m = {4: False}
+    C3m = {7: 42}
+    C1_bad1a = {"type1": 15}
+    C1_bad2a = {"type4": "foo"}
+    C1_bad3a = {"type1": "foo", "type2": False}
+    C1_bad1m = {1: 15}
+    C1_bad2m = {3: "foo"}
+    C1_bad3m = {1: "foo", 4: False}
+
     def test_choice_min(self):
-        pass
+        self.assertEqual(self.tc.decode("t_choice", self.C1m), self.C1a)
+        self.assertEqual(self.tc.decode("t_choice", self.C2m), self.C2a)
+        self.assertEqual(self.tc.decode("t_choice", self.C3m), self.C3a)
 
     def test_choice_verbose(self):
         self.tc.set_mode(True, True)
-        pass
+        self.assertEqual(self.tc.decode("t_choice", self.C1a), self.C1a)
+        self.assertEqual(self.tc.decode("t_choice", self.C2a), self.C2a)
+        self.assertEqual(self.tc.decode("t_choice", self.C3a), self.C3a)
 
     def test_enumerated_min(self):
         self.assertEqual(self.tc.decode("t_enum", 15), "extra")
