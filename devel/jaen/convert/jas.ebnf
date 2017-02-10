@@ -29,7 +29,7 @@ field = ( [fd1:cmt] name:qname tag:etag [fd2:cmt] )                             
       ~ ;
 etag = "(" @:int ")" ;
 ftag = "[" @:int "]" ;
-pattern = "(" @:("PATTERN" str) ")" ;
+pattern = "(" @:(("PATTERN" str)|name) ")" ;        # TODO: hack element type into topts - FIX ME
 topts = { pattern                # Datatype options
       }+ ;
 fopts = { "OPTIONAL"             # Field options

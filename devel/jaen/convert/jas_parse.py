@@ -308,8 +308,14 @@ class jasParser(Parser):
     def _pattern_(self):
         self._token('(')
         with self._group():
-            self._token('PATTERN')
-            self._str_()
+            with self._choice():
+                with self._option():
+                    with self._group():
+                        self._token('PATTERN')
+                        self._str_()
+                with self._option():
+                    self._name_()
+                self._error('no available options')
         self.name_last_node('@')
         self._token(')')
 

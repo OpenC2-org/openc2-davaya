@@ -15,7 +15,7 @@ class Jastype:
     def __init__(self):
         types = [
             ("Attribute", "ATTRIBUTE"),         # (AttributeValueAssertion structure)
-            ("Array", "ARRAY"),                 # SEQUENCE OF
+            ("Array", "ARRAY_OF"),              # SEQUENCE OF
             ("Choice", "CHOICE"),               # CHOICE
             ("Enumerated", "ENUMERATED"),       # ENUMERATED
             ("Map", "MAP"),                     # SET
@@ -57,7 +57,7 @@ def _fopts(v):      # TODO: process min/max/range option
         elif isinstance(o, list) and o[0].lower() == "pattern":
             opts.update({"pattern": "".join(o[1])})
         else:
-            print("Unknown field option", o, v)
+            print("Unknown option", o, v)
     return opts_d2s(opts)
 
 
@@ -82,6 +82,7 @@ def jas_loads(jas_str):
     for t in ast["types"]:
         fields = []
         tdesc = t["td1"]
+        topts = t["topts"]
         if t["f"]:
             tdesc = t["f"]["td2"] if t["f"]["td2"] else tdesc
             tf = t["f"]["fields"]
@@ -95,13 +96,16 @@ def jas_loads(jas_str):
                 elif isinstance(f["tag"], str):
                     tag = int(f["tag"])
                 else:
-                    print("Error: missing tag", t["name"], f["name"])
+                    print("Error: missing tag", t["name"], f["name"])   # TODO: make all errors exceptions
                 if tag is not None:
                     if t["type"].lower() == "enumerated":
                         fields.append([tag, f["name"], _nstr(fdesc)])
                     else:
                         fields.append([tag, f["name"], pt.jtype(f["type"]), _fopts(f["fopts"]), _nstr(fdesc)])
-        tdef = [t["name"], pt.jtype(t["type"]), _fopts(t["topts"]), _nstr(tdesc)]
+        elif t["type"] == "ARRAY_OF":           # TODO: FIX hack that parses element type into type opts
+            fields.append([0, "", pt.jtype(topts[0]), [], ""])
+            topts = []
+        tdef = [t["name"], pt.jtype(t["type"]), _fopts(topts), _nstr(tdesc)]
         types.append(tdef + [fields] if tdef[1] not in ["String", "Integer", "Number", "Boolean"] else tdef)
     jaen = {"meta": meta, "types": types}
     return jaen
