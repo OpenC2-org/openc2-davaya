@@ -11,6 +11,7 @@ Licensed under the Apache License, Version 2.0
 http://www.apache.org/licenses/LICENSE-2.0
 """
 
+import base64
 from .codec_utils import opts_s2d
 
 __version__ = "0.2"
@@ -44,10 +45,10 @@ S_CODEC = 1     # CODEC table entry for this type
 S_ETYPE = 2     # Encoded type (current encoding mode)
 S_STYPE = 3     # Encoded identifier type (string or tag)
 S_TOPT = 4      # Type Options (dict format)
-S_FLD = 5       # Field definitions
-S_VSTR = 6      # Verbose_str
-S_EMAP = 5      # Enum Name to Encoded Val
+S_VSTR = 5      # Verbose_str
+S_FLD = 6       # Field definitions
 S_DMAP = 6      # Enum Encoded Val to Name
+S_EMAP = 7      # Enum Name to Encoded Val
 
 # Symbol Table Field Definition fields
 S_FDEF = 0      # JAEN field definition
@@ -98,8 +99,9 @@ class Codec:
                 enctab[t[TTYPE]][C_ETYPE],  # 2: S_ETYPE: Encoded type
                 int,                        # 3: S_STYPE: Encoded string type (str or tag)
                 opts_s2d(t[TOPTS]),         # 4: S_TOPT:  Type Options (dict)
-                {},                         # 5: S_FLD/S_EMAP: Field list / Enum Name to Val
-                {}                          # 6: S_VSTR/S_DMAP:  Enum Val to Name
+                False,                      # 5: S_VSTR:  Verbose String Identifiers
+                {},                         # 6: S_FLD/S_DMAP: Field list / Enum Val to Name
+                {}                          # 7: S_EMAP:  Enum Name to Val
             ]
             fx = TAG
             symval[S_VSTR] = verbose_str
@@ -115,6 +117,7 @@ class Codec:
             if t[TTYPE] in ["Choice", "Map", "Record"]:
                 fx = NAME if verbose_str else TAG
                 symval[S_FLD] = {f[fx]: symf(f) for f in t[FIELDS]}
+                symval[S_EMAP] = {f[NAME]: f[fx] for f in t[FIELDS]}
             return symval
         self.symtab = {t[TNAME]: sym(t) for t in self.jaen["types"]}
         self.symtab.update({t:[None, enctab[t], enctab[t][C_ETYPE]] for t in ("Boolean", "Integer", "Number", "String")})
@@ -138,27 +141,29 @@ def _extra_value(ts, val, fld):
     raise ValueError("%s(%s): unexpected field: %s not in %s:" % (td[TNAME], td[TTYPE], fld, val))
 
 def _decode_array(ts, val, codec):
-    _check_type(ts, val, ts[S_ETYPE])
-    return val
+    _check_type(ts, val, list)                  # TODO: check min/max array length
+    vtype = ts[S_TDEF][FIELDS][0][FTYPE]
+    return [codec.decode(vtype, v) for v in val]
 
 
 def _encode_array(ts, val, codec):
     _check_type(ts, val, list)
-    return val
+    vtype = ts[S_TDEF][FIELDS][0][FTYPE]
+    return [codec.encode(vtype, v) for v in val]
 
 
 def _decode_binary(ts, val, codec):
-    _check_type(ts, val, ts[S_ETYPE])
-    return val
+    _check_type(ts, val, str)
+    return base64.b64decode(val.encode(encoding="UTF-8"), validate=True)
 
 
 def _encode_binary(ts, val, codec):
     _check_type(ts, val, bytes)
-    return val
+    return base64.b64encode(val).decode(encoding="UTF-8")
 
 
 def _decode_boolean(ts, val, codec):
-    _check_type(ts, val, ts[S_ETYPE])
+    _check_type(ts, val, bool)
     return val
 
 
@@ -168,13 +173,21 @@ def _encode_boolean(ts, val, codec):
 
 
 def _decode_choice(ts, val, codec):
-    _check_type(ts, val, ts[S_ETYPE])
-    return val
-
+    _check_type(ts, val, dict)
+    k = next(iter(val))
+    if len(val) != 1 or k not in ts[S_FLD]:
+        _bad_value(ts, val)
+    f = ts[S_FLD][k][S_FDEF]
+    return {f[NAME]: codec.decode(f[FTYPE], val[k])}
 
 def _encode_choice(ts, val, codec):
     _check_type(ts, val, dict)
-    return val
+    k = next(iter(val))
+    if len(val) != 1 or k not in ts[S_EMAP]:
+        _bad_value(ts, val)
+    f = ts[S_FLD][ts[S_EMAP][k]][S_FDEF]
+    fx = f[NAME] if ts[S_VSTR] else f[TAG]            # Verbose or Minified strings
+    return {fx: codec.decode(f[FTYPE], val[k])}
 
 
 def _decode_enumerated(ts, val, codec):
@@ -196,7 +209,7 @@ def _encode_enumerated(ts, val, codec):
 
 
 def _decode_integer(ts, val, codec):
-    _check_type(ts, val, ts[S_ETYPE])
+    _check_type(ts, val, int)
     return val
 
 
@@ -207,7 +220,7 @@ def _encode_integer(ts, val, codec):
 
 def _decode_number(ts, val, codec):
     val = float(val) if type(val) == int else val
-    _check_type(ts, val, ts[S_ETYPE])
+    _check_type(ts, val, float)
     return val
 
 
@@ -219,7 +232,7 @@ def _encode_number(ts, val, codec):
 
 def _decode_maprec(ts, val, codec):
     _check_type(ts, val, ts[S_ETYPE])
-    apival = dict()
+    apival = dict()                                 # API returns dict for Map and Record
     if ts[S_ETYPE] == list:
         extra = len(val) > len(ts[S_FLD])
     else:
@@ -227,10 +240,10 @@ def _decode_maprec(ts, val, codec):
     if extra:
         _extra_value(ts, val, extra)
     for f in ts[S_TDEF][FIELDS]:
-        if ts[S_ETYPE] == list:         # Concise Record
+        if ts[S_ETYPE] == list:                     # Concise Record
             fx = f[TAG] - 1
             exists = len(val) > fx and val[fx] is not None
-        else:                           # Map or Verbose Record
+        else:                                       # Map or Verbose Record
             fx = f[NAME] if ts[S_VSTR] else f[TAG]  # Verbose or Minified strings
             exists = fx in val and val[fx] is not None
         if exists:
@@ -266,7 +279,7 @@ def _encode_maprec(ts, val, codec):
 
 
 def _decode_string(ts, val, codec):
-    _check_type(ts, val, ts[S_ETYPE])
+    _check_type(ts, val, str)
     return val
 
 

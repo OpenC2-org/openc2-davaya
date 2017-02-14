@@ -1,14 +1,16 @@
 import unittest
+import binascii
 from codec.codec import Codec
 from codec.jaen import jaen_check
 
-jaen = {
+jaen = {                # JAEN schema for datatypes used in Basic Types tests
     "meta": {"module": "unittests-BasicTypes"},
     "types": [
         ["t_bool", "Boolean", [], ""],
         ["t_int", "Integer", [], ""],
         ["t_num", "Number", [], ""],
         ["t_str", "String", [], ""],
+        ["t_bin", "Binary", [], ""],
         ["t_array", "Array", [], "", [
             [0, "", "Integer", [], ""]]
          ],
@@ -108,6 +110,21 @@ class BasicTypes(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.tc.decode("t_array", 9)
 
+    B1b = b"data to be encoded"
+    B1s = "ZGF0YSB0byBiZSBlbmNvZGVk"
+    B2b = "data\nto be ëncoded 旅程".encode(encoding="UTF-8")
+    B2s = "ZGF0YQp0byBiZSDDq25jb2RlZCDml4XnqIs="
+    B3b = binascii.a2b_hex("18e0c9987b8f32417ca6744f544b815ad2a6b4adca69d2c310bd033c57d363e3")
+    B3s = "GODJmHuPMkF8pnRPVEuBWtKmtK3KadLDEL0DPFfTY+M="
+
+    def test_binary(self):
+        self.assertEqual(self.tc.decode("t_bin", self.B1s), self.B1b)
+        self.assertEqual(self.tc.decode("t_bin", self.B2s), self.B2b)
+        self.assertEqual(self.tc.decode("t_bin", self.B3s), self.B3b)
+        self.assertEqual(self.tc.encode("t_bin", self.B1b), self.B1s)
+        self.assertEqual(self.tc.encode("t_bin", self.B2b), self.B2s)
+        self.assertEqual(self.tc.encode("t_bin", self.B3b), self.B3s)
+
     C1a = {"type1": "foo"}
     C2a = {"type2": False}
     C3a = {"type3": 42}
@@ -125,12 +142,41 @@ class BasicTypes(unittest.TestCase):
         self.assertEqual(self.tc.decode("t_choice", self.C1m), self.C1a)
         self.assertEqual(self.tc.decode("t_choice", self.C2m), self.C2a)
         self.assertEqual(self.tc.decode("t_choice", self.C3m), self.C3a)
+        self.assertEqual(self.tc.encode("t_choice", self.C1a), self.C1m)
+        self.assertEqual(self.tc.encode("t_choice", self.C2a), self.C2m)
+        self.assertEqual(self.tc.encode("t_choice", self.C3a), self.C3m)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_choice", self.C1_bad1m)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_choice", self.C1_bad2m)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_choice", self.C1_bad3m)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_choice", self.C1_bad1a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_choice", self.C1_bad2a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_choice", self.C1_bad3a)
+
 
     def test_choice_verbose(self):
         self.tc.set_mode(True, True)
         self.assertEqual(self.tc.decode("t_choice", self.C1a), self.C1a)
         self.assertEqual(self.tc.decode("t_choice", self.C2a), self.C2a)
         self.assertEqual(self.tc.decode("t_choice", self.C3a), self.C3a)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_choice", self.C1_bad1a)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_choice", self.C1_bad2a)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_choice", self.C1_bad3a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_choice", self.C1_bad1a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_choice", self.C1_bad2a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_choice", self.C1_bad3a)
+
 
     def test_enumerated_min(self):
         self.assertEqual(self.tc.decode("t_enum", 15), "extra")

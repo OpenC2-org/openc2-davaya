@@ -87,7 +87,7 @@ def jaen_check(jaen):
     jsonschema.Draft4Validator(jaen_schema).validate(jaen)
 
     for t in jaen["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-description, 4-item list
-        if t[1] in ("String", "Integer", "Number", "Boolean"):
+        if t[1] in ("Binary", "Boolean", "Integer", "Number", "String"):
             if len(t) != 4:    # TODO: trace back to base type
                 print("Type format error:", t[0], "- primitive type", t[1], "cannot have items")
         else:
