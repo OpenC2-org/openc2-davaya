@@ -211,128 +211,306 @@ class BasicTypes(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.tc.encode("t_enum", ["first"])
 
-    RGB1 = {"red": 24, "green": 120, "blue": 240}    # API (decoded) values
+    RGB1 = {"red": 24, "green": 120, "blue": 240}    # API (decoded) and verbose values Map and Record
     RGB2 = {"red": 50, "blue": 100}
-    RGBA = {"red": 9, "green": 80, "blue": 96, "alpha": 128}
-    RGB1_bad1a = {"red": 24, "green": 120}
-    RGBA_bad2a = {"red": 9, "green": 80, "blue": 96, "alpha": 128, "beta": 196}
-    RGB1_bad3a = {"red": "four", "green": 120, "blue": 240}
-    RGB1_bad4a = {2: 24, "green": 120, "blue": 240}
+    RGB3 = {"red": 9, "green": 80, "blue": 96, "alpha": 128}
+    RGB_bad1a = {"red": 24, "green": 120}
+    RGB_bad2a = {"red": 9, "green": 80, "blue": 96, "beta": 128}
+    RGB_bad3a = {"red": 9, "green": 80, "blue": 96, "alpha": 128, "beta": 196}
+    RGB_bad4a = {"red": "four", "green": 120, "blue": 240}
+    RGB_bad5a = {"red": 24, "green": "120", "blue": 240}
+    RGB_bad6a = {"red": 24, "green": 120, "bleu": 240}
+    RGB_bad7a = {2: 24, "green": 120, "blue": 240}
 
-    RGB1m = {2: 24, 4: 120, 6: 240}                  # Encoded values (minimized)
-    RGB2m = {2: 50, 6: 100}
-    RGBAm = {2: 9, 4: 80, 6: 96, 9: 128}
-    RGB1_bad1m = {2: 24, 4: 120}
-    RGBA_bad2m = {2: 9, 4: 80, 6: 96, 9: 128, 12: 42}
-    RGB1_bad3m = {2: "four", 4: 120, 6: 240}
-    RGB1_bad4m = {"2": 24, 4: 120, 6: 240}
+    Map1m = {2: 24, 4: 120, 6: 240}                  # Encoded values Map (minimized and dict/tag mode)
+    Map2m = {2: 50, 6: 100}
+    Map3m = {2: 9, 4: 80, 6: 96, 9: 128}
+    Map_bad1m = {2: 24, 4: 120}
+    Map_bad2m = {2: 9, 4: 80, 6: 96, 9: 128, 12: 42}
+    Map_bad3m = {2: "four", 4: 120, 6: 240}
+    Map_bad4m = {"2": 24, 4: 120, 6: 240}
 
-    RGB1c = [24, 120, 240]                           # Encoded values (concise)
+    Rec1m = [24, 120, 240]                          # Encoded values Record (minimized)
+    Rec2m = [50, None, 100]
+    Rec3m = [9, 80, 96, 128]
+    Rec_bad1m = [24, 120]
+    Rec_bad2m = [9, 80, 96, 128, 42]
+    Rec_bad3m = ["four", 120, 240]
+
+    Rec1n = {1: 24, 2: 120, 3: 240}                  # Encoded values Record (unused dict/tag mode)
+    Rec2n = {1: 50, 3: 100}
+    Rec3n = {1: 9, 2: 80, 3: 96, 4: 128}
+    Rec_bad1n = {1: 24, 2: 120}
+    Rec_bad2n = {1: 9, 2: 80, 3: 96, 4: 128, 5: 42}
+    Rec_bad3n = {1: "four", 2: 120, 3: 240}
+    Rec_bad4n = {"1": 24, 2: 120, 3: 240}
+
+    RGB1c = [24, 120, 240]                           # Encoded values Record (concise)
     RGB2c = [50, None, 100]
-    RGBAc = [9, 80, 96, 128]
-    RGB1_bad1c = [24, 120]
-    RGBA_bad2c = [9, 80, 96, 128, 42]
-    RGB1_bad3c = ["four", 120, 240]
+    RGB3c = [9, 80, 96, 128]
+    RGB_bad1c = [24, 120]
+    RGB_bad2c = [9, 80, 96, 128, 42]
+    RGB_bad3c = ["four", 120, 240]
 
-    RGB1_bad1v = {"red": 24, "green": "120", "blue": 240}    # Encoded values (verbose)
-    RGB1_bad2v = {"red": 24, "green": 120, "bleu": 240}
-    RGB1_bad3v = {2: 24, "green": 120, "blue": 240}
-    RGBA_bad4v = {"red": 9, "green": 80, "blue": 96, "beta": 128}
-
-    def test_map_min(self):
-        self.assertDictEqual(self.tc.decode("t_map", self.RGB1m), self.RGB1)
-        self.assertDictEqual(self.tc.decode("t_map", self.RGB2m), self.RGB2)
-        self.assertDictEqual(self.tc.decode("t_map", self.RGBAm), self.RGBA)
-        self.assertDictEqual(self.tc.encode("t_map", self.RGB1), self.RGB1m)
-        self.assertDictEqual(self.tc.encode("t_map", self.RGB2), self.RGB2m)
-        self.assertDictEqual(self.tc.encode("t_map", self.RGBA), self.RGBAm)
+    def test_map_min(self):             # dict structure, identifier tag
+        self.assertDictEqual(self.tc.decode("t_map", self.Map1m), self.RGB1)
+        self.assertDictEqual(self.tc.decode("t_map", self.Map2m), self.RGB2)
+        self.assertDictEqual(self.tc.decode("t_map", self.Map3m), self.RGB3)
+        self.assertDictEqual(self.tc.encode("t_map", self.RGB1), self.Map1m)
+        self.assertDictEqual(self.tc.encode("t_map", self.RGB2), self.Map2m)
+        self.assertDictEqual(self.tc.encode("t_map", self.RGB3), self.Map3m)
         with self.assertRaises(ValueError):
-            self.tc.decode("t_map", self.RGB1_bad1m)
+            self.tc.decode("t_map", self.Map_bad1m)
         with self.assertRaises(ValueError):
-            self.tc.decode("t_map", self.RGBA_bad2m)
+            self.tc.decode("t_map", self.Map_bad2m)
         with self.assertRaises(TypeError):
-            self.tc.decode("t_map", self.RGB1_bad3m)
+            self.tc.decode("t_map", self.Map_bad3m)
         with self.assertRaises(ValueError):
-            self.tc.decode("t_map", self.RGB1_bad4m)
+            self.tc.decode("t_map", self.Map_bad4m)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB1_bad1a)
+            self.tc.encode("t_map", self.RGB_bad1a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGBA_bad2a)
+            self.tc.encode("t_map", self.RGB_bad2a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad3a)
         with self.assertRaises(TypeError):
-            self.tc.encode("t_map", self.RGB1_bad3a)
+            self.tc.encode("t_map", self.RGB_bad4a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad5a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB1_bad4a)
+            self.tc.encode("t_map", self.RGB_bad6a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad7a)
 
-    def test_map_verbose(self):     # Encoding identical to record_verbose
+    def test_map_unused(self):         # dict structure, identifier tag
+        self.tc.set_mode(True, False)
+        self.assertDictEqual(self.tc.decode("t_map", self.Map1m), self.RGB1)
+        self.assertDictEqual(self.tc.decode("t_map", self.Map2m), self.RGB2)
+        self.assertDictEqual(self.tc.decode("t_map", self.Map3m), self.RGB3)
+        self.assertDictEqual(self.tc.encode("t_map", self.RGB1), self.Map1m)
+        self.assertDictEqual(self.tc.encode("t_map", self.RGB2), self.Map2m)
+        self.assertDictEqual(self.tc.encode("t_map", self.RGB3), self.Map3m)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.Map_bad1m)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.Map_bad2m)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_map", self.Map_bad3m)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.Map_bad4m)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad1a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad2a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad3a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad4a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad5a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad6a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad7a)
+
+    def test_map_concise(self):         # dict structure, identifier name
+        self.tc.set_mode(False, True)
+        self.assertDictEqual(self.tc.decode("t_map", self.RGB1), self.RGB1)
+        self.assertDictEqual(self.tc.decode("t_map", self.RGB2), self.RGB2)
+        self.assertDictEqual(self.tc.decode("t_map", self.RGB3), self.RGB3)
+        self.assertDictEqual(self.tc.encode("t_map", self.RGB1), self.RGB1)
+        self.assertDictEqual(self.tc.encode("t_map", self.RGB2), self.RGB2)
+        self.assertDictEqual(self.tc.encode("t_map", self.RGB3), self.RGB3)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGB_bad1a)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGB_bad2a)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGB_bad3a)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_map", self.RGB_bad4a)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_map", self.RGB_bad5a)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGB_bad6a)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGB_bad7a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad1a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad2a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad3a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad4a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad5a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad6a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad7a)
+
+    def test_map_verbose(self):     # dict structure, identifier name
         self.tc.set_mode(True, True)
         self.assertDictEqual(self.tc.decode("t_map", self.RGB1), self.RGB1)
-        self.assertDictEqual(self.tc.decode("t_map", self.RGBA), self.RGBA)
+        self.assertDictEqual(self.tc.decode("t_map", self.RGB2), self.RGB2)
+        self.assertDictEqual(self.tc.decode("t_map", self.RGB3), self.RGB3)
         self.assertDictEqual(self.tc.encode("t_map", self.RGB1), self.RGB1)
-        self.assertDictEqual(self.tc.encode("t_map", self.RGBA), self.RGBA)
+        self.assertDictEqual(self.tc.encode("t_map", self.RGB2), self.RGB2)
+        self.assertDictEqual(self.tc.encode("t_map", self.RGB3), self.RGB3)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGB_bad1a)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGB_bad2a)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGB_bad3a)
         with self.assertRaises(TypeError):
-            self.tc.decode("t_map", self.RGB1_bad1v)
-        with self.assertRaises(ValueError):
-            self.tc.decode("t_map", self.RGB1_bad2v)
-        with self.assertRaises(ValueError):
-            self.tc.decode("t_map", self.RGB1_bad3v)
-        with self.assertRaises(ValueError):
-            self.tc.decode("t_map", self.RGBA_bad4v)
-        with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB1_bad1a)
-        with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGBA_bad2a)
+            self.tc.decode("t_map", self.RGB_bad4a)
         with self.assertRaises(TypeError):
-            self.tc.encode("t_map", self.RGB1_bad3a)
+            self.tc.decode("t_map", self.RGB_bad5a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_map", self.RGB1_bad4a)
+            self.tc.decode("t_map", self.RGB_bad6a)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGB_bad7a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad1a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad2a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad3a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad4a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad5a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad6a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad7a)
+
+    def test_record_min(self):
+        self.assertDictEqual(self.tc.decode("t_rec", self.Rec1m), self.RGB1)
+        self.assertDictEqual(self.tc.decode("t_rec", self.Rec2m), self.RGB2)
+        self.assertDictEqual(self.tc.decode("t_rec", self.Rec3m), self.RGB3)
+        self.assertEqual(self.tc.encode("t_rec", self.RGB1), self.Rec1m)
+        self.assertEqual(self.tc.encode("t_rec", self.RGB2), self.Rec2m)
+        self.assertEqual(self.tc.encode("t_rec", self.RGB3), self.Rec3m)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_rec", self.Rec_bad1m)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_rec", self.Rec_bad2m)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_rec", self.Rec_bad3m)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad1a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad2a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad3a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad4a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad5a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad6a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad7a)
+
+    def test_record_unused(self):
+        self.tc.set_mode(True, False)
+        self.assertDictEqual(self.tc.decode("t_rec", self.Rec1n), self.RGB1)
+        self.assertDictEqual(self.tc.decode("t_rec", self.Rec2n), self.RGB2)
+        self.assertDictEqual(self.tc.decode("t_rec", self.Rec3n), self.RGB3)
+        self.assertEqual(self.tc.encode("t_rec", self.RGB1), self.Rec1n)
+        self.assertEqual(self.tc.encode("t_rec", self.RGB2), self.Rec2n)
+        self.assertEqual(self.tc.encode("t_rec", self.RGB3), self.Rec3n)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_rec", self.Rec_bad1n)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_rec", self.Rec_bad2n)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_rec", self.Rec_bad3n)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_rec", self.Rec_bad4n)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad1a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad2a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad3a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad4a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad5a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad6a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad7a)
 
     def test_record_concise(self):
         self.tc.set_mode(False, True)
         self.assertDictEqual(self.tc.decode("t_rec", self.RGB1c), self.RGB1)
         self.assertDictEqual(self.tc.decode("t_rec", self.RGB2c), self.RGB2)
-        self.assertDictEqual(self.tc.decode("t_rec", self.RGBAc), self.RGBA)
+        self.assertDictEqual(self.tc.decode("t_rec", self.RGB3c), self.RGB3)
         self.assertEqual(self.tc.encode("t_rec", self.RGB1), self.RGB1c)
         self.assertEqual(self.tc.encode("t_rec", self.RGB2), self.RGB2c)
-        self.assertEqual(self.tc.encode("t_rec", self.RGBA), self.RGBAc)
+        self.assertEqual(self.tc.encode("t_rec", self.RGB3), self.RGB3c)
         with self.assertRaises(ValueError):
-            self.tc.decode("t_rec", self.RGB1_bad1c)
+            self.tc.decode("t_rec", self.RGB_bad1c)
         with self.assertRaises(ValueError):
-            self.tc.decode("t_rec", self.RGBA_bad2c)
+            self.tc.decode("t_rec", self.RGB_bad2c)
         with self.assertRaises(TypeError):
-            self.tc.decode("t_rec", self.RGB1_bad3c)
+            self.tc.decode("t_rec", self.RGB_bad3c)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_rec", self.RGB1_bad1a)
+            self.tc.encode("t_map", self.RGB_bad1a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_rec", self.RGBA_bad2a)
+            self.tc.encode("t_map", self.RGB_bad2a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad3a)
         with self.assertRaises(TypeError):
-            self.tc.encode("t_rec", self.RGB1_bad3a)
+            self.tc.encode("t_map", self.RGB_bad4a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad5a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_rec", self.RGB1_bad4a)
+            self.tc.encode("t_map", self.RGB_bad6a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad7a)
 
     def test_record_verbose(self):
         self.tc.set_mode(True, True)
         self.assertDictEqual(self.tc.decode("t_rec", self.RGB1), self.RGB1)
         self.assertDictEqual(self.tc.decode("t_rec", self.RGB2), self.RGB2)
-        self.assertDictEqual(self.tc.decode("t_rec", self.RGBA), self.RGBA)
+        self.assertDictEqual(self.tc.decode("t_rec", self.RGB3), self.RGB3)
         self.assertDictEqual(self.tc.encode("t_rec", self.RGB1), self.RGB1)
         self.assertDictEqual(self.tc.encode("t_rec", self.RGB2), self.RGB2)
-        self.assertDictEqual(self.tc.encode("t_rec", self.RGBA), self.RGBA)
+        self.assertDictEqual(self.tc.encode("t_rec", self.RGB3), self.RGB3)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGB_bad1a)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGB_bad2a)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGB_bad3a)
         with self.assertRaises(TypeError):
-            self.tc.decode("t_rec", self.RGB1_bad1v)
-        with self.assertRaises(ValueError):
-            self.tc.decode("t_rec", self.RGB1_bad2v)
-        with self.assertRaises(ValueError):
-            self.tc.decode("t_rec", self.RGB1_bad3v)
-        with self.assertRaises(ValueError):
-            self.tc.decode("t_rec", self.RGBA_bad4v)
-        with self.assertRaises(ValueError):
-            self.tc.encode("t_rec", self.RGB1_bad1a)
-        with self.assertRaises(ValueError):
-            self.tc.encode("t_rec", self.RGBA_bad2a)
+            self.tc.decode("t_map", self.RGB_bad4a)
         with self.assertRaises(TypeError):
-            self.tc.encode("t_rec", self.RGB1_bad3a)
+            self.tc.decode("t_map", self.RGB_bad5a)
         with self.assertRaises(ValueError):
-            self.tc.encode("t_rec", self.RGB1_bad4a)
+            self.tc.decode("t_map", self.RGB_bad6a)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_map", self.RGB_bad7a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad1a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad2a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad3a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad4a)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_map", self.RGB_bad5a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad6a)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_map", self.RGB_bad7a)
 
 if __name__ == "__main__":
     unittest.main()

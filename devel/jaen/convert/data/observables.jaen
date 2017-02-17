@@ -50,8 +50,23 @@
     [4, "rir", "String", ["?"], "Name of the Regional Internet Registry (RIR) that assigned the number to the AS."]]
   ],
 
+  ["dirfile", "Choice", [], "", [
+    [1, "d", "directory", [], ""],
+    [2, "f", "file", [], ""]]
+  ],
+
+  ["dir-contents", "Array", [], "", [
+    [0, "", "dirfile", [], ""]]
+  ],
+
   ["directory", "Map", [], "", [
-    [1, "type", "String", [], "MUST be \"directory\""]]
+    [1, "type", "String", [], "MUST be \"directory\""],
+    [2, "path", "String", [], "Path, as originally observed, to the directory on the filesystem"],
+    [3, "path_enc", "String", ["?"], "Observed encoding for the path, from the IANA Character Set Registry"],
+    [4, "created", "Timestamp", ["?"], "Date/time the directory was created"],
+    [5, "modified", "Timestamp", ["?"], "Date/time the directory was last written-to/modified"],
+    [6, "accessed", "Timestamp", ["?"], "Date/time the directory was last accessed"],
+    [7, "contains", "dir-contents", ["?"], "List of files/directories contained within the directory"]]
   ],
 
   ["dnvalue", "Choice", [], "", [
@@ -60,21 +75,21 @@
     [3, "name", "domain-name", [], ""]]
   ],
 
-  ["dnvalues", "Array", [], "", [
-    [0, "dnvalue", "String", [], "Omitted tag should default to 0 and present"]]
+  ["dnvalues", "Array", [], "List if IP addresses or domain names", [
+    [0, "", "String", [], ""]]
   ],
 
   ["domain-name", "Record", [], "", [
     [1, "type", "String", [], "MUST be \"domain-name\""],
     [2, "value", "String", [], "Value of the domain name"],
-    [3, "resolves-to", "dnvalues", [], "list of IP addresses or domain names"]]
+    [3, "resolves-to", "dnvalues", [], "List of IP addresses or domain names"]]
   ],
 
   ["email-addr", "Record", [], "", [
     [1, "type", "String", [], "MUST be \"email-addr\""],
-    [2, "value", "String", [], ""],
-    [3, "display_name", "String", ["?"], ""],
-    [4, "belongs_to", "String", ["?"], ""]]
+    [2, "value", "String", [], "Email address (addr-spec in RFC 5322 Section 3.4)"],
+    [3, "display_name", "String", ["?"], "Name that is displayed to the user of a mail application"],
+    [4, "belongs_to", "user-account", ["?"], "User account that the email address belongs to"]]
   ],
 
   ["email-message", "Record", [], "", [
@@ -83,6 +98,10 @@
 
   ["file", "Record", [], "", [
     [1, "type", "String", [], "MUST be \"file\""]]
+  ],
+
+  ["asystems", "Array", [], "", [
+    [0, "", "autonomous-system", [], ""]]
   ],
 
   ["ipv4-addr", "Record", [], "", [

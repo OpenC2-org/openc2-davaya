@@ -87,13 +87,15 @@ email-addr ::= RECORD {
     belongs_to    user-account OPTIONAL -- User account that the email address belongs to
 }
 
-email-message ::= RECORD {
+email-message ::= RECORD {  -- TODO: finish
     type         STRING              -- MUST be "email-message"
 }
 
-file ::= RECORD {
+file ::= RECORD {  -- TODO: finish
     type         STRING              -- MUST be "file"
 }
+
+mac-addrs ::= ARRAY_OF(mac-addr)
 
 asystems ::= ARRAY_OF (autonomous-system)
 
@@ -112,17 +114,42 @@ ipv6-addr ::= RECORD {
 }
 
 mac-addr ::= RECORD {
-    type         STRING,             -- MUST be "mac-addr"
-    value        STRING              -- Specifies a single MAC address.  MUST be represented as a single colon-delimited, lowercase MAC-48 address, which MUST include leading zeros for each octet.  Example: 00:00:ab:cd:ef:01
+    type         STRING,     -- MUST be "mac-addr"
+    value        STRING      -- Specifies a single MAC address.  MUST be represented as a single colon-delimited, lowercase MAC-48 address, which MUST include leading zeros for each octet.  Example: 00:00:ab:cd:ef:01
 }
 
 mutex ::= RECORD {
-    type         STRING,    -- MUST be "mutex"
-    name         STRING     -- Specifies the name of the mutex object.
+    type         STRING,     -- MUST be "mutex"
+    name         STRING      -- Specifies the name of the mutex object.
 }
 
+socket-addrs ::= ARRAY_OF(socket-addr)
+
+socket-addr ::= CHOICE {
+    v4      [1] ipv4-addr,
+    v6      [2] ipv6-addr,
+    mac     [3] mac-addr,
+    dn      [4] domain-name
+}
+
+strings ::= ARRAY_OF(STRING)
+
 network-traffic ::= RECORD {
-    type         STRING     -- MUST be "network-traffic"
+    type        STRING,                 -- MUST be "network-traffic"
+    extensions  dictionary OPTIONAL,    -- http-ext, tcp-ext, icmp-ext, socket-ext
+    start       timestamp OPTIONAL,     -- date/time the network traffic was initiated, if known
+    end         timestamp OPTIONAL,     -- date/time the network traffic ended, if known.  MUST NOT be included if is_active
+    is_active   boolean OPTIONAL,       -- indicates whether the network traffic is still ongoing
+    src_ref     socket-addrs OPTIONAL,  -- source of the network traffic
+    dst_ref     socket-addrs OPTIONAL,  -- destination of the network traffic
+    src_port    INTEGER OPTIONAL,       -- source port used in the network traffic, 0-65535
+    dst_port    INTEGER OPTIONAL,       -- destination port used in the network traffic, 0-65535
+    protocols   strings OPTIONAL,       -- protocols observed in network traffic
+    src_byte_count  INTEGER OPTIONAL,   -- number of bytes sent from the source to the destination
+    dst_byte_count  INTEGER OPTIONAL,   -- number of bytes sent from the destination to the source
+    src_packets INTEGER OPTIONAL,       -- number of packets sent from the source to the destination
+    dst_packets INTEGER OPTIONAL,       -- number of packets sent from the destination to the source
+    ipfix       dictionary OPTIONAL    -- IP Flow Information Export data for the traffic
 }
 
 process ::= RECORD {

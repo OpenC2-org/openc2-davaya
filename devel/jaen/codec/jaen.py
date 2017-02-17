@@ -9,6 +9,7 @@ from .codec_utils import opts_s2d
 
 # TODO: Establish CTI/JSON namespace conventions, merge "module" (name) and "namespace" (module unique id) properties
 # TODO: Update JAEN file to be array of namespaces ( {meta, types} pairs )
+# TODO: Convert error print statements to exceptions
 
 jaen_schema = {
     "type": "object",
@@ -95,7 +96,7 @@ def jaen_check(jaen):
                 print("Type format error:", t[0], "- missing items from compound type", t[1])
         if t[1] == "Array":
             if len(t[4]) != 1:
-                print("Type format error:", t[0], "- array must have one element, not", len(t[4]))
+                print("Type format error:", t[0], "- array must have one type element, not", len(t[4]))
             if t[4][0][0] != 0:
                 print("Type format error:", t[0], "- array type must not have tag", t[4][0][0])
         for o, v in opts_s2d(t[2]).items():

@@ -51,8 +51,10 @@ Action ::= ENUMERATED {
 }
 
 TargetType ::= ENUMERATED {
-    cybox:Address               (1),
-    cybox:Device                (2),
+    openc2                      (1),
+    commands                    (2),
+    cybox:Address               (41),
+    cybox:Device                (42),
     cybox:Disk                  (3),
     cybox:Disk_Partition        (4),
     cybox:Domain_Name           (5),
@@ -75,9 +77,7 @@ TargetType ::= ENUMERATED {
     cybox:Volume                (22),
     cybox:Windows_Registry_Key  (23),
     cybox:Windows_Service       (24),
-    cybox:X509_Certificate      (25),
-    Data                        (1),
-    cybox3                      (2)
+    cybox:X509_Certificate      (25)
 }
 
 Target ::= RECORD {
@@ -138,7 +138,7 @@ ActuatorSpecifiers ::= RECORD {
     asset_id     STRING OPTIONAL
 }
 
-ActuatorObject ::= ATTRIBUTE {
+ActuatorObject ::= MAP {
     endpoint                         [1] ActuatorSpecifiers,
     endpoint-digital-telephone-handset [2] ActuatorSpecifiers,
     endpoint-laptop                  [3] ActuatorSpecifiers,
