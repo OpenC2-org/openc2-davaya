@@ -1,5 +1,3 @@
-#JSON Abstract Encoding Notation
-
 # JAEN
 JSON Abstract Encoding Notation (JAEN, pronounced "Jane") is a JSON document format for defining abstract schemas.
 Unlike concrete schema languages such as XSD and JSON Schema, JAEN defines the structure of datatypes independently
