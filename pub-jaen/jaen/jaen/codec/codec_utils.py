@@ -51,7 +51,7 @@ def flatten(cmd, path="", fc={}, sep="."):
 
 # Option conversions
 
-def opts_s2d(olist):
+def opts_s2d(ostr):
     """
     Convert list of type definition option strings to options dictionary
 
@@ -63,9 +63,9 @@ def opts_s2d(olist):
     ">*"     "pattern"  String   Regular expression to match against String value
     """
 
-    assert isinstance(olist, (list, tuple)), "%r is not a list" % olist
+    assert isinstance(ostr, (list, tuple)), "%r is not a list" % ostr
     opts = {"optional": False}
-    for o in olist:
+    for o in ostr:
         if o[0] == "?":
             opts["optional"] = True
         elif o[0] == "{":
