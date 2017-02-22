@@ -1,4 +1,4 @@
-"Generated from data\openc2.jas, Tue Feb 21 15:20:01 2017"
+"Generated from data\openc2.jas, Wed Feb 22 08:23:30 2017"
 
 {
  "meta": {
@@ -85,7 +85,7 @@
 
   ["Target", "Record", [], "", [
     [1, "type", "TargetType", [], ""],
-    [2, "specifiers", "cybox:CyboxObject", ["?", "{type"], ""]]
+    [2, "specifiers", "cybox:CyboxObject", ["{type", "?"], ""]]
   ],
 
   ["ActuatorType", "Enumerated", [], "", [
@@ -191,7 +191,7 @@
 
   ["Actuator", "Record", [], "", [
     [1, "type", "ActuatorType", [], ""],
-    [2, "specifiers", "ActuatorObject", ["?", "{type"], ""]]
+    [2, "specifiers", "ActuatorObject", ["{type", "?"], ""]]
   ],
 
   ["Duration", "String", [">^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"], ""],

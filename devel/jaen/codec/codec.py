@@ -48,7 +48,7 @@ S_TOPT = 4      # Type Options (dict format)
 S_VSTR = 5      # Verbose_str
 S_FLD = 6       # Field entries (definition and decoded options)
 S_DMAP = 6      # Enum Encoded Val to Name
-S_EMAP = 7      # Enum Name to Encoded Val
+S_EMAP = 7      # Enum/Map/Record Name to Encoded Val
 
 # Symbol Table Field Definition fields
 S_FDEF = 0      # JAEN field definition
@@ -106,14 +106,13 @@ class Codec:
             fx = TAG
             symval[S_VSTR] = verbose_str
             if t[TTYPE] == "Record":
-                (fx, symval[S_ETYPE]) = (NAME, dict) if verbose_rec else (TAG, list)
             if verbose_str and t[TTYPE] in ["Choice", "Enumerated", "Map"]:
                 fx = NAME
                 symval[S_STYPE] = str
             if t[TTYPE] == "Enumerated":
                 symval[S_DMAP] = {f[fx]: f[NAME] for f in t[FIELDS]}
                 symval[S_EMAP] = {f[NAME]: f[fx] for f in t[FIELDS]}
-            if t[TTYPE] in ["Choice", "Map", "Record"]:
+            elif t[TTYPE] in ["Choice", "Map", "Record"]:
                 fx = NAME if verbose_str else TAG
                 symval[S_FLD] = {f[fx]: symf(f) for f in t[FIELDS]}
                 symval[S_EMAP] = {f[NAME]: f[fx] for f in t[FIELDS]}
