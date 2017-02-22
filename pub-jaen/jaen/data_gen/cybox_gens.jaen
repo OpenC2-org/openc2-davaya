@@ -1,4 +1,4 @@
-"Generated from data\cybox.jas, Wed Feb 22 08:23:30 2017"
+"Generated from data\cybox.jas, Wed Feb 22 16:45:24 2017"
 
 {
  "meta": {
@@ -147,7 +147,7 @@
     [3, "CertificateSignature", ""]]
   ],
 
-  ["CyboxObject", "Attribute", [], "", [
+  ["CyboxObject", "Map", [], "", [
     [1, "Address", "AddressObject", [], ""],
     [2, "Device", "DeviceObject", [], ""],
     [3, "Disk", "DiskObject", [], ""],

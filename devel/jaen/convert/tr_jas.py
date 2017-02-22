@@ -144,7 +144,7 @@ def jas_dumps(jaen):
     jas += "*/\n"
 
     pt = Jastype()
-    for td in jaen["types"]:                    # 0:name, 1:type, 2:topts, 3:tdesc, 4:fields
+    for td in jaen["types"]:                    # 0:tname, 1:ttype, 2:topts, 3:tdesc, 4:fields
         tname, ttype = td[0:2]
         topts = opts_s2d(td[2])
         tostr = '(PATTERN "' + topts["pattern"] + '")' if "pattern" in topts else ""
@@ -152,8 +152,8 @@ def jas_dumps(jaen):
         jas += "\n" + tname + " ::= " + pt.ptype(ttype) + tostr
         if len(td) > 4:
             titems = deepcopy(td[4])
-            for n, i in enumerate(titems):      # 0:id, 1:name, 2:fdesc  (enumerated), or
-                if len(i) > 3:                  # 0:id, 1:name, 2:type, 3: fopts, 4:fdesc
+            for n, i in enumerate(titems):      # 0:id, 1:name, 2:edesc  (enumerated), or
+                if len(i) > 3:                  # 0:id, 1:name, 2:ftype, 3: fopts, 4:fdesc
                     desc = i[4]
                     i[2] = pt.ptype(i[2])
                 else:
