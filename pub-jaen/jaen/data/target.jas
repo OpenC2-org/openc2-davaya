@@ -1,33 +1,60 @@
 /*
-module:        cybox3
-title:         Cyber Observable Expression v3 definitions
+module:        target
+title:         OpenC2 Targets
 version:       0.1
-description:   OpenC2 Cyber Observable datatypes based on objects defined in
-               STIX v2 Part 4.
-namespace:     http://openc2.org/observables
+description:   OpenC2 target types, derived in part from CybOX 2.1 and
+               Cyber Observables STIX v2 Part 4.
+namespace:     http://openc2.org/target
 */
+
+Target ::= CHOICE {     -- OpenC2 Target datatypes
+    artifact            [1] artifact,               -- SCO v2
+    commands            [2] commands,               -- OpenC2
+    device              [3] device,                 -- CybOX 2.1
+    directory           [4] directory,              -- SCO v2
+    disk                [5] disk,                   -- CybOX 2.1
+    disk-partition      [6] disk-partition,         -- CybOX 2.1
+    domain-name         [7] domain-name,            -- SCO v2
+    email-addr          [8] email-addr,             -- SCO v2
+    email-message       [9] email-message,          -- SCO v2
+    file                [10] file,                  -- SCO v2
+    ipv4-addr           [11] ipv4-addr,             -- SCO v2
+    ipv6-addr           [12] ipv6-addr,             -- SCO v2
+    mac-addr            [13] mac-addr,              -- SCO v2
+    memory              [14] memory,                -- CybOX 2.1
+    network-traffic     [15] network-traffic,       -- SCO v2
+    openc2              [16] openc2,                -- OpenC2
+    process             [17] process,               -- SCO v2
+    software            [18] software,              -- SCO v2
+    url                 [19] url,                   -- SCO v2
+    user-account        [20] user-account,          -- SCO v2
+    user-session        [21] user-session,          -- CybOX 2.1
+    volume              [22] volume,                -- CybOX 2.1
+    windows-registry-key [23] windows-registry-key, -- SCO v2
+    x509-certificate    [24] x509-certificate       -- SCO v2
+}
 
 Base64 ::= STRING       -- A sequence of octets encoded as a Base64 string
 
 Hex ::= STRING          -- A sequence of octets encoded as a hexadecimal string
 
-Timestamp ::= STRING    -- A timestamp
+Timestamp ::= STRING    -- RFC 3339 format date and time
 
 hashes-type ::= MAP {
-    MD5          [1] Hex,    -- MD5 message digest as defined in RFC3121
-    MD6          [2] Hex,    -- MD6 message digest as defined in MD6 proposal
-    RIPEMD-160   [3] Hex,    -- RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification
-    SHA-1        [4] Hex,    -- Secure Hash Algorithm (SHA)-1 as defined in RFC3174
-    SHA-224      [5] Hex,    -- SHA-224 as defined in RFC6234 (US Secure Hash Algorithms)
-    SHA-256      [6] Hex,    -- SHA-256 as defined in RFC6234
-    SHA-384      [7] Hex,    -- SHA-384 as defined in RFC6234
-    SHA-512      [8] Hex,    -- SHA-512 as defined in RFC6234
-    SHA3-224     [9] Hex,    -- SHA3-224 as defined in FIPS PUP 202
-    SHA3-256     [10] Hex,    -- SHA3-256 as defined in FIPS PUP 202
-    SHA3-384     [11] Hex,    -- SHA3-384 as defined in FIPS PUP 202
-    SHA3-512     [12] Hex,    -- SHA3-512 as defined in FIPS PUP 202
-    ssdeep       [13] Hex,    -- ssdeep fuzzy hashing algorithm as defined in the SSDEEP specification
-    WHIRLPOOL    [14] Hex     -- whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004
+    MD5          [1] Hex,       -- MD5 message digest as defined in RFC3121
+    MD6          [2] Hex,       -- MD6 message digest as defined in MD6 proposal
+    RIPEMD-160   [3] Hex,       -- RACE Integrity Primitives Evaluation Message as defined in RIPEMD-160 specification
+    SHA-1        [4] Hex,       -- Secure Hash Algorithm (SHA)-1 as defined in RFC3174
+    SHA-224      [5] Hex,       -- SHA-224 as defined in RFC6234 (US Secure Hash Algorithms)
+    SHA-256      [6] Hex,       -- SHA-256 as defined in RFC6234
+    SHA-384      [7] Hex,       -- SHA-384 as defined in RFC6234
+    SHA-512      [8] Hex,       -- SHA-512 as defined in RFC6234
+    SHA3-224     [9] Hex,       -- SHA3-224 as defined in FIPS PUP 202
+    SHA3-256     [10] Hex,      -- SHA3-256 as defined in FIPS PUP 202
+    SHA3-384     [11] Hex,      -- SHA3-384 as defined in FIPS PUP 202
+    SHA3-512     [12] Hex,      -- SHA3-512 as defined in FIPS PUP 202
+    ssdeep       [13] Hex,      -- ssdeep fuzzy hashing algorithm as defined in the SSDEEP specification
+    WHIRLPOOL    [14] Hex       -- whirlpool cryptographic hash function as defined in ISO/IEC 10118-3:2004
 }
 
 payload ::= CHOICE {
@@ -48,6 +75,8 @@ autonomous-system ::= RECORD {
     name         STRING OPTIONAL,    -- Name of the AS
     rir          STRING OPTIONAL     -- Name of the Regional Internet Registry (RIR) that assigned the number to the AS.
 }
+
+commands ::= STRING                 -- no specifiers - replace string with null type?
 
 dirfile ::= CHOICE {
     d           [1] directory,

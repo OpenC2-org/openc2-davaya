@@ -18,7 +18,12 @@ jaen = {                # JAEN schema for datatypes used in Basic Types tests
         ["t_choice", "Choice", [], "", [
             [1, "type1", "String", [], ""],
             [4, "type2", "Boolean", [], ""],
-            [7, "type3", "Integer", [], ""]]
+            [7, "type3", "Integer", [], ""],
+            [9, "type4", "t_crec", [], ""]]
+         ],
+        ["t_crec", "Record", [], "", [
+            [1, "a", "Integer", [], ""],
+            [2, "b", "String", [], ""]]
          ],
         ["t_enum", "Enumerated", [], "", [
             [1, "first", ""],
@@ -141,11 +146,13 @@ class BasicTypes(unittest.TestCase):
     C1a = {"type1": "foo"}
     C2a = {"type2": False}
     C3a = {"type3": 42}
+    C4a = {"type4": {"a": 1, "b": "c"}}
     C1m = {1: "foo"}
     C2m = {4: False}
     C3m = {7: 42}
+    C4m = {9:[1,"c"]}
     C1_bad1a = {"type1": 15}
-    C1_bad2a = {"type4": "foo"}
+    C1_bad2a = {"type5": "foo"}
     C1_bad3a = {"type1": "foo", "type2": False}
     C1_bad1m = {1: 15}
     C1_bad2m = {3: "foo"}
@@ -155,9 +162,11 @@ class BasicTypes(unittest.TestCase):
         self.assertEqual(self.tc.decode("t_choice", self.C1m), self.C1a)
         self.assertEqual(self.tc.decode("t_choice", self.C2m), self.C2a)
         self.assertEqual(self.tc.decode("t_choice", self.C3m), self.C3a)
+        self.assertEqual(self.tc.decode("t_choice", self.C4m), self.C4a)
         self.assertEqual(self.tc.encode("t_choice", self.C1a), self.C1m)
         self.assertEqual(self.tc.encode("t_choice", self.C2a), self.C2m)
         self.assertEqual(self.tc.encode("t_choice", self.C3a), self.C3m)
+        self.assertEqual(self.tc.encode("t_choice", self.C4a), self.C4m)
         with self.assertRaises(TypeError):
             self.tc.decode("t_choice", self.C1_bad1m)
         with self.assertRaises(ValueError):
@@ -177,6 +186,11 @@ class BasicTypes(unittest.TestCase):
         self.assertEqual(self.tc.decode("t_choice", self.C1a), self.C1a)
         self.assertEqual(self.tc.decode("t_choice", self.C2a), self.C2a)
         self.assertEqual(self.tc.decode("t_choice", self.C3a), self.C3a)
+        self.assertEqual(self.tc.decode("t_choice", self.C4a), self.C4a)
+        self.assertEqual(self.tc.encode("t_choice", self.C1a), self.C1a)
+        self.assertEqual(self.tc.encode("t_choice", self.C2a), self.C2a)
+        self.assertEqual(self.tc.encode("t_choice", self.C3a), self.C3a)
+        self.assertEqual(self.tc.encode("t_choice", self.C4a), self.C4a)
         with self.assertRaises(TypeError):
             self.tc.decode("t_choice", self.C1_bad1a)
         with self.assertRaises(ValueError):

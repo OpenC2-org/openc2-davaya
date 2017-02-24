@@ -7,7 +7,7 @@ from codec.jaen import jaen_load, jaen_check
 class OpenC2(unittest.TestCase):
 
     def setUp(self):
-        jaen = jaen_load(os.path.join("convert", "data", "openc2.jaen"))
+        jaen = jaen_load(os.path.join("convert", "data", "openc2-only.jaen"))
         self.tc = Codec(jaen)
 
     def test_query(self):

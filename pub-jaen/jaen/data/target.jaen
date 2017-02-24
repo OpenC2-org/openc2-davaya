@@ -1,18 +1,45 @@
 {
  "meta": {
-  "description": "OpenC2 Cyber Observable datatypes based on objects defined in STIX v2 Part 4.",
-  "module": "cybox3",
-  "namespace": "http://openc2.org/observables",
-  "title": "Cyber Observable Expression v3 definitions",
+  "description": "OpenC2 target types, derived in part from CybOX 2.1 and Cyber Observables STIX v2 Part 4.",
+  "module": "target",
+  "namespace": "http://openc2.org/target",
+  "title": "OpenC2 Targets",
   "version": "0.1"
  },
 
  "types": [
+  ["Target", "Choice", [], "OpenC2 Target datatypes", [
+    [1, "artifact", "artifact", [], "SCO v2"],
+    [2, "commands", "commands", [], "OpenC2"],
+    [3, "device", "device", [], "CybOX 2.1"],
+    [4, "directory", "directory", [], "SCO v2"],
+    [5, "disk", "disk", [], "CybOX 2.1"],
+    [6, "disk-partition", "disk-partition", [], "CybOX 2.1"],
+    [7, "domain-name", "domain-name", [], "SCO v2"],
+    [8, "email-addr", "email-addr", [], "SCO v2"],
+    [9, "email-message", "email-message", [], "SCO v2"],
+    [10, "file", "file", [], "SCO v2"],
+    [11, "ipv4-addr", "ipv4-addr", [], "SCO v2"],
+    [12, "ipv6-addr", "ipv6-addr", [], "SCO v2"],
+    [13, "mac-addr", "mac-addr", [], "SCO v2"],
+    [14, "memory", "memory", [], "CybOX 2.1"],
+    [15, "network-traffic", "network-traffic", [], "SCO v2"],
+    [16, "openc2", "openc2", [], "OpenC2"],
+    [17, "process", "process", [], "SCO v2"],
+    [18, "software", "software", [], "SCO v2"],
+    [19, "url", "url", [], "SCO v2"],
+    [20, "user-account", "user-account", [], "SCO v2"],
+    [21, "user-session", "user-session", [], "CybOX 2.1"],
+    [22, "volume", "volume", [], "CybOX 2.1"],
+    [23, "windows-registry-key", "windows-registry-key", [], "SCO v2"],
+    [24, "x509-certificate", "x509-certificate", [], "SCO v2"]]
+  ],
+
   ["Base64", "String", [], "A sequence of octets encoded as a Base64 string"],
 
   ["Hex", "String", [], "A sequence of octets encoded as a hexadecimal string"],
 
-  ["Timestamp", "String", [], "A timestamp"],
+  ["Timestamp", "String", [], "RFC 3339 format date and time"],
 
   ["hashes-type", "Map", [], "", [
     [1, "MD5", "Hex", [], "MD5 message digest as defined in RFC3121"],

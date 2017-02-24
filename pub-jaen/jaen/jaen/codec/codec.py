@@ -189,7 +189,7 @@ def _encode_choice(ts, val, codec):
         _bad_value(ts, val)
     f = ts[S_FLD][ts[S_EMAP][k]][S_FDEF]
     fx = f[NAME] if ts[S_VSTR] else f[TAG]            # Verbose or Minified identifier strings
-    return {fx: codec.decode(f[FTYPE], val[k])}
+    return {fx: codec.encode(f[FTYPE], val[k])}
 
 
 def _decode_enumerated(ts, val, codec):
