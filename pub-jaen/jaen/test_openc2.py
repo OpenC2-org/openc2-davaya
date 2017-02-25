@@ -62,10 +62,21 @@ class OpenC2(unittest.TestCase):
         }
 
         cmd2_min3 = [1,{"7":["www.example.com",[{"1":["198.51.100.2"]},{"3":["ms34.example.com"]}]]}]
+        cmd2_min3 = [1,{7:["www.example.com",[{1:["198.51.100.2"]},{3:["ms34.example.com"]}]]}]
 
-        t_api3 = self.tc.decode("OpenC2Command", cmd2_min3)
-        self.assertEqual(self.tc.decode("OpenC2Command", cmd2_min3), cmd2_api3)
+        t_api3m = self.tc.encode("OpenC2Command", cmd2_api3)
+        self.tc.set_mode(True, True)        # Verbose (dict/name)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd2_api3), cmd2_api3)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd2_api3), cmd2_api3)
+#        self.tc.set_mode(False, True)        # Concise (list/name)
+#        self.assertEqual(self.tc.decode("OpenC2Command", cmd2_min3), cmd2_api3)
+#        self.assertEqual(self.tc.encode("OpenC2Command", cmd2_api3), cmd2_min3)
+#        self.tc.set_mode(True, False)        # unused (dict/tag)
+#        self.assertEqual(self.tc.decode("OpenC2Command", cmd2_min3), cmd2_api3)
+#        self.assertEqual(self.tc.encode("OpenC2Command", cmd2_api3), cmd2_min3)
+        self.tc.set_mode(False, False)        # Minified (list/tag)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd2_api3), cmd2_min3)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd2_min3), cmd2_api3)
 
         cmd1_api = {"action": "query", "target": {"commands":{}}}
         cmd1_flat = {"action": "query", "target.commands":{}}

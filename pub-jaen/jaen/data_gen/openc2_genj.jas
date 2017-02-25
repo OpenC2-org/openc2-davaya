@@ -1,4 +1,4 @@
--- Generated from data\openc2.jaen, Fri Feb 24 14:29:42 2017
+-- Generated from data\openc2.jaen, Sat Feb 25 10:40:32 2017
 
 /*
 module:        openc2
@@ -359,7 +359,7 @@ dnvalues ::= ARRAY_OF {    -- List if IP addresses or domain names
 
 domain-name ::= RECORD {
     value        STRING,    -- Value of the domain name
-    resolves-to  dnvalues     -- List of IP addresses or domain names
+    resolves_to  dnvalues OPTIONAL     -- List of IP addresses or domain names
 }
 
 email-addr ::= RECORD {

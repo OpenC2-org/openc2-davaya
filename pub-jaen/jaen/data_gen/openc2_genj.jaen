@@ -1,4 +1,4 @@
-"Generated from data\openc2.jaen, Fri Feb 24 14:29:42 2017"
+"Generated from data\openc2.jaen, Sat Feb 25 10:40:32 2017"
 
 {
  "meta": {
@@ -105,7 +105,7 @@
 
   ["Actuator", "Record", [], "", [
     [1, "type", "ActuatorType", [], ""],
-    [2, "specifiers", "ActuatorObject", ["{type", "?"], ""]]
+    [2, "specifiers", "ActuatorObject", ["?", "{type"], ""]]
   ],
 
   ["ActuatorType", "Enumerated", [], "", [
@@ -360,7 +360,7 @@
 
   ["domain-name", "Record", [], "", [
     [1, "value", "String", [], "Value of the domain name"],
-    [2, "resolves-to", "dnvalues", [], "List of IP addresses or domain names"]]
+    [2, "resolves_to", "dnvalues", ["?"], "List of IP addresses or domain names"]]
   ],
 
   ["email-addr", "Record", [], "", [
