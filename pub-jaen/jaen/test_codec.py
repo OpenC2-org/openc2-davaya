@@ -4,7 +4,7 @@ import unittest
 from jaen.codec.codec import Codec
 from jaen.codec.jaen import jaen_check
 
-jaen = {                # JAEN schema for datatypes used in Basic Types tests
+jaen_basic = {                # JAEN schema for datatypes used in Basic Types tests
     "meta": {"module": "unittests-BasicTypes"},
     "types": [
         ["t_bool", "Boolean", [], ""],
@@ -44,12 +44,11 @@ jaen = {                # JAEN schema for datatypes used in Basic Types tests
          ]
     ]}
 
-
 class BasicTypes(unittest.TestCase):
 
     def setUp(self):
-        jaen_check(jaen)
-        self.tc = Codec(jaen)
+        jaen_check(jaen_basic)
+        self.tc = Codec(jaen_basic)
 
     def test_primitive(self):   # Non-composed types (bool, int, num, str)
         self.assertEqual(self.tc.decode("t_bool", True), True)
@@ -183,7 +182,6 @@ class BasicTypes(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.tc.encode("t_choice", self.C1_bad3a)
 
-
     def test_choice_verbose(self):
         self.tc.set_mode(True, True)
         self.assertEqual(self.tc.decode("t_choice", self.C1a), self.C1a)
@@ -206,7 +204,6 @@ class BasicTypes(unittest.TestCase):
             self.tc.encode("t_choice", self.C1_bad2a)
         with self.assertRaises(ValueError):
             self.tc.encode("t_choice", self.C1_bad3a)
-
 
     def test_enumerated_min(self):
         self.assertEqual(self.tc.decode("t_enum", 15), "extra")
@@ -544,6 +541,51 @@ class BasicTypes(unittest.TestCase):
             self.tc.encode("t_map", self.RGB_bad6a)
         with self.assertRaises(ValueError):
             self.tc.encode("t_map", self.RGB_bad7a)
+
+
+jaen_selectors = {                # JAEN schema for selector tests
+    "meta": {"module": "unittests-Selectors"},
+    "types": [
+        ["t_explicit", "Record", [], "", [
+            [2, "type", "String", [], ""],
+            [4, "value", "t_choice", [], ""]]
+         ],
+        ["t_wildcard", "Record", [], "", [
+            [3, "type", "String", [], ""],
+            [5, "*", "t_choice", [], ""]]
+        ],
+        ["t_attribute_string", "Record", [], "", [
+            [4, "type", "String", [], ""],
+            [6, "value", "t_choice", [], ""]]
+         ],
+        ["t_attribute_vocab", "Record", [], "", [
+            [4, "type", "t_avm", [], ""],
+            [6, "value", "t_choice", [], ""]]
+         ],
+        ["t_choice", "Choice", [], "", [
+            [1, "name", "String", [], ""],
+            [4, "flag", "Boolean", [], ""],
+            [7, "count", "Integer", [], ""]]
+        ],
+        ["t_map", "Choice", [], "", [
+            [2, "mname", "String", [], ""],
+            [5, "mflag", "Boolean", [], ""],
+            [8, "mcount", "Integer", [], ""]]
+        ],
+        ["t_avm", "Enumerated", [], "", [
+            [2, "animal", ""],
+            [3, "vegetable", ""],
+            [4, "mineral", ""]]
+         ],
+    ]}
+
+
+class Selectors(unittest.TestCase):
+
+    def setUp(self):
+        jaen_check(jaen_selectors)
+        self.tc = Codec(jaen_selectors)
+
 
 if __name__ == "__main__":
     unittest.main()
