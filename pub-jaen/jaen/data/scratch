@@ -1,0 +1,129 @@
+##### test-openc2:
+        '''
+        # Alternate Target Data Model Schemas
+        cmd_api2 = {           # Literal STIX Object
+            "action": "scan",
+            "target": {
+                "0": {
+                    "type": "domain-name",
+                    "value": "www.example.com",
+                    "resolves_to_refs": ["1", "2"]
+                },
+                "1": {
+                    "type": "ipv4-addr",
+                    "value": "198.51.100.2"
+                },
+                "2": {
+                    "type": "domain-name",
+                    "value": "ms34.example.com"
+                }
+            }
+        }
+
+        cmd_api3 = {           # Type-Specifiers
+            "action": "scan",
+            "target": {
+                "type": "domain-name",
+                "specifiers": {
+                    "value": "www.example.com",
+                    "resolves_to": [{
+                        "type": "ipv4-addr",
+                        "value": "198.51.100.2"
+                    },{
+                        "type": "domain-name",
+                        "value": "ms34.example.com"
+                    }]
+                }
+            }
+        }
+        '''
+
+        """
+        # Legacy schema:
+        Actuator ::= RECORD {
+            type         ActuatorType,
+            specifiers   ActuatorObject.&type OPTIONAL
+        }
+        "actuator": {
+            "type": "network-firewall",
+            "specifiers": {
+                "asset_id": "30"}}
+        """
+
+##### openc2.jas:
+
+TCPStateEnum ::= ENUMERATED {
+    UNKNOWN         (0),    -- an unknown TCP connection state
+    CLOSED          (1),    -- closed TCP connection state -- i.e., no connection state
+    LISTENING       (2),    -- listening TCP connection state
+    SYN_SENT        (3),    -- wait for a matching connection request after having sent a connection request
+    SYN_RECEIVED    (4),    -- waiting for a confirming connection request acknowledgement after having received and sent a connection request
+    ESTABLISHED     (5),    -- an open connection in which data received can be delivered to the user
+    FIN_WAIT_1      (6),    -- waiting for a connection termination request from the remote TCP, or an acknowledgement of the termination request previously sent
+    FIN_WAIT_2      (7),    -- waiting for a termination request from the remote TCP
+    CLOSE_WAIT      (8),    -- waiting for a termination request from the local user
+    CLOSING         (9),    -- waiting for a termination request acknowlegement from the remote TCP
+    LAST_ACK        (10),   -- waiting for an acknowledgement of the termination request previously sent (which includes acknowledegement of its termination request)
+    TIME_WAIT       (11),   -- waiting for enough time to pass to be sure the remote TCP received acknowledgement of its termination request
+    DELETING_TCB    (12)    -- the Transmission Control Block (TCB) is being deleted
+}
+
+autonomous-system ::= RECORD {
+    type         STRING,             -- MUST be "autonomous-system"
+    number       INTEGER,            -- Number assigned to the AS
+    name         STRING OPTIONAL,    -- Name of the AS
+    rir          STRING OPTIONAL     -- Name of the Regional Internet Registry (RIR) that assigned the number to the AS.
+}
+
+Actuator ::= RECORD {
+    type         ActuatorType,
+    specifiers   ActuatorObject.&type OPTIONAL
+}
+
+ActuatorType ::= ENUMERATED {
+    endpoint                         (1),
+    endpoint-digital-telephone-handset (2),
+    endpoint-laptop                  (3),
+    endpoint-pos-terminal            (4),
+    endpoint-printer                 (5),
+    endpoint-sensor                  (6),
+    endpoint-server                  (7),
+    endpoint-smart-meter             (8),
+    endpoint-smart-phone             (9),
+    endpoint-tablet                  (10),
+    endpoint-workstation             (11),
+    network                          (12),
+    network-bridge                   (13),
+    network-firewall                 (14),
+    network-gateway                  (15),
+    network-guard                    (16),
+    network-hips                     (17),
+    network-hub                      (18),
+    network-ids                      (19),
+    network-ips                      (20),
+    network-modem                    (21),
+    network-nic                      (22),
+    network-proxy                    (23),
+    network-router                   (24),
+    network-security-manager         (25),
+    network-sense-making             (26),
+    network-sensor                   (27),
+    network-switch                   (28),
+    network-vpn                      (29),
+    network-wap                      (30),
+    process                          (31),
+    process-aaa-server               (32),
+    process-anti-virus-scanner       (33),
+    process-connection-scanner       (34),
+    process-directory-server         (35),
+    process-dns-server               (36),
+    process-email-service            (37),
+    process-file-scanner             (38),
+    process-location-service         (39),
+    process-network-scanner          (40),
+    process-remediation-service      (41),
+    process-reputation-service       (42),
+    process-sandbox                  (43),
+    process-virtualization-service   (44),
+    process-vulnerability-scanner    (45)
+}
