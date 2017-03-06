@@ -1,4 +1,4 @@
--- Generated from data\openc2.jaen, Fri Mar  3 13:47:00 2017
+-- Generated from data\openc2.jaen, Mon Mar  6 16:41:56 2017
 
 /*
 module:        openc2
@@ -29,8 +29,8 @@ OpenC2Command ::= RECORD {
 }
 
 OpenC2Response ::= RECORD {
-    source       DeviceID,    -- Device Identifier of the command issuer
-    cmdref       CommandID,    -- Command unique identifier, from "id" modifier
+    source       DeviceID,    -- ID of the command issuer, from "command-src" modifier
+    cmdref       CommandID,    -- Command unique identifier, from "command-ref" modifier
     status       StatusCode,    -- Adapted from HTTP Status Codes, RFC 7231
     statusText   STRING,    -- Status description
     results      STRING     -- Results of executing the command
@@ -41,40 +41,39 @@ OpenC2Alert ::= RECORD {
 }
 
 Action ::= ENUMERATED {
-    scan         (1),    -- locate       (2),
+    scan         (1),
+    locate       (2),
     query        (3),
     report       (4),
-    get          (5),
-    notify       (6),
-    deny         (7),
-    contain      (8),
-    allow        (9),
-    start        (10),
-    stop         (11),
-    restart      (12),
-    pause        (13),
-    resume       (14),
-    cancel       (15),
-    set          (16),
-    update       (17),
-    move         (18),
-    redirect     (19),
-    delete       (20),
-    snapshot     (21),
-    detonate     (22),
-    restore      (23),
-    save         (24),
-    modify       (25),
-    throttle     (26),
-    delay        (27),
-    substitute   (28),
-    copy         (29),
-    sync         (30),
-    distill      (31),
-    augment      (32),
-    investigate  (33),
-    mitigate     (34),
-    remediate    (35)
+    notify       (5),
+    deny         (6),
+    contain      (7),
+    allow        (8),
+    start        (9),
+    stop         (10),
+    restart      (11),
+    pause        (12),
+    resume       (13),
+    cancel       (14),
+    set          (15),
+    update       (16),
+    move         (17),
+    redirect     (18),
+    delete       (19),
+    snapshot     (20),
+    detonate     (21),
+    restore      (22),
+    save         (23),
+    throttle     (24),
+    delay        (25),
+    substitute   (26),
+    copy         (27),
+    sync         (28),
+    distill      (29),
+    augment      (30),
+    investigate  (31),
+    mitigate     (32),
+    remediate    (33)
 }
 
 Target ::= CHOICE {    -- OpenC2 Target datatypes
@@ -83,72 +82,72 @@ Target ::= CHOICE {    -- OpenC2 Target datatypes
     device                [3] device,    -- CybOX 2.1
     directory             [4] directory,    -- SCO v2
     disk                  [5] disk,    -- CybOX 2.1
-    disk-partition        [6] disk-partition,    -- CybOX 2.1
-    domain-name           [7] domain-name,    -- SCO v2
-    email-addr            [8] email-addr,    -- SCO v2
-    email-message         [9] email-message,    -- SCO v2
+    disk_partition        [6] disk-partition,    -- CybOX 2.1
+    domain_name           [7] domain-name,    -- SCO v2
+    email_addr            [8] email-addr,    -- SCO v2
+    email_message         [9] email-message,    -- SCO v2
     file                  [10] file,    -- SCO v2
-    ipv4-addr             [11] ipv4-addr,    -- SCO v2
-    ipv6-addr             [12] ipv6-addr,    -- SCO v2
-    mac-addr              [13] mac-addr,    -- SCO v2
+    ipv4_addr             [11] ipv4-addr,    -- SCO v2
+    ipv6_addr             [12] ipv6-addr,    -- SCO v2
+    mac_addr              [13] mac-addr,    -- SCO v2
     memory                [14] memory,    -- CybOX 2.1
-    ip-connection         [15] ip-connection,    -- OpenC2
+    ip_connection         [15] ip-connection,    -- OpenC2
     process               [16] process,    -- SCO v2
     software              [17] software,    -- SCO v2
     url                   [18] url,    -- SCO v2
-    user-account          [19] user-account,    -- SCO v2
-    user-session          [20] user-session,    -- CybOX 2.1
+    user_account          [19] user-account,    -- SCO v2
+    user_session          [20] user-session,    -- CybOX 2.1
     volume                [21] volume,    -- CybOX 2.1
-    windows-registry-key  [22] windows-registry-key,    -- SCO v2
-    x509-certificate      [23] x509-certificate     -- SCO v2
+    windows_registry_key  [22] windows-registry-key,    -- SCO v2
+    x509_certificate      [23] x509-certificate     -- SCO v2
 }
 
-Actuator ::= MAP {
+Actuator ::= CHOICE {
     endpoint                         [1] ActuatorSpecifiers,
-    endpoint-digital-telephone-handset [2] ActuatorSpecifiers,
-    endpoint-laptop                  [3] ActuatorSpecifiers,
-    endpoint-pos-terminal            [4] ActuatorSpecifiers,
-    endpoint-printer                 [5] ActuatorSpecifiers,
-    endpoint-sensor                  [6] ActuatorSpecifiers,
-    endpoint-server                  [7] ActuatorSpecifiers,
-    endpoint-smart-meter             [8] ActuatorSpecifiers,
-    endpoint-smart-phone             [9] ActuatorSpecifiers,
-    endpoint-tablet                  [10] ActuatorSpecifiers,
-    endpoint-workstation             [11] ActuatorSpecifiers,
+    endpoint_digital_telephone_handset [2] ActuatorSpecifiers,
+    endpoint_laptop                  [3] ActuatorSpecifiers,
+    endpoint_pos_terminal            [4] ActuatorSpecifiers,
+    endpoint_printer                 [5] ActuatorSpecifiers,
+    endpoint_sensor                  [6] ActuatorSpecifiers,
+    endpoint_server                  [7] ActuatorSpecifiers,
+    endpoint_smart_meter             [8] ActuatorSpecifiers,
+    endpoint_smart_phone             [9] ActuatorSpecifiers,
+    endpoint_tablet                  [10] ActuatorSpecifiers,
+    endpoint_workstation             [11] ActuatorSpecifiers,
     network                          [12] ActuatorSpecifiers,
-    network-bridge                   [13] ActuatorSpecifiers,
-    network-firewall                 [14] ActuatorSpecifiers,
-    network-gateway                  [15] ActuatorSpecifiers,
-    network-guard                    [16] ActuatorSpecifiers,
-    network-hips                     [17] ActuatorSpecifiers,
-    network-hub                      [18] ActuatorSpecifiers,
-    network-ids                      [19] ActuatorSpecifiers,
-    network-ips                      [20] ActuatorSpecifiers,
-    network-modem                    [21] ActuatorSpecifiers,
-    network-nic                      [22] ActuatorSpecifiers,
-    network-proxy                    [23] ActuatorSpecifiers,
-    network-router                   [24] ActuatorSpecifiers,
-    network-security-manager         [25] ActuatorSpecifiers,
-    network-sense-making             [26] ActuatorSpecifiers,
-    network-sensor                   [27] ActuatorSpecifiers,
-    network-switch                   [28] ActuatorSpecifiers,
-    network-vpn                      [29] ActuatorSpecifiers,
-    network-wap                      [30] ActuatorSpecifiers,
+    network_bridge                   [13] ActuatorSpecifiers,
+    network_firewall                 [14] ActuatorSpecifiers,
+    network_gateway                  [15] ActuatorSpecifiers,
+    network_guard                    [16] ActuatorSpecifiers,
+    network_hips                     [17] ActuatorSpecifiers,
+    network_hub                      [18] ActuatorSpecifiers,
+    network_ids                      [19] ActuatorSpecifiers,
+    network_ips                      [20] ActuatorSpecifiers,
+    network_modem                    [21] ActuatorSpecifiers,
+    network_nic                      [22] ActuatorSpecifiers,
+    network_proxy                    [23] ActuatorSpecifiers,
+    network_router                   [24] ActuatorSpecifiers,
+    network_security_manager         [25] ActuatorSpecifiers,
+    network_sense_making             [26] ActuatorSpecifiers,
+    network_sensor                   [27] ActuatorSpecifiers,
+    network_switch                   [28] ActuatorSpecifiers,
+    network_vpn                      [29] ActuatorSpecifiers,
+    network_wap                      [30] ActuatorSpecifiers,
     process                          [31] ActuatorSpecifiers,
-    process-aaa-server               [32] ActuatorSpecifiers,
-    process-anti-virus-scanner       [33] ActuatorSpecifiers,
-    process-connection-scanner       [34] ActuatorSpecifiers,
-    process-directory-server         [35] ActuatorSpecifiers,
-    process-dns-server               [36] ActuatorSpecifiers,
-    process-email-service            [37] ActuatorSpecifiers,
-    process-file-scanner             [38] ActuatorSpecifiers,
-    process-location-service         [39] ActuatorSpecifiers,
-    process-network-scanner          [40] ActuatorSpecifiers,
-    process-remediation-service      [41] ActuatorSpecifiers,
-    process-reputation-service       [42] ActuatorSpecifiers,
-    process-sandbox                  [43] ActuatorSpecifiers,
-    process-virtualization-service   [44] ActuatorSpecifiers,
-    process-vulnerability-scanner    [45] ActuatorSpecifiers
+    process_aaa_server               [32] ActuatorSpecifiers,
+    process_anti_virus_scanner       [33] ActuatorSpecifiers,
+    process_connection_scanner       [34] ActuatorSpecifiers,
+    process_directory_server         [35] ActuatorSpecifiers,
+    process_dns_server               [36] ActuatorSpecifiers,
+    process_email_service            [37] ActuatorSpecifiers,
+    process_file_scanner             [38] ActuatorSpecifiers,
+    process_location_service         [39] ActuatorSpecifiers,
+    process_network_scanner          [40] ActuatorSpecifiers,
+    process_remediation_service      [41] ActuatorSpecifiers,
+    process_reputation_service       [42] ActuatorSpecifiers,
+    process_sandbox                  [43] ActuatorSpecifiers,
+    process_virtualization_service   [44] ActuatorSpecifiers,
+    process_vulnerability_scanner    [45] ActuatorSpecifiers
 }
 
 ActuatorSpecifiers ::= RECORD {
@@ -157,15 +156,18 @@ ActuatorSpecifiers ::= RECORD {
 }
 
 Modifiers ::= MAP {
-    delay        [1] Duration OPTIONAL,
-    duration     [2] Duration OPTIONAL,
-    frequency    [3] Duration OPTIONAL,
-    datetime     [4] DateTime OPTIONAL,
-    response     [5] ResponseValue OPTIONAL,
-    method       [6] MethodValue OPTIONAL,
-    where        [7] WhereValue OPTIONAL,
-    context_ref  [8] INTEGER OPTIONAL,
-    id           [9] CommandID OPTIONAL
+    context      [1] STRING OPTIONAL,
+    datetime     [2] DateTime OPTIONAL,
+    delay        [3] Duration OPTIONAL,
+    duration     [4] Duration OPTIONAL,
+    frequency    [5] Duration OPTIONAL,
+    command_ref  [6] CommandID OPTIONAL,
+    response     [7] ResponseValue OPTIONAL,
+    method       [8] MethodValue OPTIONAL,
+    options      [9] STRING OPTIONAL,
+    search       [10] SearchValue OPTIONAL,
+    where        [11] WhereValue OPTIONAL,
+    command_src  [12] DeviceID OPTIONAL
 }
 
 Duration ::= STRING(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")
@@ -216,6 +218,13 @@ StopMethod ::= ENUMERATED {
 WhereValue ::= ENUMERATED {
     internal     (1),
     perimeter    (2)
+}
+
+SearchValue ::= ENUMERATED {
+    cve              (1),
+    patch            (2),
+    vendor-bulletin  (3),
+    signature        (4)
 }
 
 DeviceID ::= STRING    -- Device Identifier of the command issuer
@@ -273,23 +282,22 @@ commands ::= ENUMERATED {    -- Target used to query Actuator for its supported 
 }
 
 device ::= MAP {
-    Description       [1] STRING OPTIONAL,
-    Device_Type       [2] STRING OPTIONAL,
-    Manufacturer      [3] STRING OPTIONAL,
-    Model             [4] STRING OPTIONAL,
-    Serial_Number     [5] STRING OPTIONAL,
-    Firmware_Version  [6] STRING OPTIONAL,
-    System_Details    [7] STRING OPTIONAL
+    description       [1] STRING OPTIONAL,
+    device_type       [2] STRING OPTIONAL,
+    manufacturer      [3] STRING OPTIONAL,
+    model             [4] STRING OPTIONAL,
+    serial_number     [5] STRING OPTIONAL,
+    firmware_version  [6] STRING OPTIONAL,
+    system_details    [7] STRING OPTIONAL
 }
 
 directory ::= MAP {
-    type         [1] STRING,    -- MUST be "directory"
-    path         [2] STRING,    -- Path, as originally observed, to the directory on the filesystem
-    path_enc     [3] STRING OPTIONAL,    -- Observed encoding for the path, from the IANA Character Set Registry
-    created      [4] Timestamp OPTIONAL,    -- Date/time the directory was created
-    modified     [5] Timestamp OPTIONAL,    -- Date/time the directory was last written-to/modified
-    accessed     [6] Timestamp OPTIONAL,    -- Date/time the directory was last accessed
-    contains     [7] dir-contents OPTIONAL     -- List of files/directories contained within the directory
+    path         [1] STRING,    -- Path, as originally observed, to the directory on the filesystem
+    path_enc     [2] STRING OPTIONAL,    -- Observed encoding for the path, from the IANA Character Set Registry
+    created      [3] Timestamp OPTIONAL,    -- Date/time the directory was created
+    modified     [4] Timestamp OPTIONAL,    -- Date/time the directory was last written-to/modified
+    accessed     [5] Timestamp OPTIONAL,    -- Date/time the directory was last accessed
+    contains     [6] dir-contents OPTIONAL     -- List of files/directories contained within the directory
 }
 
 dir-contents ::= ARRAY_OF {
@@ -323,11 +331,9 @@ email-addr ::= RECORD {
 }
 
 email-message ::= RECORD {    -- TODO: finish
-    type         STRING     -- MUST be "email-message"
 }
 
 file ::= RECORD {    -- TODO: finish
-    type         STRING     -- MUST be "file"
 }
 
 ipv4-addr ::= RECORD {
@@ -359,12 +365,12 @@ mutex ::= RECORD {
 }
 
 ip-connection ::= RECORD {    -- 5-tuple that specifies a tcp/ip connection
-    src-addr         socket-addr OPTIONAL,    -- source address
-    src-port         port OPTIONAL,    -- source TCP/UDP port number
-    dst-addr         socket-addr OPTIONAL,    -- destination address
-    dst-port         port OPTIONAL,    -- destination TCP/UDP port number
-    layer3-protocol  layer3-protocol OPTIONAL,    -- IEEE 802 Ether Type
-    layer4-protocol  layer4-protocol OPTIONAL     -- Protocol (IPv4) / Next Header (IPv6)
+    src_addr         socket-addr OPTIONAL,    -- source address
+    src_port         port OPTIONAL,    -- source TCP/UDP port number
+    dst_addr         socket-addr OPTIONAL,    -- destination address
+    dst_port         port OPTIONAL,    -- destination TCP/UDP port number
+    layer3_protocol  layer3-protocol OPTIONAL,    -- IEEE 802 Ether Type
+    layer4_protocol  layer4-protocol OPTIONAL     -- Protocol (IPv4) / Next Header (IPv6)
 }
 
 layer3-protocol ::= ENUMERATED {    -- IEEE 802 Ether Types - any IANA value, RFC 7042
@@ -407,25 +413,19 @@ layer7-protocol ::= ENUMERATED {    -- Service Name and Transport Protocol Port 
 }
 
 process ::= RECORD {
-    type         STRING     -- MUST be "process"
 }
 
 software ::= RECORD {
-    type         STRING     -- MUST be "software"
 }
 
 url ::= RECORD {
-    type         STRING     -- MUST be "url"
 }
 
 user-account ::= RECORD {
-    type         STRING     -- MUST be "user-account"
 }
 
 windows-registry-key ::= RECORD {
-    type         STRING     -- MUST be "windows-registry-key"
 }
 
 x509-certificate ::= RECORD {
-    type         STRING     -- MUST be "x509-certificate"
 }

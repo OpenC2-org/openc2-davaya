@@ -16,10 +16,10 @@ class OpenC2(unittest.TestCase):
         cmd_api = {
             "action": "mitigate",
             "target": {
-                "domain-name": {"value": "cdn.badco.org"}}}
-        cmd_noname = {'1': 34, '2': {'7': {'1': 'cdn.badco.org'}}}
-        cmd_concise = ["mitigate",{"domain-name": ["cdn.badco.org"]}]
-        cmd_min = [34, {'7': ['cdn.badco.org']}]
+                "domain_name": {"value": "cdn.badco.org"}}}
+        cmd_noname = {'1': 32, '2': {'7': {'1': 'cdn.badco.org'}}}
+        cmd_concise = ["mitigate",{"domain_name": ["cdn.badco.org"]}]
+        cmd_min = [32, {'7': ['cdn.badco.org']}]
 
                                             # Minified (list/tag)
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_min)
@@ -38,29 +38,29 @@ class OpenC2(unittest.TestCase):
         cmd_api = {
             "action": "deny",
             "target": {
-                "ip-connection": {
-                    "src-addr": {
+                "ip_connection": {
+                    "src_addr": {
                         "dns": {"value": "www.badco.com"}
                     },
-                    "src-port": {
+                    "src_port": {
                         "protocol": "https"
                     },
-                    "dst-addr": {
+                    "dst_addr": {
                         "v4": {"value": "192.168.1.1"}
                     },
-                    "layer4-protocol": "TCP"
+                    "layer4_protocol": "TCP"
                 }
             },
             "actuator": {
-                "network-firewall": {"asset_id": "30"}},
+                "network_firewall": {"asset_id": "30"}},
             "modifiers": {
-                "id": "pf17_8675309",
-                "context_ref": 91,
+                "command_ref": "pf17_8675309",
+                "context": "91",
                 "datetime": "2016-11-25T08:10:31-04:00",
                 "duration": "PT2M30S"}}
 
         cmd_noname = {
-            "1": 7,
+            "1": 6,
             "2": {"15": {
                 "1": {"4": {"1": "www.badco.com"}},
                 "2": {"2": 443},
@@ -68,27 +68,27 @@ class OpenC2(unittest.TestCase):
                 "6": 6}},
             "3": {"14": {"2": "30"}},
             "4": {
-                "2": "PT2M30S",
-                "4": "2016-11-25T08:10:31-04:00",
-                "8": 91,
-                "9": "pf17_8675309"}}
+                "1": "91",
+                "2": "2016-11-25T08:10:31-04:00",
+                "4": "PT2M30S",
+                "6": "pf17_8675309"}}
 
         cmd_concise = [
             "deny",
-            {"ip-connection": [
+            {"ip_connection": [
                 {"dns": ["www.badco.com"]},
                 {"protocol": "https"},
                 {"v4": ["192.168.1.1"]},
                 None,
                 None,
                 "TCP"]},
-            {"network-firewall": [None, "30"]},
-            {"context_ref": 91,
+            {"network_firewall": [None, "30"]},
+            {"context": "91",
             "datetime": "2016-11-25T08:10:31-04:00",
             "duration": "PT2M30S",
-            "id": "pf17_8675309"}]
+            "command_ref": "pf17_8675309"}]
 
-        cmd_min = [7,
+        cmd_min = [6,
             {"15": [
                 {"4": ["www.badco.com"]},
                 {"2": 443},
@@ -97,10 +97,10 @@ class OpenC2(unittest.TestCase):
                 None,
                 6]},
             {"14": [None, "30"]},
-            {"2": "PT2M30S",
-            "4": "2016-11-25T08:10:31-04:00",
-            "8": 91,
-            "9": "pf17_8675309"}]
+            {"1": "91",
+             "2": "2016-11-25T08:10:31-04:00",
+             "4": "PT2M30S",
+             "6": "pf17_8675309"}]
 
         """
         # Legacy schema:
@@ -188,7 +188,7 @@ class OpenC2(unittest.TestCase):
         cmd_api = {           # API / Verbose (dict/name)
             "action": "scan",
             "target": {
-                "domain-name": {
+                "domain_name": {
                     "value": "www.example.com",
                     "resolves_to": [
                         {"v4": {"value": "198.51.100.2"}},
@@ -204,7 +204,7 @@ class OpenC2(unittest.TestCase):
         cmd_concise = [        # Concise (list/name)
             "scan",
             {
-                "domain-name": [
+                "domain_name": [
                     "www.example.com",
                     [
                         {"v4": ["198.51.100.2"]},
@@ -230,7 +230,7 @@ class OpenC2(unittest.TestCase):
         cmd2_api = {            # API / Verbose (dict/name)
             "action": "scan",
             "target": {
-                "domain-name": {
+                "domain_name": {
                     "value": "www.example.com",
                     "resolves_to": [
                         {"v4": {"value": "198.51.100.2"}},
@@ -238,8 +238,8 @@ class OpenC2(unittest.TestCase):
 
         cmd2_flat = {           # Flattened
             "action": "scan",
-            "target.domain-name.value": "www.example.com",
-            "target.domain-name.resolves_to": [     # TODO: develop array notation for flattened values
+            "target.domain_name.value": "www.example.com",
+            "target.domain_name.resolves_to": [     # TODO: develop array notation for flattened values
                 {"v4.value": "198.51.100.2"},
                 {"name.value": "ms34.example.com"}]}
 

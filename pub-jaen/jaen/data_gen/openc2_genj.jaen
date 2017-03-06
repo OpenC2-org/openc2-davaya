@@ -1,4 +1,4 @@
-"Generated from data\openc2.jaen, Fri Mar  3 13:47:00 2017"
+"Generated from data\openc2.jaen, Mon Mar  6 16:41:56 2017"
 
 {
  "meta": {
@@ -28,8 +28,8 @@
   ],
 
   ["OpenC2Response", "Record", [], "", [
-    [1, "source", "DeviceID", [], "Device Identifier of the command issuer"],
-    [2, "cmdref", "CommandID", [], "Command unique identifier, from \"id\" modifier"],
+    [1, "source", "DeviceID", [], "ID of the command issuer, from \"command-src\" modifier"],
+    [2, "cmdref", "CommandID", [], "Command unique identifier, from \"command-ref\" modifier"],
     [3, "status", "StatusCode", [], "Adapted from HTTP Status Codes, RFC 7231"],
     [4, "statusText", "String", [], "Status description"],
     [5, "results", "String", [], "Results of executing the command"]]
@@ -40,40 +40,39 @@
   ],
 
   ["Action", "Enumerated", [], "", [
-    [1, "scan", "locate       (2),"],
+    [1, "scan", ""],
+    [2, "locate", ""],
     [3, "query", ""],
     [4, "report", ""],
-    [5, "get", ""],
-    [6, "notify", ""],
-    [7, "deny", ""],
-    [8, "contain", ""],
-    [9, "allow", ""],
-    [10, "start", ""],
-    [11, "stop", ""],
-    [12, "restart", ""],
-    [13, "pause", ""],
-    [14, "resume", ""],
-    [15, "cancel", ""],
-    [16, "set", ""],
-    [17, "update", ""],
-    [18, "move", ""],
-    [19, "redirect", ""],
-    [20, "delete", ""],
-    [21, "snapshot", ""],
-    [22, "detonate", ""],
-    [23, "restore", ""],
-    [24, "save", ""],
-    [25, "modify", ""],
-    [26, "throttle", ""],
-    [27, "delay", ""],
-    [28, "substitute", ""],
-    [29, "copy", ""],
-    [30, "sync", ""],
-    [31, "distill", ""],
-    [32, "augment", ""],
-    [33, "investigate", ""],
-    [34, "mitigate", ""],
-    [35, "remediate", ""]]
+    [5, "notify", ""],
+    [6, "deny", ""],
+    [7, "contain", ""],
+    [8, "allow", ""],
+    [9, "start", ""],
+    [10, "stop", ""],
+    [11, "restart", ""],
+    [12, "pause", ""],
+    [13, "resume", ""],
+    [14, "cancel", ""],
+    [15, "set", ""],
+    [16, "update", ""],
+    [17, "move", ""],
+    [18, "redirect", ""],
+    [19, "delete", ""],
+    [20, "snapshot", ""],
+    [21, "detonate", ""],
+    [22, "restore", ""],
+    [23, "save", ""],
+    [24, "throttle", ""],
+    [25, "delay", ""],
+    [26, "substitute", ""],
+    [27, "copy", ""],
+    [28, "sync", ""],
+    [29, "distill", ""],
+    [30, "augment", ""],
+    [31, "investigate", ""],
+    [32, "mitigate", ""],
+    [33, "remediate", ""]]
   ],
 
   ["Target", "Choice", [], "OpenC2 Target datatypes", [
@@ -82,72 +81,72 @@
     [3, "device", "device", [], "CybOX 2.1"],
     [4, "directory", "directory", [], "SCO v2"],
     [5, "disk", "disk", [], "CybOX 2.1"],
-    [6, "disk-partition", "disk-partition", [], "CybOX 2.1"],
-    [7, "domain-name", "domain-name", [], "SCO v2"],
-    [8, "email-addr", "email-addr", [], "SCO v2"],
-    [9, "email-message", "email-message", [], "SCO v2"],
+    [6, "disk_partition", "disk-partition", [], "CybOX 2.1"],
+    [7, "domain_name", "domain-name", [], "SCO v2"],
+    [8, "email_addr", "email-addr", [], "SCO v2"],
+    [9, "email_message", "email-message", [], "SCO v2"],
     [10, "file", "file", [], "SCO v2"],
-    [11, "ipv4-addr", "ipv4-addr", [], "SCO v2"],
-    [12, "ipv6-addr", "ipv6-addr", [], "SCO v2"],
-    [13, "mac-addr", "mac-addr", [], "SCO v2"],
+    [11, "ipv4_addr", "ipv4-addr", [], "SCO v2"],
+    [12, "ipv6_addr", "ipv6-addr", [], "SCO v2"],
+    [13, "mac_addr", "mac-addr", [], "SCO v2"],
     [14, "memory", "memory", [], "CybOX 2.1"],
-    [15, "ip-connection", "ip-connection", [], "OpenC2"],
+    [15, "ip_connection", "ip-connection", [], "OpenC2"],
     [16, "process", "process", [], "SCO v2"],
     [17, "software", "software", [], "SCO v2"],
     [18, "url", "url", [], "SCO v2"],
-    [19, "user-account", "user-account", [], "SCO v2"],
-    [20, "user-session", "user-session", [], "CybOX 2.1"],
+    [19, "user_account", "user-account", [], "SCO v2"],
+    [20, "user_session", "user-session", [], "CybOX 2.1"],
     [21, "volume", "volume", [], "CybOX 2.1"],
-    [22, "windows-registry-key", "windows-registry-key", [], "SCO v2"],
-    [23, "x509-certificate", "x509-certificate", [], "SCO v2"]]
+    [22, "windows_registry_key", "windows-registry-key", [], "SCO v2"],
+    [23, "x509_certificate", "x509-certificate", [], "SCO v2"]]
   ],
 
-  ["Actuator", "Map", [], "", [
+  ["Actuator", "Choice", [], "", [
     [1, "endpoint", "ActuatorSpecifiers", [], ""],
-    [2, "endpoint-digital-telephone-handset", "ActuatorSpecifiers", [], ""],
-    [3, "endpoint-laptop", "ActuatorSpecifiers", [], ""],
-    [4, "endpoint-pos-terminal", "ActuatorSpecifiers", [], ""],
-    [5, "endpoint-printer", "ActuatorSpecifiers", [], ""],
-    [6, "endpoint-sensor", "ActuatorSpecifiers", [], ""],
-    [7, "endpoint-server", "ActuatorSpecifiers", [], ""],
-    [8, "endpoint-smart-meter", "ActuatorSpecifiers", [], ""],
-    [9, "endpoint-smart-phone", "ActuatorSpecifiers", [], ""],
-    [10, "endpoint-tablet", "ActuatorSpecifiers", [], ""],
-    [11, "endpoint-workstation", "ActuatorSpecifiers", [], ""],
+    [2, "endpoint_digital_telephone_handset", "ActuatorSpecifiers", [], ""],
+    [3, "endpoint_laptop", "ActuatorSpecifiers", [], ""],
+    [4, "endpoint_pos_terminal", "ActuatorSpecifiers", [], ""],
+    [5, "endpoint_printer", "ActuatorSpecifiers", [], ""],
+    [6, "endpoint_sensor", "ActuatorSpecifiers", [], ""],
+    [7, "endpoint_server", "ActuatorSpecifiers", [], ""],
+    [8, "endpoint_smart_meter", "ActuatorSpecifiers", [], ""],
+    [9, "endpoint_smart_phone", "ActuatorSpecifiers", [], ""],
+    [10, "endpoint_tablet", "ActuatorSpecifiers", [], ""],
+    [11, "endpoint_workstation", "ActuatorSpecifiers", [], ""],
     [12, "network", "ActuatorSpecifiers", [], ""],
-    [13, "network-bridge", "ActuatorSpecifiers", [], ""],
-    [14, "network-firewall", "ActuatorSpecifiers", [], ""],
-    [15, "network-gateway", "ActuatorSpecifiers", [], ""],
-    [16, "network-guard", "ActuatorSpecifiers", [], ""],
-    [17, "network-hips", "ActuatorSpecifiers", [], ""],
-    [18, "network-hub", "ActuatorSpecifiers", [], ""],
-    [19, "network-ids", "ActuatorSpecifiers", [], ""],
-    [20, "network-ips", "ActuatorSpecifiers", [], ""],
-    [21, "network-modem", "ActuatorSpecifiers", [], ""],
-    [22, "network-nic", "ActuatorSpecifiers", [], ""],
-    [23, "network-proxy", "ActuatorSpecifiers", [], ""],
-    [24, "network-router", "ActuatorSpecifiers", [], ""],
-    [25, "network-security-manager", "ActuatorSpecifiers", [], ""],
-    [26, "network-sense-making", "ActuatorSpecifiers", [], ""],
-    [27, "network-sensor", "ActuatorSpecifiers", [], ""],
-    [28, "network-switch", "ActuatorSpecifiers", [], ""],
-    [29, "network-vpn", "ActuatorSpecifiers", [], ""],
-    [30, "network-wap", "ActuatorSpecifiers", [], ""],
+    [13, "network_bridge", "ActuatorSpecifiers", [], ""],
+    [14, "network_firewall", "ActuatorSpecifiers", [], ""],
+    [15, "network_gateway", "ActuatorSpecifiers", [], ""],
+    [16, "network_guard", "ActuatorSpecifiers", [], ""],
+    [17, "network_hips", "ActuatorSpecifiers", [], ""],
+    [18, "network_hub", "ActuatorSpecifiers", [], ""],
+    [19, "network_ids", "ActuatorSpecifiers", [], ""],
+    [20, "network_ips", "ActuatorSpecifiers", [], ""],
+    [21, "network_modem", "ActuatorSpecifiers", [], ""],
+    [22, "network_nic", "ActuatorSpecifiers", [], ""],
+    [23, "network_proxy", "ActuatorSpecifiers", [], ""],
+    [24, "network_router", "ActuatorSpecifiers", [], ""],
+    [25, "network_security_manager", "ActuatorSpecifiers", [], ""],
+    [26, "network_sense_making", "ActuatorSpecifiers", [], ""],
+    [27, "network_sensor", "ActuatorSpecifiers", [], ""],
+    [28, "network_switch", "ActuatorSpecifiers", [], ""],
+    [29, "network_vpn", "ActuatorSpecifiers", [], ""],
+    [30, "network_wap", "ActuatorSpecifiers", [], ""],
     [31, "process", "ActuatorSpecifiers", [], ""],
-    [32, "process-aaa-server", "ActuatorSpecifiers", [], ""],
-    [33, "process-anti-virus-scanner", "ActuatorSpecifiers", [], ""],
-    [34, "process-connection-scanner", "ActuatorSpecifiers", [], ""],
-    [35, "process-directory-server", "ActuatorSpecifiers", [], ""],
-    [36, "process-dns-server", "ActuatorSpecifiers", [], ""],
-    [37, "process-email-service", "ActuatorSpecifiers", [], ""],
-    [38, "process-file-scanner", "ActuatorSpecifiers", [], ""],
-    [39, "process-location-service", "ActuatorSpecifiers", [], ""],
-    [40, "process-network-scanner", "ActuatorSpecifiers", [], ""],
-    [41, "process-remediation-service", "ActuatorSpecifiers", [], ""],
-    [42, "process-reputation-service", "ActuatorSpecifiers", [], ""],
-    [43, "process-sandbox", "ActuatorSpecifiers", [], ""],
-    [44, "process-virtualization-service", "ActuatorSpecifiers", [], ""],
-    [45, "process-vulnerability-scanner", "ActuatorSpecifiers", [], ""]]
+    [32, "process_aaa_server", "ActuatorSpecifiers", [], ""],
+    [33, "process_anti_virus_scanner", "ActuatorSpecifiers", [], ""],
+    [34, "process_connection_scanner", "ActuatorSpecifiers", [], ""],
+    [35, "process_directory_server", "ActuatorSpecifiers", [], ""],
+    [36, "process_dns_server", "ActuatorSpecifiers", [], ""],
+    [37, "process_email_service", "ActuatorSpecifiers", [], ""],
+    [38, "process_file_scanner", "ActuatorSpecifiers", [], ""],
+    [39, "process_location_service", "ActuatorSpecifiers", [], ""],
+    [40, "process_network_scanner", "ActuatorSpecifiers", [], ""],
+    [41, "process_remediation_service", "ActuatorSpecifiers", [], ""],
+    [42, "process_reputation_service", "ActuatorSpecifiers", [], ""],
+    [43, "process_sandbox", "ActuatorSpecifiers", [], ""],
+    [44, "process_virtualization_service", "ActuatorSpecifiers", [], ""],
+    [45, "process_vulnerability_scanner", "ActuatorSpecifiers", [], ""]]
   ],
 
   ["ActuatorSpecifiers", "Record", [], "", [
@@ -156,15 +155,18 @@
   ],
 
   ["Modifiers", "Map", [], "", [
-    [1, "delay", "Duration", ["?"], ""],
-    [2, "duration", "Duration", ["?"], ""],
-    [3, "frequency", "Duration", ["?"], ""],
-    [4, "datetime", "DateTime", ["?"], ""],
-    [5, "response", "ResponseValue", ["?"], ""],
-    [6, "method", "MethodValue", ["?"], ""],
-    [7, "where", "WhereValue", ["?"], ""],
-    [8, "context_ref", "Integer", ["?"], ""],
-    [9, "id", "CommandID", ["?"], ""]]
+    [1, "context", "String", ["?"], ""],
+    [2, "datetime", "DateTime", ["?"], ""],
+    [3, "delay", "Duration", ["?"], ""],
+    [4, "duration", "Duration", ["?"], ""],
+    [5, "frequency", "Duration", ["?"], ""],
+    [6, "command_ref", "CommandID", ["?"], ""],
+    [7, "response", "ResponseValue", ["?"], ""],
+    [8, "method", "MethodValue", ["?"], ""],
+    [9, "options", "String", ["?"], ""],
+    [10, "search", "SearchValue", ["?"], ""],
+    [11, "where", "WhereValue", ["?"], ""],
+    [12, "command_src", "DeviceID", ["?"], ""]]
   ],
 
   ["Duration", "String", [">^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"], ""],
@@ -215,6 +217,13 @@
   ["WhereValue", "Enumerated", [], "", [
     [1, "internal", ""],
     [2, "perimeter", ""]]
+  ],
+
+  ["SearchValue", "Enumerated", [], "", [
+    [1, "cve", ""],
+    [2, "patch", ""],
+    [3, "vendor-bulletin", ""],
+    [4, "signature", ""]]
   ],
 
   ["DeviceID", "String", [], "Device Identifier of the command issuer"],
@@ -272,23 +281,22 @@
   ],
 
   ["device", "Map", [], "", [
-    [1, "Description", "String", ["?"], ""],
-    [2, "Device_Type", "String", ["?"], ""],
-    [3, "Manufacturer", "String", ["?"], ""],
-    [4, "Model", "String", ["?"], ""],
-    [5, "Serial_Number", "String", ["?"], ""],
-    [6, "Firmware_Version", "String", ["?"], ""],
-    [7, "System_Details", "String", ["?"], ""]]
+    [1, "description", "String", ["?"], ""],
+    [2, "device_type", "String", ["?"], ""],
+    [3, "manufacturer", "String", ["?"], ""],
+    [4, "model", "String", ["?"], ""],
+    [5, "serial_number", "String", ["?"], ""],
+    [6, "firmware_version", "String", ["?"], ""],
+    [7, "system_details", "String", ["?"], ""]]
   ],
 
   ["directory", "Map", [], "", [
-    [1, "type", "String", [], "MUST be \"directory\""],
-    [2, "path", "String", [], "Path, as originally observed, to the directory on the filesystem"],
-    [3, "path_enc", "String", ["?"], "Observed encoding for the path, from the IANA Character Set Registry"],
-    [4, "created", "Timestamp", ["?"], "Date/time the directory was created"],
-    [5, "modified", "Timestamp", ["?"], "Date/time the directory was last written-to/modified"],
-    [6, "accessed", "Timestamp", ["?"], "Date/time the directory was last accessed"],
-    [7, "contains", "dir-contents", ["?"], "List of files/directories contained within the directory"]]
+    [1, "path", "String", [], "Path, as originally observed, to the directory on the filesystem"],
+    [2, "path_enc", "String", ["?"], "Observed encoding for the path, from the IANA Character Set Registry"],
+    [3, "created", "Timestamp", ["?"], "Date/time the directory was created"],
+    [4, "modified", "Timestamp", ["?"], "Date/time the directory was last written-to/modified"],
+    [5, "accessed", "Timestamp", ["?"], "Date/time the directory was last accessed"],
+    [6, "contains", "dir-contents", ["?"], "List of files/directories contained within the directory"]]
   ],
 
   ["dir-contents", "Array", [], "", [
@@ -321,13 +329,9 @@
     [3, "belongs_to", "user-account", ["?"], "User account that the email address belongs to"]]
   ],
 
-  ["email-message", "Record", [], "TODO: finish", [
-    [1, "type", "String", [], "MUST be \"email-message\""]]
-  ],
+  ["email-message", "Record", [], "TODO: finish", []],
 
-  ["file", "Record", [], "TODO: finish", [
-    [1, "type", "String", [], "MUST be \"file\""]]
-  ],
+  ["file", "Record", [], "TODO: finish", []],
 
   ["ipv4-addr", "Record", [], "", [
     [1, "value", "String", [], "Specifies one or more IPv4 addresses using CIDR notation"],
@@ -358,12 +362,12 @@
   ],
 
   ["ip-connection", "Record", [], "5-tuple that specifies a tcp/ip connection", [
-    [1, "src-addr", "socket-addr", ["?"], "source address"],
-    [2, "src-port", "port", ["?"], "source TCP/UDP port number"],
-    [3, "dst-addr", "socket-addr", ["?"], "destination address"],
-    [4, "dst-port", "port", ["?"], "destination TCP/UDP port number"],
-    [5, "layer3-protocol", "layer3-protocol", ["?"], "IEEE 802 Ether Type"],
-    [6, "layer4-protocol", "layer4-protocol", ["?"], "Protocol (IPv4) / Next Header (IPv6)"]]
+    [1, "src_addr", "socket-addr", ["?"], "source address"],
+    [2, "src_port", "port", ["?"], "source TCP/UDP port number"],
+    [3, "dst_addr", "socket-addr", ["?"], "destination address"],
+    [4, "dst_port", "port", ["?"], "destination TCP/UDP port number"],
+    [5, "layer3_protocol", "layer3-protocol", ["?"], "IEEE 802 Ether Type"],
+    [6, "layer4_protocol", "layer4-protocol", ["?"], "Protocol (IPv4) / Next Header (IPv6)"]]
   ],
 
   ["layer3-protocol", "Enumerated", [], "IEEE 802 Ether Types - any IANA value, RFC 7042", [
@@ -405,28 +409,16 @@
     [443, "https", "HTTP over TLS"]]
   ],
 
-  ["process", "Record", [], "", [
-    [1, "type", "String", [], "MUST be \"process\""]]
-  ],
+  ["process", "Record", [], "", []],
 
-  ["software", "Record", [], "", [
-    [1, "type", "String", [], "MUST be \"software\""]]
-  ],
+  ["software", "Record", [], "", []],
 
-  ["url", "Record", [], "", [
-    [1, "type", "String", [], "MUST be \"url\""]]
-  ],
+  ["url", "Record", [], "", []],
 
-  ["user-account", "Record", [], "", [
-    [1, "type", "String", [], "MUST be \"user-account\""]]
-  ],
+  ["user-account", "Record", [], "", []],
 
-  ["windows-registry-key", "Record", [], "", [
-    [1, "type", "String", [], "MUST be \"windows-registry-key\""]]
-  ],
+  ["windows-registry-key", "Record", [], "", []],
 
-  ["x509-certificate", "Record", [], "", [
-    [1, "type", "String", [], "MUST be \"x509-certificate\""]]
-  ]]
+  ["x509-certificate", "Record", [], "", []]]
 
 }
