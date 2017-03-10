@@ -46,7 +46,7 @@ class OpenC2(unittest.TestCase):
                         "protocol": "https"
                     },
                     "dst_addr": {
-                        "v4": {"value": "192.168.1.1"}
+                        "ipv4": {"value": "192.168.1.1"}
                     },
                     "layer4_protocol": "TCP"
                 }
@@ -78,7 +78,7 @@ class OpenC2(unittest.TestCase):
             {"ip_connection": [
                 {"dns": ["www.badco.com"]},
                 {"protocol": "https"},
-                {"v4": ["192.168.1.1"]},
+                {"ipv4": ["192.168.1.1"]},
                 None,
                 None,
                 "TCP"]},
@@ -224,30 +224,6 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
 
-    def test5_flat(self):       # Copy of api commands from separate test cases
-        cmd1_api = {"action": "query", "target": {"commands":"schema"}}
-        cmd1_flat = {"action": "query", "target.commands":"schema"}
-        cmd2_api = {            # API / Verbose (dict/name)
-            "action": "scan",
-            "target": {
-                "domain_name": {
-                    "value": "www.example.com",
-                    "resolves_to": [
-                        {"v4": {"value": "198.51.100.2"}},
-                        {"name": {"value": "ms34.example.com"}}]}}}
-
-        cmd2_flat = {           # Flattened
-            "action": "scan",
-            "target.domain_name.value": "www.example.com",
-            "target.domain_name.resolves_to": [     # TODO: develop array notation for flattened values
-                {"v4.value": "198.51.100.2"},
-                {"name.value": "ms34.example.com"}]}
-
-        self.assertEqual(flatten(cmd1_api), cmd1_flat)
-        self.assertEqual(fluff(cmd1_flat), cmd1_api)
-        f = flatten(cmd2_api)
-        self.assertEqual(flatten(cmd2_api), cmd2_flat)
-        self.assertEqual(fluff(cmd2_flat), cmd2_api)
 
 if __name__ == "__main__":
     unittest.main()
