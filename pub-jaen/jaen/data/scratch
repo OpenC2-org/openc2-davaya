@@ -127,3 +127,7 @@ ActuatorType ::= ENUMERATED {
     process-virtualization-service   (44),
     process-vulnerability-scanner    (45)
 }
+
+mutex ::= RECORD {
+    name         STRING      -- Specifies the name of the mutex object.
+}
