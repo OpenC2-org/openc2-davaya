@@ -1,24 +1,31 @@
 ## OpenC2 Command examples
 
-This folder contains example OpenC2 commands encoded in three JSON formats.
+This folder contains example OpenC2 commands in two Application Programming Interface (API) formats
+and three JSON-based message formats.  **API** values are the structured data objects used by a program, e.g.,
+Dictionary and List values for Python applications, Map/WeakMap and Array values for Javascript
+applications, or Hash and Array values for Ruby applications.  **Message** values are data objects
+that have been serialized (encoded) for transmission between applications or for storage.  The current examples
+use JSON serializations, but XML and binary serializations are also possible.  These messages
+are encoding alternatives derived from the same abstract syntax; they are not alternative syntax
+specifications requiring separate development and maintenance.
 
-**Minified**, **Concise** and **Verbose** encodings are transmitted over
-the wire between systems.  Concise format encodes structures as JSON arrays;
-field names are not transmitted.  Verbose format encodes structures as JSON
-objects with field names transmitted as property names. Minified
-format encodes structures as JSON arrays, and also encodes field names and
-enumerated vocabulary items as element ID's (tags) instead of strings.
-A decoder will accept and validate a message in one of the serialization formats
-and return the validated data item to the application in API format (e.g., a
-Python dict).  
+**API / Verbose:** Structured data object as used by a Python application, and the direct JSON
+serialization of that object as produced by `json.dumps`.  Python literal notation is similar but
+not identical to JSON, so the JSON examples shown here would need to be slightly edited for use
+as Python literals if they contain boolean or null values.
 
-The message encodings are concrete message formats derived from
-the same abstract syntax; they are not syntax alternatives.  An OpenC2
-binary message format would likewise be derived from the same abstract
-syntax; it would not be a different syntax that requires additional effort
-for definition and configuration management.  The purpose of showing multiple
-encodings is to illustrate the relationship between a single abstract
-syntax and multiple equivalent message formats.
+**API Flat:** Some developers may find it more convenient to work with flattened data values, e.g.
+a dictionary containing only primitive data values instead of a dictionary containing nested complex data.
+The JAEN package includes routines `flatten` and `fluff` to convert between structured and flat Python dicts.
+
+**JSON-concise:** A message format shown primarily to illustrate how positional encoding eliminates
+the need to transmit dictionary keys with every message.  This format produces messages intermediate
+in size between verbose and minified encodings.
+
+**JSON-minified:** A message format optimized for minimum bandwidth and storage space, using both
+positional encoding and by replacing enumerated strings with integer tags.  This format produces minimum
+bandwidth messages for a text-based encoding, although binary encodings would be smaller.
+
 
 ### -- MITIGATE --
 #### API / Verbose
@@ -146,7 +153,7 @@ syntax and multiple equivalent message formats.
 {   "action": "scan",
     "target.domain_name.value": "www.example.com",
     "target.domain_name.resolves_to.0.ipv4.value": "198.51.100.2",
-    "target.domain_name.resolves_to.1.name.value": "ms34.example.com",
+    "target.domain_name.resolves_to.1.name.value": "ms34.example.com"
 }
 ```
 #### Concise
