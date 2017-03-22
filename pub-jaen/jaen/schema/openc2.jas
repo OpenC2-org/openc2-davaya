@@ -159,7 +159,7 @@ Modifiers ::= MAP {
     delay        [3] Duration OPTIONAL,
     duration     [4] Duration OPTIONAL,
     frequency    [5] Duration OPTIONAL,
-    command_ref  [6] CommandID OPTIONAL,
+    command_id   [6] CommandID OPTIONAL,
     response     [7] ResponseValue OPTIONAL,
     method       [8] MethodValue OPTIONAL,
     options      [9] STRING OPTIONAL,
@@ -168,9 +168,13 @@ Modifiers ::= MAP {
     command_src  [12] DeviceID OPTIONAL
 }
 
-Duration ::= STRING(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")
+DateTime ::= STRING(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$")     -- RFC 3339 date-time
 
-DateTime ::= STRING(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$")     -- RFC 3339 format date and time
+Duration ::= STRING(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")        -- RFC 3339 / ISO 8601 duration (dur-time option)
+
+CommandID ::= STRING                -- Command unique identifier
+
+DeviceID ::= STRING                 -- Device Identifier of the command issuer
 
 ResponseValue ::= ENUMERATED {
     ack          (1),
@@ -213,11 +217,6 @@ StopMethod ::= ENUMERATED {
     immediate    (2)
 }
 
-WhereValue ::= ENUMERATED {
-    internal     (1),
-    perimeter    (2)
-}
-
 SearchValue ::= ENUMERATED {
     cve             (1),
     patch           (2),
@@ -225,9 +224,10 @@ SearchValue ::= ENUMERATED {
     signature       (4)
 }
 
-DeviceID ::= STRING             -- Device Identifier of the command issuer
-
-CommandID ::= STRING            -- Command unique identifier
+WhereValue ::= ENUMERATED {
+    internal     (1),
+    perimeter    (2)
+}
 
 StatusCode ::= ENUMERATED {     -- Adapted from HTTP Status Codes, RFC 7231
     Processing              (102),      -- 1xx: Informational
@@ -279,9 +279,9 @@ autonomous-system ::= RECORD {
 }
 
 commands ::= ENUMERATED {   -- Target used to query Actuator for its supported capabilities
-    actions     (1),            -- results = JSON array of supported action verbs
-    schema      (2),            -- results = JAEN syntax of supported commands
-    actuators   (3)             -- results = JSON array of actuator group names
+    actions         (1),            -- results = JSON array of supported action verbs
+    schema          (2),            -- results = JAEN syntax of supported commands
+    actuator_groups (3)             -- results = JSON array of actuator group names
 }
 
 device ::= MAP {
@@ -437,7 +437,35 @@ account-type ::= ENUMERATED {
 }
 
 windows-registry-key ::= RECORD {
+    key                 [1] STRING,                     -- Full registry key including the hive.
+    values              [2] windows-registry-values OPTIONAL,   -- Values found under the registry key.
+    modified            [3] DateTime OPTIONAL,          -- Last date-time the registry key was modified.
+    creator_user        [4] user-account OPTIONAL,      -- User account that created the registry key
+    number_of_subkeys   [5] INTEGER OPTIONAL            -- Number of subkeys contained under the registry key
+}
 
+windows-registry-values ::= ARRAY_OF(windows-registry-value)
+
+windows-registry-value ::= RECORD {
+    name            [1] STRING,                         -- Name of the registry value.  Empty string specifies the default value.
+    data            [2] STRING OPTIONAL,                -- Data contained in the registry key.
+    data_type       [3] windows-registry-datatype-enum OPTIONAL -- Registry data type used in the registry value.
+}
+
+windows-registry-datatype-enum ::= ENUMERATED {
+    REG_NONE                        (0),    -- No defined value type.
+    REG_SZ                          (1),    -- A null-terminated string.
+    REG_EXPAND_SZ                   (2),    -- A null-terminated string with unexpanded references to environment variables.
+    REG_BINARY                      (3),    -- Binary data in any form.
+    REG_DWORD                       (4),    -- A 32 bit number.
+    REG_DWORD_BIG_ENDIAN            (5),    -- A 32 bit number in big-endian format.
+    REG_LINK                        (6),    -- A null-terminated string that contains the target path of a symbolic link.
+    REG_MULTI_SZ                    (7),    -- A sequence of null-terminated strings, terminated by an empty string (\0).
+    REG_RESOURCE_LIST               (8),    -- A series of nested lists designed to store a resource list used by a hardware device driver.
+    REG_FULL_RESOURCE_DESCRIPTION   (9),    -- A series of nested lists designed to store a resource list used by a physical hardware device.
+    REG_RESOURCE_REQUIREMENTS_LIST  (10),   -- Device driver list of hardware resource requirements in Resource Map tree.
+    REG_QWORD                       (11),   -- A 64 bit number.
+    REG_INVALID_TYPE                (12)    -- An invalid key.
 }
 
 x509-certificate ::= RECORD {

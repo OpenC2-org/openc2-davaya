@@ -94,7 +94,6 @@ def opts_s2d(ostr):
             print("Unknown option '", o, "'")
     return opts
 
-
 def opts_d2s(opts):
     """
     Convert options dictionary to list of option strings

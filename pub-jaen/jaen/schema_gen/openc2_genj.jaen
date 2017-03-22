@@ -1,4 +1,4 @@
-"Generated from schema\openc2.jaen, Fri Mar 17 11:25:14 2017"
+"Generated from schema\openc2.jaen, Wed Mar 22 16:59:37 2017"
 
 {
  "meta": {
@@ -160,7 +160,7 @@
     [3, "delay", "Duration", ["?"], ""],
     [4, "duration", "Duration", ["?"], ""],
     [5, "frequency", "Duration", ["?"], ""],
-    [6, "command_ref", "CommandID", ["?"], ""],
+    [6, "command_id", "CommandID", ["?"], ""],
     [7, "response", "ResponseValue", ["?"], ""],
     [8, "method", "MethodValue", ["?"], ""],
     [9, "options", "String", ["?"], ""],
@@ -169,9 +169,13 @@
     [12, "command_src", "DeviceID", ["?"], ""]]
   ],
 
-  ["Duration", "String", [">^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"], ""],
+  ["DateTime", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], "RFC 3339 date-time"],
 
-  ["DateTime", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], "RFC 3339 format date and time"],
+  ["Duration", "String", [">^PT(\\d+H(\\d+M(\\d+S)?)?|\\d+M(\\d+S)?|\\d+S)$"], "RFC 3339 / ISO 8601 duration (dur-time option)"],
+
+  ["CommandID", "String", [], "Command unique identifier"],
+
+  ["DeviceID", "String", [], "Device Identifier of the command issuer"],
 
   ["ResponseValue", "Enumerated", [], "", [
     [1, "ack", ""],
@@ -214,11 +218,6 @@
     [2, "immediate", ""]]
   ],
 
-  ["WhereValue", "Enumerated", [], "", [
-    [1, "internal", ""],
-    [2, "perimeter", ""]]
-  ],
-
   ["SearchValue", "Enumerated", [], "", [
     [1, "cve", ""],
     [2, "patch", ""],
@@ -226,9 +225,10 @@
     [4, "signature", ""]]
   ],
 
-  ["DeviceID", "String", [], "Device Identifier of the command issuer"],
-
-  ["CommandID", "String", [], "Command unique identifier"],
+  ["WhereValue", "Enumerated", [], "", [
+    [1, "internal", ""],
+    [2, "perimeter", ""]]
+  ],
 
   ["StatusCode", "Enumerated", [], "Adapted from HTTP Status Codes, RFC 7231", [
     [102, "Processing", "1xx: Informational"],
@@ -282,7 +282,7 @@
   ["commands", "Enumerated", [], "Target used to query Actuator for its supported capabilities", [
     [1, "actions", "results = JSON array of supported action verbs"],
     [2, "schema", "results = JAEN syntax of supported commands"],
-    [3, "actuators", "results = JSON array of actuator group names"]]
+    [3, "actuator_groups", "results = JSON array of actuator group names"]]
   ],
 
   ["device", "Map", [], "", [
@@ -439,7 +439,39 @@
     [11, "twitter", "Twitter account"]]
   ],
 
-  ["windows-registry-key", "Record", [], "", []],
+  ["windows-registry-key", "Record", [], "", [
+    [1, "key", "String", [], "Full registry key including the hive."],
+    [2, "values", "windows-registry-values", ["?"], "Values found under the registry key."],
+    [3, "modified", "DateTime", ["?"], "Last date-time the registry key was modified."],
+    [4, "creator_user", "user-account", ["?"], "User account that created the registry key"],
+    [5, "number_of_subkeys", "Integer", ["?"], "Number of subkeys contained under the registry key"]]
+  ],
+
+  ["windows-registry-values", "Array", [], "", [
+    [0, "", "windows-registry-value", [], ""]]
+  ],
+
+  ["windows-registry-value", "Record", [], "", [
+    [1, "name", "String", [], "Name of the registry value.  Empty string specifies the default value."],
+    [2, "data", "String", ["?"], "Data contained in the registry key."],
+    [3, "data_type", "windows-registry-datatype-enum", ["?"], "Registry data type used in the registry value."]]
+  ],
+
+  ["windows-registry-datatype-enum", "Enumerated", [], "", [
+    [0, "REG_NONE", "No defined value type."],
+    [1, "REG_SZ", "A null-terminated string."],
+    [2, "REG_EXPAND_SZ", "A null-terminated string with unexpanded references to environment variables."],
+    [3, "REG_BINARY", "Binary data in any form."],
+    [4, "REG_DWORD", "A 32 bit number."],
+    [5, "REG_DWORD_BIG_ENDIAN", "A 32 bit number in big-endian format."],
+    [6, "REG_LINK", "A null-terminated string that contains the target path of a symbolic link."],
+    [7, "REG_MULTI_SZ", "A sequence of null-terminated strings, terminated by an empty string (\\0)."],
+    [8, "REG_RESOURCE_LIST", "A series of nested lists designed to store a resource list used by a hardware device driver."],
+    [9, "REG_FULL_RESOURCE_DESCRIPTION", "A series of nested lists designed to store a resource list used by a physical hardware device."],
+    [10, "REG_RESOURCE_REQUIREMENTS_LIST", "Device driver list of hardware resource requirements in Resource Map tree."],
+    [11, "REG_QWORD", "A 64 bit number."],
+    [12, "REG_INVALID_TYPE", "An invalid key."]]
+  ],
 
   ["x509-certificate", "Record", [], "", []]]
 
