@@ -289,6 +289,11 @@ def _encode_string(ts, val, codec):
     _check_type(ts, val, str)
     return val
 
+def is_primitive(vtype):
+    return (vtype in "Binary", "Boolean", "Integer", "Number", "String")
+
+def is_builtin(vtype):
+    return (vtype in enctab)
 
 enctab = {  # decode, encode, min encoded type
     "Binary": [_decode_binary, _encode_binary, str],

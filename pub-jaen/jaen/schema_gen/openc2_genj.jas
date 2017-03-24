@@ -1,4 +1,4 @@
--- Generated from schema\openc2.jaen, Wed Mar 22 16:59:37 2017
+-- Generated from schema\openc2.jaen, Fri Mar 24 16:33:09 2017
 
 /*
 module:        openc2
@@ -29,9 +29,9 @@ OpenC2Command ::= RECORD {
 }
 
 OpenC2Response ::= RECORD {
-    source       DeviceID,    -- ID of the command issuer, from "command-src" modifier
-    cmdref       CommandID,    -- Command unique identifier, from "command-ref" modifier
-    status       StatusCode,    -- Adapted from HTTP Status Codes, RFC 7231
+    source       device-id,    -- ID of the command issuer, from "command-src" modifier
+    command_ref  command-id,    -- Command unique identifier, from "command-id" modifier
+    status       status-code,    -- Adapted from HTTP Status Codes, RFC 7231
     statusText   STRING,    -- Status description
     results      STRING     -- Results of executing the command
 }
@@ -41,10 +41,10 @@ OpenC2Alert ::= RECORD {
 }
 
 Action ::= ENUMERATED {
-    scan         (1),
-    locate       (2),
-    query        (3),
-    report       (4),
+    scan         (1),    -- Systematic examination of some aspect of the target entity or its environment.
+    locate       (2),    -- Find the target object physically, logically, functionally, or by organization.
+    query        (3),    -- Initiate a request for information.
+    report       (4),    -- Task an entity to provide information to a designated recipient.
     notify       (5),
     deny         (6),
     contain      (7),
@@ -156,34 +156,39 @@ ActuatorSpecifiers ::= RECORD {
 }
 
 Modifiers ::= MAP {
-    context      [1] STRING OPTIONAL,
-    datetime     [2] DateTime OPTIONAL,
-    delay        [3] Duration OPTIONAL,
-    duration     [4] Duration OPTIONAL,
-    frequency    [5] Duration OPTIONAL,
-    command_id   [6] CommandID OPTIONAL,
-    response     [7] ResponseValue OPTIONAL,
-    method       [8] MethodValue OPTIONAL,
-    options      [9] STRING OPTIONAL,
-    search       [10] SearchValue OPTIONAL,
-    where        [11] WhereValue OPTIONAL,
-    command_src  [12] DeviceID OPTIONAL
+    context       [1] STRING OPTIONAL,    -- universal
+    start_time    [2] date-time OPTIONAL,    -- universal
+    end_time      [3] date-time OPTIONAL,    -- universal
+    duration      [4] duration OPTIONAL,    -- pause
+    frequency     [5] duration OPTIONAL,    -- report, notify, restart, update, sync
+    command_id    [6] command-id OPTIONAL,    -- universal  (was "id")
+    command_src   [7] device-id OPTIONAL,    -- add to universal
+    response      [8] response-type OPTIONAL,    -- universal
+    respond_to    [9] device-id OPTIONAL,    -- universal (investigate/mitigate/remediate was report-to)
+    options       [10] STRING OPTIONAL,    -- add to universal? (restart, set, move, restore, save, substitute)
+    method        [11] method-value OPTIONAL,    -- deny, pause, scan, start, stop, augment
+    search        [12] search-type OPTIONAL,    -- scan
+    where         [13] where OPTIONAL,    -- deny, contain, allow
+    message       [14] STRING OPTIONAL,    -- notify
+    command_ref   [15] command-id OPTIONAL,    -- cancel
+    network_acl   [16] network-acl OPTIONAL,    -- firewall profile
+    segmentation  [17] segmentation OPTIONAL     -- firewall profile
 }
 
-DateTime ::= STRING(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$")    -- RFC 3339 date-time
+date-time ::= STRING(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$")    -- RFC 3339 date-time
 
-Duration ::= STRING(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")    -- RFC 3339 / ISO 8601 duration (dur-time option)
+duration ::= STRING(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")    -- RFC 3339 / ISO 8601 duration (regex is for dur-time option only, need full duration)
 
-CommandID ::= STRING    -- Command unique identifier
+command-id ::= STRING    -- Command unique identifier
 
-DeviceID ::= STRING    -- Device Identifier of the command issuer
+device-id ::= STRING    -- Device Identifier / Address
 
-ResponseValue ::= ENUMERATED {
+response-type ::= ENUMERATED {
     ack          (1),
     status       (2)
 }
 
-MethodValue ::= CHOICE {    -- Method must agree with Action (test descriptions)
+method-value ::= CHOICE {    -- Method must agree with Action (test descriptions)
     deny         [1] DenyMethod,    -- Action must be "deny"
     pause        [2] PauseMethod,    -- Action must be 'pause'
     scan         [3] ScanMethod,    -- Action must be 'scan"
@@ -219,19 +224,26 @@ StopMethod ::= ENUMERATED {
     immediate    (2)
 }
 
-SearchValue ::= ENUMERATED {
+search-type ::= ENUMERATED {
     cve              (1),
     patch            (2),
     vendor-bulletin  (3),
     signature        (4)
 }
 
-WhereValue ::= ENUMERATED {
+where ::= ENUMERATED {
     internal     (1),
-    perimeter    (2)
+    perimeter    (2),
+    unspecified  (3)     -- redirect, was "where = null"
 }
 
-StatusCode ::= ENUMERATED {    -- Adapted from HTTP Status Codes, RFC 7231
+network-acl ::= RECORD {
+}
+
+segmentation ::= RECORD {
+}
+
+status-code ::= ENUMERATED {    -- Adapted from HTTP Status Codes, RFC 7231
     Processing             (102),    -- 1xx: Informational
     OK                     (200),    -- 2xx: Success
     Bad_Request            (400),    -- 3xx: Redirection
@@ -299,9 +311,9 @@ device ::= MAP {
 directory ::= MAP {
     path         [1] STRING,    -- Path, as originally observed, to the directory on the filesystem
     path_enc     [2] STRING OPTIONAL,    -- Observed encoding for the path, from the IANA Character Set Registry
-    created      [3] DateTime OPTIONAL,    -- Date/time the directory was created
-    modified     [4] DateTime OPTIONAL,    -- Date/time the directory was last written-to/modified
-    accessed     [5] DateTime OPTIONAL,    -- Date/time the directory was last accessed
+    created      [3] date-time OPTIONAL,    -- Date/time the directory was created
+    modified     [4] date-time OPTIONAL,    -- Date/time the directory was last written-to/modified
+    accessed     [5] date-time OPTIONAL,    -- Date/time the directory was last accessed
     contains     [6] dir-contents OPTIONAL     -- List of files/directories contained within the directory
 }
 
@@ -314,12 +326,18 @@ dirfile ::= CHOICE {
     f            [2] file
 }
 
+disk ::= MAP {    -- CybOX 2.1
+}
+
+disk-partition ::= MAP {    -- CybOX 2.1
+}
+
 domain-name ::= RECORD {
     value        STRING,    -- Value of the domain name
     resolves_to  ip-addrs OPTIONAL     -- List of IP addresses or domain names
 }
 
-ip-addrs ::= ARRAY_OF {    -- List of IP addresses or domain names
+ip-addrs ::= ARRAY_OF {
                  [0] ip-addr
 }
 
@@ -400,6 +418,9 @@ layer7-protocol ::= ENUMERATED {    -- Service Name and Transport Protocol Port 
     https        (443)     -- HTTP over TLS
 }
 
+memory ::= MAP {    -- CybOX 2.1
+}
+
 process ::= RECORD {
 }
 
@@ -416,17 +437,17 @@ url ::= STRING    -- Uniform Resource Locator
 user-account ::= MAP {
     user_id                [1] STRING,    -- Identifier of the account.  Format depends on the system the account is maintained in.
     account_login          [2] STRING OPTIONAL,    -- Account login string, in cases where user_id is other than what the user types to log in.
-    account_type           [3] STRING OPTIONAL,    -- Value from the account-type vocabulary
+    account_type           [3] account-type OPTIONAL,    -- Value from the account-type vocabulary
     display_name           [4] STRING OPTIONAL,    -- Display name of the account (e.g., Unix GECOS field)
     is_service_account     [5] BOOLEAN OPTIONAL,    -- Account is associated with a network service or system process, not an individual.
     is_privileged          [6] BOOLEAN OPTIONAL,    -- Account has elevated privileges
     can_escalate_privs     [7] BOOLEAN OPTIONAL,    -- Account has the ability to escalate privileges
     is_disabled            [8] BOOLEAN OPTIONAL,    -- Account is disabled
-    account_created        [9] DateTime OPTIONAL,    -- Creation date of the account
-    account_expires        [10] DateTime OPTIONAL,    -- Expiration date of the account
-    password_last_changed  [11] DateTime OPTIONAL,    -- When the account password was last changed
-    account_first_login    [12] DateTime OPTIONAL,    -- When the account was first accessed
-    account_last_login     [13] DateTime OPTIONAL     -- When the account was last accessed
+    account_created        [9] date-time OPTIONAL,    -- Creation date of the account
+    account_expires        [10] date-time OPTIONAL,    -- Expiration date of the account
+    password_last_changed  [11] date-time OPTIONAL,    -- When the account password was last changed
+    account_first_login    [12] date-time OPTIONAL,    -- When the account was first accessed
+    account_last_login     [13] date-time OPTIONAL     -- When the account was last accessed
 }
 
 account-type ::= ENUMERATED {
@@ -443,10 +464,16 @@ account-type ::= ENUMERATED {
     twitter         (11)     -- Twitter account
 }
 
+user-session ::= MAP {    -- CybOX 2.1
+}
+
+volume ::= MAP {    -- CybOX 2.1
+}
+
 windows-registry-key ::= RECORD {
     key                STRING,    -- Full registry key including the hive.
     values             windows-registry-values OPTIONAL,    -- Values found under the registry key.
-    modified           DateTime OPTIONAL,    -- Last date-time the registry key was modified.
+    modified           date-time OPTIONAL,    -- Last date-time the registry key was modified.
     creator_user       user-account OPTIONAL,    -- User account that created the registry key
     number_of_subkeys  INTEGER OPTIONAL     -- Number of subkeys contained under the registry key
 }
