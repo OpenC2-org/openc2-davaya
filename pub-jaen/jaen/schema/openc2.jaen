@@ -26,8 +26,8 @@
   ],
 
   ["OpenC2Response", "Record", [], "", [
-    [1, "source", "device-id", [], "ID of the command issuer, from \"command-src\" modifier"],
-    [2, "command_ref", "command-id", [], "Command unique identifier, from \"command-id\" modifier"],
+    [1, "source", "device-id", [], "ID of the command issuer, from \"command_src\" modifier"],
+    [2, "command_ref", "command-id", [], "Command unique identifier, from \"command_id\" modifier"],
     [3, "status", "status-code", [], "Adapted from HTTP Status Codes, RFC 7231"],
     [4, "statusText", "String", [], "Status description"],
     [5, "results", "String", [], "Results of executing the command"]]
@@ -148,7 +148,7 @@
   ],
 
   ["ActuatorSpecifiers", "Record", [], "", [
-    [1, "port", "String", ["?"], ""],
+    [1, "device_id", "url", ["?"], ""],
     [2, "asset_id", "String", ["?"], ""]]
   ],
 
@@ -159,7 +159,7 @@
     [4, "duration", "duration", ["?"], "pause"],
     [5, "frequency", "duration", ["?"], "report, notify, restart, update, sync"],
     [6, "command_id", "command-id", ["?"], "universal  (was \"id\")"],
-    [7, "command_src", "url", ["?"], "add to universal"],
+    [7, "command_src", "device-id", ["?"], "add to universal"],
     [8, "response", "response-type", ["?"], "universal"],
     [9, "source", "url", ["?"], "update"],
     [10, "destination", "url", ["?"], "(investigate/mitigate/remediate was report_to, copy, move, save)"],
@@ -179,7 +179,7 @@
 
   ["command-id", "String", [], "Command unique identifier"],
 
-  ["device-id", "String", [], "Device Identifier / Address"],
+  ["device-id", "String", [], "Device Identifier / Address (url)"],
 
   ["response-type", "Enumerated", [], "", [
     [1, "ack", ""],

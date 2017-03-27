@@ -27,8 +27,8 @@ OpenC2Command ::= RECORD {
 }
 
 OpenC2Response ::= RECORD {
-    source      device-id,      -- ID of the command issuer, from "command-src" modifier
-    command_ref command-id,     -- Command unique identifier, from "command-id" modifier
+    source      device-id,      -- ID of the command issuer, from "command_src" modifier
+    command_ref command-id,     -- Command unique identifier, from "command_id" modifier
     status      status-code,    -- Adapted from HTTP Status Codes, RFC 7231
     statusText  STRING,         -- Status description
     results     STRING          -- Results of executing the command
@@ -149,8 +149,8 @@ Actuator ::= CHOICE {
 }
 
 ActuatorSpecifiers ::= RECORD {
-    port         STRING OPTIONAL,
-    asset_id     STRING OPTIONAL
+    device_id   url OPTIONAL,
+    asset_id    STRING OPTIONAL
 }
 
 Modifiers ::= MAP {
@@ -160,7 +160,7 @@ Modifiers ::= MAP {
     duration        [4] duration OPTIONAL,          -- pause
     frequency       [5] duration OPTIONAL,          -- report, notify, restart, update, sync
     command_id      [6] command-id OPTIONAL,        -- universal  (was "id")
-    command_src     [7] url OPTIONAL,               -- add to universal
+    command_src     [7] device-id OPTIONAL,         -- add to universal
     response        [8] response-type OPTIONAL,     -- universal
     source          [9] url OPTIONAL,               -- update
     destination     [10] url OPTIONAL,              -- (investigate/mitigate/remediate was report_to, copy, move, save)
@@ -180,7 +180,7 @@ duration ::= STRING(PATTERN "^PT(\d+H(\d+M(\d+S)?)?|\d+M(\d+S)?|\d+S)$")    -- R
 
 command-id ::= STRING               -- Command unique identifier
 
-device-id ::= STRING                -- Device Identifier / Address
+device-id ::= STRING                -- Device Identifier / Address (url)
 
 response-type ::= ENUMERATED {
     ack          (1),
