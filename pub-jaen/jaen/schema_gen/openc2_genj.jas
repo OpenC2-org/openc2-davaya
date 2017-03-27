@@ -1,4 +1,4 @@
--- Generated from schema\openc2.jaen, Mon Mar 27 11:47:38 2017
+-- Generated from schema\openc2.jaen, Mon Mar 27 15:17:55 2017
 
 /*
 module:        openc2
@@ -162,17 +162,18 @@ Modifiers ::= MAP {
     duration      [4] duration OPTIONAL,    -- pause
     frequency     [5] duration OPTIONAL,    -- report, notify, restart, update, sync
     command_id    [6] command-id OPTIONAL,    -- universal  (was "id")
-    command_src   [7] device-id OPTIONAL,    -- add to universal
+    command_src   [7] url OPTIONAL,    -- add to universal
     response      [8] response-type OPTIONAL,    -- universal
-    respond_to    [9] device-id OPTIONAL,    -- universal (investigate/mitigate/remediate was report-to)
-    options       [10] STRING OPTIONAL,    -- add to universal? (restart, set, move, restore, save, substitute)
-    method        [11] method-value OPTIONAL,    -- deny, pause, scan, start, stop, augment
-    search        [12] search-type OPTIONAL,    -- scan
-    where         [13] where OPTIONAL,    -- deny, contain, allow
-    message       [14] STRING OPTIONAL,    -- notify
-    command_ref   [15] command-id OPTIONAL,    -- cancel
-    network_acl   [16] network-acl OPTIONAL,    -- firewall profile
-    segmentation  [17] segmentation OPTIONAL     -- firewall profile
+    source        [9] url OPTIONAL,    -- update
+    destination   [10] url OPTIONAL,    -- (investigate/mitigate/remediate was report_to, copy, move, save)
+    options       [11] STRING OPTIONAL,    -- add to universal? (restart, set, substitute, restore)
+    method        [12] method-value OPTIONAL,    -- deny, pause, scan, start, stop, augment
+    search        [13] search-type OPTIONAL,    -- scan
+    where         [14] where OPTIONAL,    -- allow, deny, contain, allow
+    message       [15] STRING OPTIONAL,    -- notify
+    command_ref   [16] command-id OPTIONAL,    -- cancel
+    network_acl   [17] network-acl OPTIONAL,    -- firewall profile
+    segmentation  [18] segmentation OPTIONAL     -- firewall profile
 }
 
 date-time ::= STRING(PATTERN "^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d{1,6})?(Z|[-+]\d\d:\d\d)$")    -- RFC 3339 date-time

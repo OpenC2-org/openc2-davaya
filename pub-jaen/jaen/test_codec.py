@@ -44,6 +44,7 @@ jaen_basic = {                # JAEN schema for datatypes used in Basic Types te
          ]
     ]}
 
+
 class BasicTypes(unittest.TestCase):
 
     def setUp(self):
@@ -182,6 +183,7 @@ class BasicTypes(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.tc.encode("t_choice", self.C1_bad3a)
 
+
     def test_choice_verbose(self):
         self.tc.set_mode(True, True)
         self.assertEqual(self.tc.decode("t_choice", self.C1a), self.C1a)
@@ -204,6 +206,7 @@ class BasicTypes(unittest.TestCase):
             self.tc.encode("t_choice", self.C1_bad2a)
         with self.assertRaises(ValueError):
             self.tc.encode("t_choice", self.C1_bad3a)
+
 
     def test_enumerated_min(self):
         self.assertEqual(self.tc.decode("t_enum", 15), "extra")

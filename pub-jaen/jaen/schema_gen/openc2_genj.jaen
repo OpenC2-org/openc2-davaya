@@ -1,4 +1,4 @@
-"Generated from schema\openc2.jaen, Mon Mar 27 11:47:38 2017"
+"Generated from schema\openc2.jaen, Mon Mar 27 15:17:55 2017"
 
 {
  "meta": {
@@ -161,17 +161,18 @@
     [4, "duration", "duration", ["?"], "pause"],
     [5, "frequency", "duration", ["?"], "report, notify, restart, update, sync"],
     [6, "command_id", "command-id", ["?"], "universal  (was \"id\")"],
-    [7, "command_src", "device-id", ["?"], "add to universal"],
+    [7, "command_src", "url", ["?"], "add to universal"],
     [8, "response", "response-type", ["?"], "universal"],
-    [9, "respond_to", "device-id", ["?"], "universal (investigate/mitigate/remediate was report-to)"],
-    [10, "options", "String", ["?"], "add to universal? (restart, set, move, restore, save, substitute)"],
-    [11, "method", "method-value", ["?"], "deny, pause, scan, start, stop, augment"],
-    [12, "search", "search-type", ["?"], "scan"],
-    [13, "where", "where", ["?"], "deny, contain, allow"],
-    [14, "message", "String", ["?"], "notify"],
-    [15, "command_ref", "command-id", ["?"], "cancel"],
-    [16, "network_acl", "network-acl", ["?"], "firewall profile"],
-    [17, "segmentation", "segmentation", ["?"], "firewall profile"]]
+    [9, "source", "url", ["?"], "update"],
+    [10, "destination", "url", ["?"], "(investigate/mitigate/remediate was report_to, copy, move, save)"],
+    [11, "options", "String", ["?"], "add to universal? (restart, set, substitute, restore)"],
+    [12, "method", "method-value", ["?"], "deny, pause, scan, start, stop, augment"],
+    [13, "search", "search-type", ["?"], "scan"],
+    [14, "where", "where", ["?"], "allow, deny, contain, allow"],
+    [15, "message", "String", ["?"], "notify"],
+    [16, "command_ref", "command-id", ["?"], "cancel"],
+    [17, "network_acl", "network-acl", ["?"], "firewall profile"],
+    [18, "segmentation", "segmentation", ["?"], "firewall profile"]]
   ],
 
   ["date-time", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], "RFC 3339 date-time"],

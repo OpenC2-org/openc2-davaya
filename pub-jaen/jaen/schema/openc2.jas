@@ -167,7 +167,7 @@ Modifiers ::= MAP {
     options         [11] STRING OPTIONAL,           -- add to universal? (restart, set, substitute, restore)
     method          [12] method-value OPTIONAL,     -- deny, pause, scan, start, stop, augment
     search          [13] search-type OPTIONAL,      -- scan
-    where           [14] where OPTIONAL,            -- allow, deny, contain, allow
+    where           [14] where OPTIONAL,            -- allow, deny, contain
     message         [15] STRING OPTIONAL,           -- notify
     command_ref     [16] command-id OPTIONAL,       -- cancel
     network_acl     [17] network-acl OPTIONAL,      -- firewall profile

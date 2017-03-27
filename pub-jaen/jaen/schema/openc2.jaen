@@ -166,7 +166,7 @@
     [11, "options", "String", ["?"], "add to universal? (restart, set, substitute, restore)"],
     [12, "method", "method-value", ["?"], "deny, pause, scan, start, stop, augment"],
     [13, "search", "search-type", ["?"], "scan"],
-    [14, "where", "where", ["?"], "allow, deny, contain, allow"],
+    [14, "where", "where", ["?"], "allow, deny, contain"],
     [15, "message", "String", ["?"], "notify"],
     [16, "command_ref", "command-id", ["?"], "cancel"],
     [17, "network_acl", "network-acl", ["?"], "firewall profile"],
