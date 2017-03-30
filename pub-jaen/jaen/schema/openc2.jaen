@@ -161,16 +161,17 @@
     [6, "command_id", "command-id", ["?"], "universal  (was \"id\")"],
     [7, "command_src", "device-id", ["?"], "add to universal"],
     [8, "response", "response-type", ["?"], "universal"],
-    [9, "source", "url", ["?"], "update"],
-    [10, "destination", "url", ["?"], "(investigate/mitigate/remediate was report_to, copy, move, save)"],
-    [11, "options", "String", ["?"], "add to universal? (restart, set, substitute, restore)"],
-    [12, "method", "method-value", ["?"], "deny, pause, scan, start, stop, augment"],
-    [13, "search", "search-type", ["?"], "scan"],
-    [14, "where", "where", ["?"], "allow, deny, contain"],
-    [15, "message", "String", ["?"], "notify"],
-    [16, "command_ref", "command-id", ["?"], "cancel"],
-    [17, "network_acl", "network-acl", ["?"], "firewall profile"],
-    [18, "segmentation", "segmentation", ["?"], "firewall profile"]]
+    [9, "respond_to", "respond-to", ["?"], "investigate/mitigate/remediate, was report_to"],
+    [10, "source", "location", ["?"], "update"],
+    [11, "destination", "location", ["?"], "copy, move, save"],
+    [12, "options", "String", ["?"], "add to universal? (restart, set, substitute, restore)"],
+    [13, "method", "method-value", ["?"], "deny, pause, scan, start, stop, augment"],
+    [14, "search", "search-type", ["?"], "scan"],
+    [15, "where", "where", ["?"], "allow, deny, contain"],
+    [16, "message", "String", ["?"], "notify"],
+    [17, "command_ref", "command-id", ["?"], "cancel"],
+    [18, "network_acl", "network-acl", ["?"], "firewall profile"],
+    [19, "segmentation", "segmentation", ["?"], "firewall profile"]]
   ],
 
   ["date-time", "String", [">^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d{1,6})?(Z|[-+]\\d\\d:\\d\\d)$"], "RFC 3339 date-time"],
@@ -180,6 +181,10 @@
   ["command-id", "String", [], "Command unique identifier"],
 
   ["device-id", "String", [], "Device Identifier / Address (url)"],
+
+  ["respond-to", "String", [], "Location to send responses to (url)"],
+
+  ["location", "String", [], "Object/data locations (url)"],
 
   ["response-type", "Enumerated", [], "", [
     [1, "ack", ""],
