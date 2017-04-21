@@ -276,7 +276,7 @@ class OpenC2(unittest.TestCase):
                     "vendor": "McAfmantec"}},
             "actuator": {
                 "process_remediation_service": {
-                    "device_id": "dns://host03274.example.org"}},
+                    "actuator_id": "dns://host03274.example.org"}},
             "modifiers": {
                 "command_id": "5ce72...",
                 "command_src": "dns://orch.example.org",
@@ -306,7 +306,7 @@ class OpenC2(unittest.TestCase):
             "action": "update",
             "target.software.vendor": "McAfmantec",
             "target.software.name": "VirusBeGone",
-            "actuator.process_remediation_service.device_id": "dns://host03274.example.org",
+            "actuator.process_remediation_service.actuator_id": "dns://host03274.example.org",
             "modifiers.command_id": "5ce72...",
             "modifiers.command_src": "dns://orch.example.org",
             "modifiers.response": "ack",
@@ -365,6 +365,25 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(flatten(rsp_api), rsp_flat)
         self.assertEqual(dlist(fluff(rsp_flat)), rsp_api)  # Convert numeric dict to list
         self._write_examples("t6_update_rsp", [rsp_api, rsp_flat, rsp_concise, rsp_min])
+
+    def test7_joe(self):
+        cmd_api = {
+            "action": "update",
+            "target": {
+                "file": {
+                    "parent_directory": {
+                        "path":"\\\\someshared-drive\\somedirectory\\configurations"},
+                    "name": "firewallconfiguration.txt"
+                }
+            },
+            "actuator": {
+                "network_firewall": {}
+            }
+        }
+        self.tc.set_mode(True, True)    # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("OpenC2Command", cmd_api), cmd_api)
+        self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
+
 
 if __name__ == "__main__":
     unittest.main()

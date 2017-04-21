@@ -1,4 +1,4 @@
--- Generated from schema\openc2.jaen, Tue Apr 11 09:49:57 2017
+-- Generated from schema\openc2.jaen, Thu Apr 20 15:52:14 2017
 
 /*
 module:        openc2
@@ -151,7 +151,7 @@ Actuator ::= CHOICE {
 }
 
 ActuatorSpecifiers ::= RECORD {
-    device_id    url OPTIONAL,
+    actuator_id  url OPTIONAL,
     asset_id     STRING OPTIONAL
 }
 
@@ -394,7 +394,7 @@ file ::= MAP {
     created               [8] date-time OPTIONAL,    -- Date/time the file was created.
     modified              [9] date-time OPTIONAL,    -- Date/time the file was last written to / modified.
     accessed              [10] date-time OPTIONAL,    -- Date/time the file was last accessed.
-    parent-directory      [11] directory OPTIONAL,    -- Parent directory of the file.
+    parent_directory      [11] directory OPTIONAL,    -- Parent directory of the file.
     is_encrypted          [12] BOOLEAN OPTIONAL,    -- Specifies whether the file is encrypted.
     encryption_algorithm  [13] encryption-algo OPTIONAL,    -- Specifies the algorithm used to encrypt the file.
     decryption_key        [14] STRING OPTIONAL,    -- Decryption key used to decrypt the file.

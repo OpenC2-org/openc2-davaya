@@ -550,31 +550,27 @@ schema_selectors = {                # JAEN schema for selector tests
     "meta": {"module": "unittests-Selectors"},
     "types": [
         ["t_attribute", "Record", [], "", [
-            [2, "type", "String", [], ""],
-            [4, "value", "Choice", [], ""]]
-         ],
-        ["t_prop_implicit", "Record", [], "", [
-            [3, "foo", "String", [], ""],
-            [5, "*", "Choice", [], ""]]
+            [1, "type", "String", [], ""],
+            [2, "value", "", ["{type"], ""]]
         ],
-        ["t_prop_explicit", "Record", [], "", [
-            [2, "foo", "String", [], ""],
-            [6, "data", "Choice", [], ""]]
+        ["t_property_implicit_primitive", "Record", [], "", [
+            [1, "foo", "String", [], ""],
+            [2, "*", "Primitive", [], ""]]
         ],
-        ["t_attribute2", "Record", [], "", [
-            [2, "type", "String", [], ""],
-            [4, "value", "Category", [], ""]]
+        ["t_property_explicit_primitive", "Record", [], "", [
+            [1, "foo", "String", [], ""],
+            [2, "data", "Primitive", [], ""]]
+        ],
+        ["t_property_implicit_category", "Record", [], "", [
+            [1, "foo", "String", [], ""],
+            [2, "*", "Category", [], ""]]
          ],
-        ["t_prop_implicit2", "Record", [], "", [
-            [3, "foo", "String", [], ""],
-            [5, "*", "Category", [], ""]]
-         ],
-        ["t_prop_explicit2", "Record", [], "", [
-            [2, "foo", "String", [], ""],
-            [6, "data", "Category", [], ""]]
+        ["t_property_explicit_category", "Record", [], "", [
+            [1, "foo", "String", [], ""],
+            [2, "data", "Category", [], ""]]
          ],
 
-        ["Choice", "Choice", [], "", [
+        ["Primitive", "Choice", [], "", [
             [1, "name", "String", [], ""],
             [4, "flag", "Boolean", [], ""],
             [7, "count", "Integer", [], ""]]
@@ -584,9 +580,9 @@ schema_selectors = {                # JAEN schema for selector tests
             [5, "color", "Colors", [], ""]]
         ],
         ["Animals", "Map", [], "", [
-            [3, "cat", "String", [], ""],
-            [4, "dog", "Integer", [], ""],
-            [5, "rat", "Rattrs", [], ""]]
+            [3, "cat", "String", ["?"], ""],
+            [4, "dog", "Integer", ["?"], ""],
+            [5, "rat", "Rattrs", ["?"], ""]]
         ],
         ["Colors", "Enumerated", [], "", [
             [2, "red", ""],
@@ -594,8 +590,8 @@ schema_selectors = {                # JAEN schema for selector tests
             [4, "blue", ""]]
          ],
         ["Rattrs", "Record", [], "", [
-            [1, "length", [], ""],
-            [2, "weight", [], ""]]
+            [1, "length", "Integer", [], ""],
+            [2, "weight", "Number", [], ""]]
         ]
     ]}
 
@@ -606,6 +602,63 @@ class Selectors(unittest.TestCase):
         jaen_check(schema_selectors)
         self.tc = Codec(schema_selectors)
 
+    attr1_api = {"type": "Integer", "value": 17}
+    attr2_api = {"type": "Primitive", "value": {"count": 17}}
+    attr3_api = {"type": "Category", "value": {"animal": {"rat": {"length": 21, "weight": .342}}}}
+    attr4_bad_api = {"type": "vegetable", "value": "turnip"}
+    attr5_bad_api = {"type": "vegetable", "value": {"turnip": ""}}
+
+    def test_attribute(self):
+        self.tc.set_mode(True, True)
+        self.assertDictEqual(self.tc.encode("t_attribute", self.attr1_api), self.attr1_api)
+        self.assertDictEqual(self.tc.decode("t_attribute", self.attr1_api), self.attr1_api)
+        self.assertDictEqual(self.tc.encode("t_attribute", self.attr2_api), self.attr2_api)
+        self.assertDictEqual(self.tc.decode("t_attribute", self.attr2_api), self.attr2_api)
+        self.assertDictEqual(self.tc.encode("t_attribute", self.attr3_api), self.attr3_api)
+        self.assertDictEqual(self.tc.decode("t_attribute", self.attr3_api), self.attr3_api)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_attribute", self.attr4_bad_api)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_attribute", self.attr4_bad_api)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_attribute", self.attr5_bad_api)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_attribute", self.attr5_bad_api)
+
+    pep_api = {"foo": "bar", "data": {"count": 17}}
+    pec_api = {"foo": "bar", "data": {"animal": {"rat": {"length": 21, "weight": .342}}}}
+    pep_bad_api = {"foo": "bar", "data": {"turnip": ""}}
+
+    def test_property_explicit(self):
+        self.tc.set_mode(True, True)
+        self.assertDictEqual(self.tc.encode("t_property_explicit_primitive", self.pep_api), self.pep_api)
+        self.assertDictEqual(self.tc.decode("t_property_explicit_primitive", self.pep_api), self.pep_api)
+        self.assertDictEqual(self.tc.encode("t_property_explicit_category", self.pec_api), self.pec_api)
+        self.assertDictEqual(self.tc.decode("t_property_explicit_category", self.pec_api), self.pec_api)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_property_explicit_primitive", self.pep_bad_api)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_property_explicit_primitive", self.pep_bad_api)
+
+    pip_api = {"foo": "bar", "count": 17}
+    pic_api = {"foo": "bar", "animal": {"rat": {"length": 21, "weight": .342}}}
+    pip_bad1_api = {"foo": "bar", "value": "turnip"}
+    pip_bad2_api = {"foo": "bar", "value": {"turnip": ""}}
+
+    def test_property_implicit(self):
+        self.tc.set_mode(True, True)
+        self.assertDictEqual(self.tc.encode("t_property_implicit_primitive", self.pip_api), self.pip_api)
+        self.assertDictEqual(self.tc.decode("t_property_implicit_primitive", self.pip_api), self.pip_api)
+        self.assertDictEqual(self.tc.encode("t_property_implicit_category", self.pic_api), self.pic_api)
+        self.assertDictEqual(self.tc.decode("t_property_implicit_category", self.pic_api), self.pic_api)
+        with self.assertRaises(TypeError):
+            self.tc.encode("t_property_implicit_primitive", self.pip_bad1_api)
+        with self.assertRaises(TypeError):
+            self.tc.decode("t_property_implicit_primitive", self.pip_bad1_api)
+        with self.assertRaises(ValueError):
+            self.tc.encode("t_property_implicit_primitive", self.pip_bad2_api)
+        with self.assertRaises(ValueError):
+            self.tc.decode("t_property_implicit_primitive", self.pip_bad2_api)
 
 if __name__ == "__main__":
     unittest.main()
