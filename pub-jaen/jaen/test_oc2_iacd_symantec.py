@@ -60,27 +60,18 @@ class OpenC2(unittest.TestCase):
 
     def test1_delete_response(self):
         cmd_api = {
-            "source": "",
-            "command_ref": "",
             "status": "OK",
-            "statusText": "",
-            "results": ""
+            "response_src": "dns://192.168.110.120"
         }
-        cmd_flat = {
-            "source": "",
-            "command_ref": "",
-            "status": "OK",
-            "statusText": "",
-            "results": ""
-        }
-        cmd_min = ["","",200,"",""]
+        cmd_flat = cmd_api
+        cmd_min = [200,None,"dns://192.168.110.120"]
 
         self.check("OpenC2Response", cmd_api, cmd_min, cmd_flat)
 
     def test2_respond_cmd(self):
         cmd_api = {
             "action": "report",
-            "target": {},
+            "target": {"url":"dummy"},
             "actuator": {
                 "endpoint_workstation": {
                     "actuator_id": "dns://192.168.110.120"}},
@@ -92,13 +83,13 @@ class OpenC2(unittest.TestCase):
 
         cmd_flat = {
             "action": "report",
-            "target": {},
+            "target.url": "dummy",
             "actuator.endpoint_workstation.actuator_id": "dns://192.168.110.120",
             "modifiers.respond_to": "dns://remote-server14.example.com",
             "modifiers.command_ref": "SEP1432_84295"
         }
 
-        cmd_min = [4,{},{"11":["dns://192.168.110.120"]},{"9":"dns://remote-server14.example.com","17":"SEP1432_84295"}]
+        cmd_min = [4,{"18":"dummy"},{"11":["dns://192.168.110.120"]},{"9":"dns://remote-server14.example.com","17":"SEP1432_84295"}]
 
         self.check("OpenC2Command", cmd_api, cmd_min, cmd_flat)
 

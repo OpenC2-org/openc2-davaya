@@ -331,24 +331,22 @@ class OpenC2(unittest.TestCase):
         # -- Response
 
         rsp_api = {
-            "source": "dns://orch.example.org",
-            "command_ref": "5ce72...",
             "status": "Processing",
             "statusText": "Updating McAfmantec VirusBeGone ...",
-            "results": ""}
+            "response_src": "dns://orch.example.org",
+            "command_id": "5ce72..."}
 
-        rsp_min = ["dns://orch.example.org","5ce72...",102,"Updating McAfmantec VirusBeGone ...",""]
+        rsp_min = [102,"Updating McAfmantec VirusBeGone ...","dns://orch.example.org","5ce72..."]
 
-        rsp_concise = ["dns://orch.example.org", "5ce72...", "Processing", "Updating McAfmantec VirusBeGone ...", ""]
+        rsp_concise = ["Processing", "Updating McAfmantec VirusBeGone ...", "dns://orch.example.org", "5ce72..."]
 
-        rsp_noname = {"3": 102, "1": "dns://orch.example.org", "4": "Updating McAfmantec VirusBeGone ...", "2": "5ce72...", "5": ""}
+        rsp_noname = {"1": 102, "2": "Updating McAfmantec VirusBeGone ...", "3": "dns://orch.example.org", "4": "5ce72..."}
 
         rsp_flat = {
-            "source": "dns://orch.example.org",
-            "command_ref": "5ce72...",
             "status": "Processing",
             "statusText": "Updating McAfmantec VirusBeGone ...",
-            "results": ""}
+            "response_src": "dns://orch.example.org",
+            "command_id": "5ce72..."}
 
         self.tc.set_mode(False, False)  # Minified (list/tag)
         self.assertEqual(self.tc.encode("OpenC2Response", rsp_api), rsp_min)

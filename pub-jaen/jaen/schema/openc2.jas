@@ -27,11 +27,11 @@ OpenC2Command ::= RECORD {
 }
 
 OpenC2Response ::= RECORD {
-    source      device-id,      -- ID of the command issuer, from "command_src" modifier
-    command_ref command-id,     -- Command unique identifier, from "command_id" modifier
-    status      status-code,    -- Adapted from HTTP Status Codes, RFC 7231
-    statusText  STRING,         -- Status description
-    results     STRING          -- Results of executing the command
+    status          status-code,            -- Adapted from HTTP Status Codes, RFC 7231
+    statusText      STRING OPTIONAL,        -- Status description
+    response_src    device-id OPTIONAL,     -- ID of the responder/actuator
+    command_id      command-id OPTIONAL,    -- Command unique identifier, from "command_id" modifier
+    results         STRING OPTIONAL         -- Results of executing the command
 }
 
 OpenC2Alert ::= RECORD {
@@ -192,7 +192,7 @@ response-type ::= ENUMERATED {
     status       (2)
 }
 
-method-value ::= CHOICE {           -- Method must agree with Action (test descriptions)
+method-value ::= CHOICE {           -- Method must agree with Action
     deny         [1] DenyMethod,        -- Action must be "deny"
     pause        [2] PauseMethod,       -- Action must be 'pause'
     scan         [3] ScanMethod,        -- Action must be 'scan"
@@ -494,6 +494,12 @@ process ::= MAP {
     parent                  [12] process OPTIONAL,      -- Process that spawned this one
     children                [13] process-children OPTIONAL  -- Processes that were spawned by this one
 }
+
+arguments ::= ARRAY_OF(string)
+
+envars ::= ARRAY_OF(string)
+
+opened-connections ::= ARRAY_OF(string)
 
 process-ext ::= MAP {
     windows_process_ext     [1] windows-process-ext OPTIONAL,
