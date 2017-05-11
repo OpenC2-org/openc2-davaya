@@ -48,6 +48,25 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 ```
 [32,{"7":["cdn.badco.org"]}]
 ```
+### -- QUERY --
+#### API and JSON-verbose
+```
+{   "action": "query",
+    "target": {"commands": "schema"}}
+```
+#### API Flat
+```
+{   "action": "query",
+    "target.commands": "schema"}
+```
+#### Concise
+```
+["query", {"commands": "schema"}]
+```
+#### Minified
+```
+[3,{"2":2}]
+```
 ### -- CONTAIN --
 #### API and JSON-verbose
 ```
@@ -204,11 +223,10 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 ### -- UPDATE Response --
 #### API and JSON-verbose
 ```
-{   "source": "dns://orch.example.org",
-    "command_ref": "5ce72...",
-    "status": "Processing",
+{   "status": "Processing",
     "statusText": "Updating McAfmantec VirusBeGone ...",
-    "results": ""}
+    "response_src": "dns://orch.example.org",
+    "command_id": "5ce72..."}
 ```
 #### API Flat
 ```
@@ -216,5 +234,5 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 ```
 #### Minified
 ```
-["dns://orch.example.com","5ce72...",102,"Updating McAfmantec VirusBeGone ...",""]
+[102, "Updating McAfmantec VirusBeGone ...", "dns://orch.example.org", "5ce72..."]
 ```
