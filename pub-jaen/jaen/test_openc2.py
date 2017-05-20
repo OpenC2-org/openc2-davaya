@@ -15,8 +15,8 @@ class OpenC2(unittest.TestCase):
         """
 
         if True:        # Set to False to not write example files
-            for n, encoding in enumerate(["verbose", "flat", "concise", "min"]):
-                with open(os.path.join("examples", name + "_" + encoding + ".json"), "w") as f:
+            for n, encoding in enumerate(["", "_flat", "_concise", "_min"]):
+                with open(os.path.join("examples", name + encoding + ".json"), "w") as f:
                     f.write(json.dumps(cmds[n]))
 
     def setUp(self):

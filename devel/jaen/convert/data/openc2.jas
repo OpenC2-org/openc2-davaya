@@ -223,9 +223,9 @@ StartMethod ::= ENUMERATED {
     spawn        (1)
 }
 
-StopMethod ::= ENUMERATED {
-    graceful     (1),
-    immediate    (2)
+StopMethod ::= ENUMERATED {         -- Enumerated type
+    graceful     (1),               -- first value
+    immediate    (2)                -- second value
 }
 
 MethodValue ::= CHOICE {            -- Method must agree with Action (test descriptions)
