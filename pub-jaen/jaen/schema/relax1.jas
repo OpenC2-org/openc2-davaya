@@ -1,0 +1,27 @@
+/*
+module:        relax1
+title:         RELAX-NG Simple Address Book Example
+version:       0.1
+description:   "addressBook" example from http://http://relaxng.org/tutorial-20011203.html
+namespace:     http://openc2.org/relax1
+root:          addressBook
+*/
+
+addressBook ::= ARRAY_OF(card)
+
+card ::= RECORD {
+    name    STRING,
+    email   STRING,
+    note    STRING OPTIONAL
+}
+
+card2 ::= RECORD {              -- Demonstration of CHOICE type, not in RELAX-NG example
+    name    STRING,
+    extras  extras
+}
+
+extras ::= RECORD {
+    email   STRING,
+    note    STRING,
+    phone   STRING
+}
