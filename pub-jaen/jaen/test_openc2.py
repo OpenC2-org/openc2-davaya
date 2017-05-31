@@ -16,8 +16,9 @@ class OpenC2(unittest.TestCase):
 
         if True:        # Set to False to not write example files
             for n, encoding in enumerate(["", "_flat", "_concise", "_min"]):
-                with open(os.path.join("examples", name + encoding + ".json"), "w") as f:
-                    f.write(json.dumps(cmds[n]))
+                if cmds[n] is not None:
+                    with open(os.path.join("examples", name + encoding + ".json"), "w") as f:
+                        f.write(json.dumps(cmds[n]))
 
     def setUp(self):
         jaen = jaen_load(os.path.join("schema", "openc2.jaen"))
@@ -326,7 +327,7 @@ class OpenC2(unittest.TestCase):
         self.assertEqual(self.tc.decode("OpenC2Command", cmd_api), cmd_api)
         self.assertEqual(flatten(cmd_api), cmd_flat)
         self.assertEqual(dlist(fluff(cmd_flat)), cmd_api)  # Convert numeric dict to list
-        self._write_examples("t6_update_cmd", [cmd_api, cmd_flat, cmd_concise, cmd_min])
+        self._write_examples("t6_update", [cmd_api, cmd_flat, cmd_concise, cmd_min])
 
         # -- Response
 
@@ -404,9 +405,6 @@ class OpenC2(unittest.TestCase):
         self.tc.set_mode(True, True)    # API / Verbose (dict/name)
         self.assertEqual(self.tc.encode("OpenC2Response", rsp_api), rsp_api)
         self.assertEqual(self.tc.decode("OpenC2Response", rsp_api), rsp_api)
-
-    def test9_set(self):
-
 
     def testb1_foo(self):       # Unknown action
         cmd_api = {
