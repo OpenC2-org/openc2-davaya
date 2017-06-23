@@ -4,21 +4,19 @@ This folder contains example OpenC2 commands in two Application Programming Inte
 and three JSON-based message formats.  **API** values are the structured data objects used by a program, e.g.,
 Dictionary and List values for Python applications, Map/WeakMap and Array values for Javascript
 applications, or Hash and Array values for Ruby applications.  **Message** values are data objects
-that have been serialized for transmission between applications or for storage.  The current examples
+that have been serialized (encoded) for transmission between applications or for storage.  The current examples
 use JSON serializations, but XML and binary serializations are also possible.  These messages
 are encoding alternatives derived from the same abstract syntax; they are not alternative syntax
 specifications requiring separate development and maintenance.
 
-**API-JSON:** Structured data object as used by a Python application, and the JSON
-serialization of that unencoded object as produced by `json.dump`.  Python literal notation is similar but
-not identical to JSON, so the JSON examples shown here may need to be slightly edited for use
-as Python literals.
+**API and JSON-verbose:** Structured data object as used by a Python application, and the direct JSON
+serialization of that object as produced by `json.dump`.  Python literal notation is similar but
+not identical to JSON, so the JSON examples shown here would need to be slightly edited for use
+as Python literals if they contain boolean or null values.
 
-**API Flat:** Some developers may find it more convenient to work with flattened data values, that is
-single dictionaries containing only primitive data values instead of dictionaries containing nested complex data.
-The JAEN package includes utility routines `flatten` and `fluff` to convert between structured and flat
-Python API values.  These utilities are unrelated to JAEN encoding and work with any Python
-structure composed of dictionaries and lists.
+**API Flat:** Some developers may find it more convenient to work with flattened data values, e.g.
+a dictionary containing only primitive data values instead of a dictionary containing nested complex data.
+The JAEN package includes routines `flatten` and `fluff` to convert between structured and flat Python API values.
 
 **JSON-concise:** A message format shown primarily to illustrate how positional encoding eliminates
 the need to transmit dictionary keys with every message.  This format produces messages intermediate
@@ -30,7 +28,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 
 
 ### -- MITIGATE --
-#### API-JSON
+#### API and JSON-verbose
 ```
 {   "action": "mitigate",
     "target": {
@@ -42,35 +40,35 @@ bandwidth messages for a text-based encoding, although binary encodings would be
     "target.domain_name.value": "cdn.badco.org"
 }
 ```
-#### JSON-Concise
+#### Concise
 ```
 ["mitigate",{"domain_name":["cdn.badco.org"]}]
 ```
-#### JSON-Minified
+#### Minified
 ```
 [32,{"7":["cdn.badco.org"]}]
 ```
 ### -- QUERY --
-#### API-JSON
+#### API and JSON-verbose
 ```
 {   "action": "query",
-    "target": {"commands": "schema"}}
+    "target": {"openc2": {"schema":""}}}
 ```
 #### API Flat
 ```
 {   "action": "query",
-    "target.commands": "schema"}
+    "target.openc2.schema": ""}
 ```
-#### JSON-Concise
+#### Concise
 ```
-["query", {"commands": "schema"}]
+["query", {"openc2": {"schema":""}}]
 ```
-#### JSON-Minified
+#### Minified
 ```
-[3,{"2":2}]
+[3,{"2":{"2":""}}]
 ```
 ### -- CONTAIN --
-#### API-JSON
+#### API and JSON-verbose
 ```
 {   "action": "contain",
     "target": {
@@ -89,7 +87,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
     "target.user_account.account_last_login": "2017-03-16T07:38:12-04:00"
 }
 ```
-#### JSON-Concise
+#### Concise
 ```
 [   "contain",{
         "user_account":{
@@ -98,12 +96,12 @@ bandwidth messages for a text-based encoding, although binary encodings would be
             "is_disabled": true,
             "account_last_login": "2017-03-16T07:38:12-04:00"}}]
 ```
-#### JSON-Minified
+#### Minified
 ```
 [7,{"19":{"1":"21942","2":"jsmith","8": true,"13":"2017-03-16T07:38:12-04:00"}}]
 ```
 ### -- DENY --
-#### API-JSON
+#### API and JSON-verbose
 ```
 {   "action": "deny",
     "target": {
@@ -135,7 +133,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
     "modifiers.duration": "PT2M30S"
 }
 ```
-#### JSON-Concise
+#### Concise
 ```
 [   "deny",
     {"ip_connection": [
@@ -151,7 +149,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
     "duration": "PT2M30S",
     "command_ref": "pf17_8675309"}]
 ```
-#### JSON-Minified
+#### Minified
 ```
 [6,{"15":[{"3":["www.badco.com"]},{"2":443},
 {"1":["192.168.1.1"]},null,null,6]},{"14":[null,"30"]},
@@ -159,7 +157,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
 "6":"pf17_8675309"}]
 ```
 ### -- SCAN --
-#### API-JSON
+#### API and JSON-verbose
 ```
 {   "action": "scan",
     "target": {
@@ -177,7 +175,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
     "target.domain_name.resolves_to.1.name.value": "ms34.example.com"
 }
 ```
-#### JSON-Concise
+#### Concise
 ```
 [   "scan", {
         "domain_name": [
@@ -185,12 +183,12 @@ bandwidth messages for a text-based encoding, although binary encodings would be
                 {"ipv4": ["198.51.100.2"]},
                 {"name": ["ms34.example.com"]}]]}]
 ```
-#### JSON-Minified
+#### Minified
 ```
 [1,{"7":["www.example.com",[{"1":["198.51.100.2"]},{"3":["ms34.example.com"]}]]}]
 ```
 ### -- UPDATE --
-#### API-JSON
+#### API and JSON-verbose
 ```
 {   "action": "update",
     "target": {
@@ -201,7 +199,7 @@ bandwidth messages for a text-based encoding, although binary encodings would be
         "process_remediation_service": {
             "device_id": "dns://host03274.example.org"}},
     "modifiers": {
-        "command_id": "5ce72...",
+        "command_id": "474074afb389",
         "command_src": "dns://orch.example.org",
         "response": "ack",
         "source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}}
@@ -212,29 +210,86 @@ bandwidth messages for a text-based encoding, although binary encodings would be
     "target.software.vendor": "McAfmantec",
     "target.software.name": "VirusBeGone",
     "actuator.process_remediation_service.device_id": "dns://host03274.example.org",
-    "modifiers.command_id": "5ce72...",
+    "modifiers.command_id": "474074afb389",
     "modifiers.command_src": "dns://orch.example.org",
     "modifiers.response": "ack",
     "modifiers.source": "https://updates.example.org/win7_x64/patch_201704_0137.cab"}
 ```
-#### JSON-Minified
+#### Minified
 ```
 [16,{"17":["VirusBeGone",None,None,"McAfmantec"]},{"41":["dns://host03274.example.org"]},
-{"10":"https://updates.example.org/win7_x64/patch_201704_0137.cab","8":1,"7":"dns://orch.example.org","6":"5ce72..."}]
+{"10":"https://updates.example.org/win7_x64/patch_201704_0137.cab","8":1,"7":"dns://orch.example.org","6":"474074afb389"}]
 ```
 ### -- UPDATE Response --
-#### API-JSON
+#### API and JSON-verbose
 ```
 {   "status": "Processing",
     "statusText": "Updating McAfmantec VirusBeGone ...",
     "response_src": "dns://orch.example.org",
-    "command_id": "5ce72..."}
+    "command_id": "474074afb389"}
 ```
 #### API Flat
 ```
 (Same as API because response syntax has no nested elements)
 ```
-#### JSON-Minified
+#### Minified
 ```
-[102, "Updating McAfmantec VirusBeGone ...", "dns://orch.example.org", "5ce72..."]
+[102, "Updating McAfmantec VirusBeGone ...", "dns://orch.example.org", "474074afb389"]
+```
+### -- Negotiation --
+Protocol negotiation is a three-message handshake sent using a default protocol
+stack.  This example assumes that JSON is the default serialization.
+Suitable defaults must also be specified for security and transport layers during negotiation.
+
+**Note**: this example shows syntactically-correct commands but an invalid negotiation
+sequence. In step 3, the selected communication option (REST) was not present
+in the actuator's list of supported options (DXL).
+#### 1. Query
+```
+{   "action": "query",
+    "target": {
+        "openc2": "comm_supported"},
+    "actuator": {
+        "any": {"actuator_id": "https://router7319.example.org"}}
+}
+```
+#### 2. Response - supported options
+```
+{   "status": "OK",
+    "results": {
+        "comms": {
+            "serialization": ["JSON", "JSON-min", "XML", "Protobuf"],
+            "connection": [{"DXL": {"channel": "c2-channel"}}]}}
+}
+```
+#### 3. Start - selected option
+```
+{   "action": "set",
+    "target": {
+        "openc2": {
+            "comm_selected":{
+                "serialization": "Protobuf",
+                "connection": {
+                    "REST": {
+                        "port": {"protocol":"https"}}}}}},
+    "actuator": {
+        "any": {"actuator_id": "https://router7319.example.org"}}
+}
+```
+### -- CANCEL --
+```
+{   "action": "cancel",
+    "target": {
+        "openc2": {"command": "b33cd1d4-aeb4-43a3-bfe9-806f4a84ef79"}}
+}
+```
+### -- DELETE --
+```
+{   "action": "delete",
+    "target": {
+        "email_message": {
+            "subject": "Special Offer!",
+            "date": "2017-06-07T14:30:31-04:00",
+            "from": {"value": "ginsu@spamco.org"}}}
+}
 ```

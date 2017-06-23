@@ -31,10 +31,10 @@ class Relax2(unittest.TestCase):
         self.tc = Codec(jaen)
 
     def test1_attribute_syntax(self):
-        msg_api = [{{"type": "name", "value": "John Smith"},
-                    {"type": "email", "value": "js@example.com"}},
-                    {"type": "name", "value": "Fred Bloggs"},
-                    {"type": "email", "value": "fb@example.com"}]
+        msg_api = [{"a": {"type": "name", "value": "John Smith"},
+                    "b": {"type": "email", "value": "js@example.com"}},
+                   {"a": {"type": "name", "value": "Fred Bloggs"},
+                    "b": {"type": "email", "value": "fb@example.com"}}]
         msg_min = [["John Smith", "js@example.com"],
                  ["Fred Bloggs", "fb@example.com"]]
 

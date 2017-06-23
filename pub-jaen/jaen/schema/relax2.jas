@@ -10,18 +10,28 @@ root:          addressBook
 addressBook ::= ARRAY_OF(card)
 
 card ::= RECORD {
-    name    STRING,
-    email   STRING,
-    note    STRING OPTIONAL
+    a       name_val OPTIONAL,
+    b       email_val OPTIONAL,
+    c       note_val OPTIONAL
 }
-
-card2 ::= RECORD {              -- Demonstration of CHOICE type, not in RELAX-NG example
-    name    STRING,
-    extras  extras
+name_val ::= RECORD {
+    type    name_type,
+    value   STRING
 }
-
-extras ::= CHOICE {
-    email   [3] STRING,
-    note    [6] STRING,
-    phone   [7] STRING
+name_type ::= ENUMERATION {
+    name    (1)
+}
+email_val ::= RECORD {
+    type    email_type,
+    value   STRING
+}
+email_type ::= ENUMERATION {
+    email    (1)
+}
+note_val ::= RECORD {
+    type    note_type,
+    value   STRING
+}
+note_type ::= ENUMERATION {
+    note    (1)
 }
