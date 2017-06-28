@@ -9,12 +9,13 @@ from jaen.convert.tr_jas import jas_load, jas_dump
 from jaen.convert.tr_tables import table_dump
 
 if __name__ == "__main__":
-    for fn in ("relax2", "openc2", "relax1", "relax2"):
+    for fn in ("openc2", "relax1", "relax2"):
         ifname = os.path.join("schema", fn)
         ofname = os.path.join("schema_gen", fn)
 
         # Convert JAEN Abstract Syntax (JAS) to JAEN
 
+        print(os.path.join(os.getcwd(), ifname + ":"))
         source = ifname + ".jas"
         dest = ofname + "_gens"
         schema = jas_load(source)
