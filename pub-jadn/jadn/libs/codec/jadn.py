@@ -1,5 +1,5 @@
 """
-Load, validate, prettyprint, and dump JSON Abstract Encoding Notation (JAEN) schemas
+Load, validate, prettyprint, and dump JSON Abstract Encoding Notation (JADN) schemas
 """
 
 import json
@@ -11,7 +11,7 @@ from .codec import is_builtin
 # TODO: Establish CTI/JSON namespace conventions, merge "module" (name) and "namespace" (module unique id) properties
 # TODO: convert prints to ValidationError exception
 
-jaen_schema = {
+jadn_schema = {
     "type": "object",
     "required": ["meta", "types"],
     "additionalProperties": False,
@@ -77,14 +77,14 @@ jaen_schema = {
     }
 }
 
-# JAEN Type Definition columns      # MUST remain in sync with codec
+# JADN Type Definition columns      # MUST remain in sync with codec
 TNAME = 0       # Datatype name
 TTYPE = 1       # Base type
 TOPTS = 2       # Type options
 TDESC = 3       # Type description
 FIELDS = 4      # List of fields
 
-# JAEN Field Definition columns
+# JADN Field Definition columns
 FTAG = 0        # Element ID
 FNAME = 1       # Element name
 EDESC = 2       # Description (for enumerated types)
@@ -93,12 +93,12 @@ FOPTS = 3       # Field options
 FDESC = 4       # Field Description
 
 
-def jaen_check(schema):
+def jadn_check(schema):
     """
-    Check JAEN structure against JSON schema, then perform additional checks on type definitions
+    Check JADN structure against JSON schema, then perform additional checks on type definitions
     """
 
-    jsonschema.Draft4Validator(jaen_schema).validate(schema)
+    jsonschema.Draft4Validator(jadn_schema).validate(schema)
 
     for t in schema["types"]:     # datatype definition: 0-name, 1-type, 2-options, 3-description, 4-item list
         if t[TTYPE] not in ("Binary", "Boolean", "Integer", "Number", "String",
@@ -135,7 +135,7 @@ def jaen_check(schema):
     return schema
 
 
-def build_jaen_deps(schema):
+def build_jadn_deps(schema):
     items = []
     for tdef in schema["types"]:
         deps = []
@@ -147,8 +147,8 @@ def build_jaen_deps(schema):
     return items
 
 
-def jaen_analyze(schema):
-    items = build_jaen_deps(schema)
+def jadn_analyze(schema):
+    items = build_jadn_deps(schema)
     types = {i[0] for i in items}
     refs = set().union(*[i[1] for i in items])
     print("  module:", schema["meta"]["module"])
@@ -157,47 +157,47 @@ def jaen_analyze(schema):
     print("  cycles:", [])
 
 
-def jaen_loads(jaen_str):
-    jaen = json.loads(jaen_str)
-    jaen_check(jaen)
-    return jaen
+def jadn_loads(jadn_str):
+    schema = json.loads(jadn_str)
+    jadn_check(schema)
+    return schema
 
 
-def jaen_load(fname):
+def jadn_load(fname):
     with open(fname) as f:
-        jaen = json.load(f)
-    jaen_check(jaen)
-    return jaen
+        schema = json.load(f)
+    jadn_check(schema)
+    return schema
 
 
-def jaen_dumps(jaen, level=0, indent=1):
+def jadn_dumps(schema, level=0, indent=1):
     sp = level * indent * " "
     sp2 = (level + 1) * indent * " "
-    if isinstance(jaen, dict):
+    if isinstance(schema, dict):
         sep = ",\n" if level > 0 else ",\n\n"
         lines = []
-        for k in sorted(jaen):
-            lines.append(sp2 + "\"" + k + "\": " + jaen_dumps(jaen[k], level + 1, indent))
+        for k in sorted(schema):
+            lines.append(sp2 + "\"" + k + "\": " + jadn_dumps(schema[k], level + 1, indent))
         return "{\n" + sep.join(lines) + "\n" + sp + "}"
-    elif isinstance(jaen, list):
+    elif isinstance(schema, list):
         sep = ",\n" if level > 1 else ",\n\n"
         vals = []
-        nest = jaen and isinstance(jaen[0], list)
+        nest = schema and isinstance(schema[0], list)
         sp4 = ""
-        for v in jaen:
+        for v in schema:
             sp3 = sp2 if nest else ""
             sp4 = sp if v and isinstance(v, list) else ""
-            vals.append(sp3 + jaen_dumps(v, level + 1, indent))
+            vals.append(sp3 + jadn_dumps(v, level + 1, indent))
         if nest:
             return "[\n" + sep.join(vals) + "]\n"
         return "[" + ", ".join(vals) + sp4 + "]"
-    elif isinstance(jaen, (bool, int, str)):
-        return json.dumps(jaen)
+    elif isinstance(schema, (bool, int, str)):
+        return json.dumps(schema)
     return "???"
 
 
-def jaen_dump(jaen, fname, source=""):
+def jadn_dump(schema, fname, source=""):
     with open(fname, "w") as f:
         if source:
             f.write("\"Generated from " + source + ", " + datetime.ctime(datetime.now()) + "\"\n\n")
-        f.write(jaen_dumps(jaen) + "\n")
+        f.write(jadn_dumps(schema) + "\n")

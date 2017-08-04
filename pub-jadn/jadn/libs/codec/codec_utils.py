@@ -80,6 +80,8 @@ def opts_s2d(ostr):
     "{key"   "atfield"  String   Field name of Attribute type
     "[n:m"   "range"    Tuple    Min and max lengths for arrays and strings
     ">*"     "pattern"  String   Regular expression to match against String value
+    "@*"     "format"   String   Validation function (date-time, email, hostname, ipv4, ipv6, uri, json, ...)
+    "#*"     "type"     String   Array element type
     """
 
     assert isinstance(ostr, (list, tuple)), "%r is not a list" % ostr
@@ -90,9 +92,13 @@ def opts_s2d(ostr):
         elif o[0] == "{":
             opts["atfield"] = o[1:]
         elif o[0] == "[":
-            opts["range"] = (0, 0)
+            opts["range"] = (0, 0)      # TODO: parse min and max
         elif o[0] == ">":
             opts["pattern"] = o[1:]
+        elif o[0] == "@":
+            opts["format"] = o[1:]
+        elif o[0] == "#":
+            opts["type"] = o[1:]
         else:
             print("Unknown option '", o, "'")
     return opts
@@ -112,6 +118,10 @@ def opts_d2s(opts):
             ostr.append("[" + str(v[0]) + ":" + str(v[1]))
         elif k == "pattern":
             ostr.append(">" + v)
+        elif k == "format":
+            ostr.append("@" + v)
+        elif k == "type":
+            ostr.append("#" + v)
         else:
             print("Unknown option '", o, "'")
     return ostr

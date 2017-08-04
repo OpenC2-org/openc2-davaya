@@ -1,15 +1,15 @@
 import os
 import unittest
 
-from jaen.codec.codec import Codec
-from jaen.codec.jaen import jaen_load
+from libs.codec.codec import Codec
+from libs.codec.jadn import jadn_load
 
 
 class Relax1(unittest.TestCase):
 
     def setUp(self):
-        jaen = jaen_load(os.path.join("schema", "relax1.jaen"))
-        self.tc = Codec(jaen)
+        schema = jadn_load(os.path.join("schema", "relax1.jadn"))
+        self.tc = Codec(schema)
 
     def test1_property_syntax(self):
         msg_api = [{"name": "John Smith", "email": "js@example.com"},
@@ -27,8 +27,8 @@ class Relax1(unittest.TestCase):
 class Relax2(unittest.TestCase):
 
     def setUp(self):
-        jaen = jaen_load(os.path.join("schema", "relax2.jaen"))
-        self.tc = Codec(jaen)
+        schema = jadn_load(os.path.join("schema", "relax2.jadn"))
+        self.tc = Codec(schema)
 
     def test1_attribute_syntax(self):
         msg_api = [{"a": {"type": "name", "value": "John Smith"},

@@ -7,15 +7,15 @@ Use cases from "Symantec OpenC2 Proxy", Efrain Ortiz
 import os
 import unittest
 
-from jaen.codec.codec import Codec
-from jaen.codec.jaen import jaen_load
-from jaen.codec.codec_utils import flatten, fluff, dlist
+from libs.codec.codec import Codec
+from libs.codec.jadn import jadn_load
+from libs.codec.codec_utils import flatten, fluff, dlist
 
 0
 class OpenC2(unittest.TestCase):
 
     def setUp(self):
-        schema = jaen_load(os.path.join("schema", "openc2.jaen"))
+        schema = jadn_load(os.path.join("schema", "openc2.jadn"))
         self.tc = Codec(schema)
 
     def check(self, item, cmd_api, cmd_min, cmd_flat):
