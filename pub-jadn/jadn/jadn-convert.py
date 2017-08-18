@@ -1,5 +1,5 @@
 """
-Translate JSON Abstract Encoding Notation (JADN) files
+Translate JSON Abstract Data Notation (JADN) files
 """
 
 import os

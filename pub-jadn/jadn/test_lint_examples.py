@@ -14,10 +14,7 @@ schema_person = {                # JADN schema for Lint Server example messages
             [4, "phone", "PhoneNumbers", ["?"], ""]
         ]],
 
-#        ["PhoneNumbers", "Array", ["#PhoneNumber"], ""],       # TODO: fix codec so this works
-        ["PhoneNumbers", "Array", [], "", [
-            [0, "", "PhoneNumber", [], ""]
-        ]],
+        ["PhoneNumbers", "Array", ["#PhoneNumber"], ""],
 
         ["PhoneNumber", "Record", [], "", [
             [1, "number", "String", [], ""],

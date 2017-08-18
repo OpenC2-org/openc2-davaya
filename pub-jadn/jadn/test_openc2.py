@@ -72,7 +72,7 @@ class OpenC2(unittest.TestCase):
 
     def test02_query_schema(self):
         cmd_api = {"action": "query", "target": {"openc2": {"schema":""}}}
-        schema = {          # This is a snippet to demo the response.  A real response would include a complete schema.
+        schema = {          # JSON does not allow line breaks within strings for readability.  So encode struct into string.
             "meta": {
                 "module": "openc2"
             },
@@ -82,7 +82,7 @@ class OpenC2(unittest.TestCase):
                     [2, "target", "Target", [], ""],
                     [3, "actuator", "Actuator", ["?"], ""],
                     [4, "modifiers", "Modifiers", ["?"], ""]]]]}
-        rsp_api = {         # JSON does not allow line breaks within strings for readability.  So encode struct into JSON string.
+        rsp_api = {
             "status": "OK",
             "results": {"string": json.dumps(schema)}}
 

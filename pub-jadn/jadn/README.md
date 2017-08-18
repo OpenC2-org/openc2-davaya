@@ -44,7 +44,7 @@ converted files to an output directory (schema_gen).  Output files ending in `_g
 produced from JADN sources, while those ending in `_gens` are produced from JAS sources.
 After editing a JAS schema, the corresponding JADN schema (`xxx_gens.jadn') should be moved
 from the output to the input directory after deleting the source line at the top of the file.
-- openc2.JADN - Schema that defines the OpenC2 message format, including the target data model.  The
+- openc2.jadn - Schema that defines the OpenC2 message format, including the target data model.  The
 ability to import data models from multiple schema files is planned but not supported
 in the current version.
 
@@ -61,8 +61,8 @@ openc2.jadn schema, and encode the command:
 
 ```
 import json
-from jadn.codec.codec import Codec
-from jadn.codec.jadn import jadn_load
+from libs.codec.codec import Codec
+from libs.codec.jadn import jadn_load
 
 command = {
     "action": "mitigate",
