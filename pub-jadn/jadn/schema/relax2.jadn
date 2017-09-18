@@ -1,5 +1,5 @@
 {
-  "meta": {
+ "meta": {
   "description": "\"addressBook\" example from http://http://relaxng.org/tutorial-20011203.html",
   "module": "relax2",
   "namespace": "http://openc2.org/relax1",
@@ -9,25 +9,39 @@
  },
 
  "types": [
-  ["addressBook", "Array", [], "", [
-    [0, "", "card", [], ""]]
-  ],
+  ["addressBook", "Array", ["#card"], ""],
 
   ["card", "Record", [], "", [
-    [1, "name", "String", [], ""],
-    [2, "email", "String", [], ""],
-    [3, "note", "String", ["?"], ""]]
+    [1, "a", "name_val", ["?"], ""],
+    [2, "b", "email_val", ["?"], ""],
+    [3, "c", "note_val", ["?"], ""]]
   ],
 
-  ["card2", "Record", [], "Demonstration of CHOICE type, not in RELAX-NG example", [
-    [1, "name", "String", [], ""],
-    [2, "extras", "extras", [], ""]]
+  ["name_val", "Record", [], "", [
+    [1, "type", "name_type", [], ""],
+    [2, "value", "String", [], ""]]
   ],
 
-  ["extras", "Choice", [], "", [
-    [3, "email", "String", [], ""],
-    [6, "note", "String", [], ""],
-    [7, "phone", "String", [], ""]]
+  ["name_type", "Enumerated", [], "", [
+    [1, "name", ""]]
+  ],
+
+  ["email_val", "Record", [], "", [
+    [1, "type", "email_type", [], ""],
+    [2, "value", "String", [], ""]]
+  ],
+
+  ["email_type", "Enumerated", [], "", [
+    [1, "email", ""]]
+  ],
+
+  ["note_val", "Record", [], "", [
+    [1, "type", "note_type", [], ""],
+    [2, "value", "String", [], ""]]
+  ],
+
+  ["note_type", "Enumerated", [], "", [
+    [1, "note", ""]]
   ]]
 
 }

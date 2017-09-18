@@ -24,6 +24,20 @@ class Relax1(unittest.TestCase):
         self.assertEqual(self.tc.encode("addressBook", msg_api), msg_min)
         self.assertEqual(self.tc.decode("addressBook", msg_min), msg_api)
 
+    def test2_card_explicit(self):
+        msg_api = {"name": "John Smith", "email": "js@example.com", "info": {"phone": "555-1234"}}
+
+        self.tc.set_mode(True, True)        # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("card2", msg_api), msg_api)
+        self.assertEqual(self.tc.decode("card2", msg_api), msg_api)
+
+    def test3_card_implicit(self):
+        msg_api = {"name": "John Smith", "email": "js@example.com", "phone": "555-1234"}
+
+        self.tc.set_mode(True, True)        # API / Verbose (dict/name)
+        self.assertEqual(self.tc.encode("card2", msg_api), msg_api)
+        self.assertEqual(self.tc.decode("card2", msg_api), msg_api)
+
 class Relax2(unittest.TestCase):
 
     def setUp(self):

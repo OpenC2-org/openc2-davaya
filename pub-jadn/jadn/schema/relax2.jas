@@ -14,24 +14,30 @@ card ::= RECORD {
     b       email_val OPTIONAL,
     c       note_val OPTIONAL
 }
+
 name_val ::= RECORD {
     type    name_type,
     value   STRING
 }
-name_type ::= ENUMERATION {
+
+name_type ::= ENUMERATED {
     name    (1)
 }
+
 email_val ::= RECORD {
     type    email_type,
     value   STRING
 }
-email_type ::= ENUMERATION {
+
+email_type ::= ENUMERATED {
     email    (1)
 }
+
 note_val ::= RECORD {
     type    note_type,
     value   STRING
 }
-note_type ::= ENUMERATION {
+
+note_type ::= ENUMERATED {
     note    (1)
 }

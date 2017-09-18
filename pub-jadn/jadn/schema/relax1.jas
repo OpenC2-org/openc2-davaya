@@ -17,11 +17,12 @@ card ::= RECORD {
 
 card2 ::= RECORD {              -- Demonstration of CHOICE type, not in RELAX-NG example
     name    STRING,
-    extras  extras
+    email   STRING,
+    info    extra OPTIONAL,     -- Explicit Tag
+    *       extra OPTIONAL      -- Implicit Tag
 }
 
-extras ::= RECORD {
-    email   STRING,
-    note    STRING,
-    phone   STRING
+extra ::= CHOICE {
+    note    [3] STRING,
+    phone   [5] STRING
 }

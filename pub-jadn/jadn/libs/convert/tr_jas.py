@@ -122,7 +122,7 @@ def jas_loads(jas_str):
                     if t["type"].lower() == "enumerated":
                         fields.append([tag, f["name"], _nstr(fdesc)])
                     else:
-                        fields.append([tag, f["name"], pt.jtype(f["type"]), _fopts(f["fopts"]), _nstr(fdesc)])
+                        fields.append([tag, f["name"], _nstr(pt.jtype(f["type"])), _fopts(f["fopts"]), _nstr(fdesc)])
         tdef = [t["name"], pt.jtype(t["type"]), _topts(topts), _nstr(tdesc)]
         types.append(tdef if is_primitive(tdef[1]) else tdef + [fields] )
     jadn = {"meta": meta, "types": types}

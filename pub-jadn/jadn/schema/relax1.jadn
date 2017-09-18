@@ -4,14 +4,12 @@
   "module": "relax1",
   "namespace": "http://openc2.org/relax1",
   "root": "addressBook",
-  "title": "RELAX-NG Simple Address Book Example - using attribute syntax",
+  "title": "RELAX-NG Simple Address Book Example",
   "version": "0.1"
  },
 
  "types": [
-  ["addressBook", "Array", [], "", [
-    [0, "", "card", [], ""]]
-  ],
+  ["addressBook", "Array", ["#card"], ""],
 
   ["card", "Record", [], "", [
     [1, "name", "String", [], ""],
@@ -19,15 +17,16 @@
     [3, "note", "String", ["?"], ""]]
   ],
 
-  ["card2", "Record", [], "Demonstration of CHOICE type, not in RELAX-NG example", [
+  ["card2", "Record", [], "Explicit and Implicit selectors", [
     [1, "name", "String", [], ""],
-    [2, "extras", "extras", [], ""]]
+    [2, "email", "String", [], ""],
+    [3, "info", "extra", ["?"], "Explicit Tag"],
+    [4, "*", "extra", ["?"], "Implicit Tag"]]
   ],
 
-  ["extras", "Record", [], "", [
-    [1, "email", "String", [], ""],
-    [2, "note", "String", [], ""],
-    [3, "phone", "String", [], ""]]
+  ["extra", "Choice", [], "", [
+    [3, "note", "String", [], ""],
+    [5, "phone", "String", [], ""]]
   ]]
 
 }

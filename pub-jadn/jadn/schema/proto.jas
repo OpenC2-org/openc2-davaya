@@ -1,0 +1,10 @@
+/*
+module: proto
+description: Example schema from Google Protocl Buffers https://developers.google.com/protocol-buffers/
+*/
+
+Person ::= Record {
+    name    [1] String,
+    id      [2] Integer,
+    email   [3] String OPTIONAL
+}

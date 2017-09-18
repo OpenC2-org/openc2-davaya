@@ -1,0 +1,14 @@
+{
+ "meta": {
+  "description": "Example schema from Google Protocl Buffers https://developers.google.com/protocol-buffers/",
+  "module": "proto"
+ },
+
+ "types": [
+  ["Person", "Record", [], "", [
+    [1, "name", "String", [], ""],
+    [2, "id", "Integer", [], ""],
+    [3, "email", "String", ["?"], ""]]
+  ]]
+
+}
